@@ -1,0 +1,248 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>rew join - rew</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="The Swiss Army Knife of line-oriented text processing. Transform text by composing parallel shell pipelines!">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../docs/custom.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">User Guide</li><li class="chapter-item expanded "><a href="../guide/installation.html"><strong aria-hidden="true">2.</strong> Installation</a></li><li class="chapter-item expanded "><a href="../guide/faq.html"><strong aria-hidden="true">3.</strong> FAQ</a></li><li class="chapter-item expanded affix "><li class="part-title">Reference</li><li class="chapter-item expanded "><a href="../reference/rew.html"><strong aria-hidden="true">4.</strong> rew</a></li><li class="chapter-item expanded "><a href="../reference/rew-ascii.html"><strong aria-hidden="true">5.</strong> rew ascii</a></li><li class="chapter-item expanded "><a href="../reference/rew-cat.html"><strong aria-hidden="true">6.</strong> rew cat</a></li><li class="chapter-item expanded "><a href="../reference/rew-first.html"><strong aria-hidden="true">7.</strong> rew first</a></li><li class="chapter-item expanded "><a href="../reference/rew-join.html"><strong aria-hidden="true">8.</strong> rew join</a></li><li class="chapter-item expanded "><a href="../reference/rew-last.html"><strong aria-hidden="true">9.</strong> rew last</a></li><li class="chapter-item expanded "><a href="../reference/rew-loop.html"><strong aria-hidden="true">10.</strong> rew loop</a></li><li class="chapter-item expanded "><a href="../reference/rew-lower.html"><strong aria-hidden="true">11.</strong> rew lower</a></li><li class="chapter-item expanded "><a href="../reference/rew-seq.html"><strong aria-hidden="true">12.</strong> rew seq</a></li><li class="chapter-item expanded "><a href="../reference/rew-skip.html"><strong aria-hidden="true">13.</strong> rew skip</a></li><li class="chapter-item expanded "><a href="../reference/rew-split.html"><strong aria-hidden="true">14.</strong> rew split</a></li><li class="chapter-item expanded "><a href="../reference/rew-stream.html"><strong aria-hidden="true">15.</strong> rew stream</a></li><li class="chapter-item expanded "><a href="../reference/rew-trim.html"><strong aria-hidden="true">16.</strong> rew trim</a></li><li class="chapter-item expanded "><a href="../reference/rew-upper.html"><strong aria-hidden="true">17.</strong> rew upper</a></li><li class="chapter-item expanded "><a href="../reference/rew-x.html"><strong aria-hidden="true">18.</strong> rew x</a></li><li class="chapter-item expanded "><a href="../reference/rew-help.html"><strong aria-hidden="true">19.</strong> rew help</a></li><li class="chapter-item expanded affix "><li class="part-title">Benchmarks</li><li class="chapter-item expanded "><a href="../benchmarks/setup.html"><strong aria-hidden="true">20.</strong> Setup</a></li><li class="chapter-item expanded "><a href="../benchmarks/rew-ascii.html"><strong aria-hidden="true">21.</strong> rew ascii</a></li><li class="chapter-item expanded "><a href="../benchmarks/rew-cat.html"><strong aria-hidden="true">22.</strong> rew cat</a></li><li class="chapter-item expanded "><a href="../benchmarks/rew-first.html"><strong aria-hidden="true">23.</strong> rew first</a></li><li class="chapter-item expanded "><a href="../benchmarks/rew-join.html" class="active"><strong aria-hidden="true">24.</strong> rew join</a></li><li class="chapter-item expanded "><a href="../benchmarks/rew-last.html"><strong aria-hidden="true">25.</strong> rew last</a></li><li class="chapter-item expanded "><a href="../benchmarks/rew-loop.html"><strong aria-hidden="true">26.</strong> rew loop</a></li><li class="chapter-item expanded "><a href="../benchmarks/rew-lower.html"><strong aria-hidden="true">27.</strong> rew lower</a></li><li class="chapter-item expanded "><a href="../benchmarks/rew-seq.html"><strong aria-hidden="true">28.</strong> rew seq</a></li><li class="chapter-item expanded "><a href="../benchmarks/rew-skip.html"><strong aria-hidden="true">29.</strong> rew skip</a></li><li class="chapter-item expanded "><a href="../benchmarks/rew-split.html"><strong aria-hidden="true">30.</strong> rew split</a></li><li class="chapter-item expanded "><a href="../benchmarks/rew-stream.html"><strong aria-hidden="true">31.</strong> rew stream</a></li><li class="chapter-item expanded "><a href="../benchmarks/rew-trim.html"><strong aria-hidden="true">32.</strong> rew trim</a></li><li class="chapter-item expanded "><a href="../benchmarks/rew-upper.html"><strong aria-hidden="true">33.</strong> rew upper</a></li><li class="chapter-item expanded "><a href="../benchmarks/rew-x.html"><strong aria-hidden="true">34.</strong> rew x</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">rew</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/jpikl/rew" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="rew-join"><a class="header" href="#rew-join">rew join</a></h1>
+<p>This page contains benchmarks for <a href="../reference/rew-join.html">rew join</a> command.</p>
+<p>See <a href="./setup.html">benchmark setup</a> for information about testing environemt and input data files.</p>
+<h2 id="benchmark-1"><a class="header" href="#benchmark-1">Benchmark #1</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 50 &lt;svejk.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "(tr '\n' ' ' &amp;&amp; echo) &lt;input.txt" \
+    "rew join -t ' ' &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew join -t ' ' &lt;input.txt</code></td><td style="text-align: right">29.8 ± 0.8</td><td style="text-align: right">27.8</td><td style="text-align: right">31.8</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>(tr '\n' ' ' &amp;&amp; echo) &lt;input.txt</code></td><td style="text-align: right">72.2 ± 1.0</td><td style="text-align: right">70.1</td><td style="text-align: right">74.7</td><td style="text-align: right">2.42 ± 0.07</td></tr>
+</tbody></table>
+</div>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../benchmarks/rew-first.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../benchmarks/rew-last.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../benchmarks/rew-first.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../benchmarks/rew-last.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,2358 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>rew</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="The Swiss Army Knife of line-oriented text processing. Transform text by composing parallel shell pipelines!">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="docs/custom.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">User Guide</li><li class="chapter-item expanded "><a href="guide/installation.html"><strong aria-hidden="true">2.</strong> Installation</a></li><li class="chapter-item expanded "><a href="guide/faq.html"><strong aria-hidden="true">3.</strong> FAQ</a></li><li class="chapter-item expanded affix "><li class="part-title">Reference</li><li class="chapter-item expanded "><a href="reference/rew.html"><strong aria-hidden="true">4.</strong> rew</a></li><li class="chapter-item expanded "><a href="reference/rew-ascii.html"><strong aria-hidden="true">5.</strong> rew ascii</a></li><li class="chapter-item expanded "><a href="reference/rew-cat.html"><strong aria-hidden="true">6.</strong> rew cat</a></li><li class="chapter-item expanded "><a href="reference/rew-first.html"><strong aria-hidden="true">7.</strong> rew first</a></li><li class="chapter-item expanded "><a href="reference/rew-join.html"><strong aria-hidden="true">8.</strong> rew join</a></li><li class="chapter-item expanded "><a href="reference/rew-last.html"><strong aria-hidden="true">9.</strong> rew last</a></li><li class="chapter-item expanded "><a href="reference/rew-loop.html"><strong aria-hidden="true">10.</strong> rew loop</a></li><li class="chapter-item expanded "><a href="reference/rew-lower.html"><strong aria-hidden="true">11.</strong> rew lower</a></li><li class="chapter-item expanded "><a href="reference/rew-seq.html"><strong aria-hidden="true">12.</strong> rew seq</a></li><li class="chapter-item expanded "><a href="reference/rew-skip.html"><strong aria-hidden="true">13.</strong> rew skip</a></li><li class="chapter-item expanded "><a href="reference/rew-split.html"><strong aria-hidden="true">14.</strong> rew split</a></li><li class="chapter-item expanded "><a href="reference/rew-stream.html"><strong aria-hidden="true">15.</strong> rew stream</a></li><li class="chapter-item expanded "><a href="reference/rew-trim.html"><strong aria-hidden="true">16.</strong> rew trim</a></li><li class="chapter-item expanded "><a href="reference/rew-upper.html"><strong aria-hidden="true">17.</strong> rew upper</a></li><li class="chapter-item expanded "><a href="reference/rew-x.html"><strong aria-hidden="true">18.</strong> rew x</a></li><li class="chapter-item expanded "><a href="reference/rew-help.html"><strong aria-hidden="true">19.</strong> rew help</a></li><li class="chapter-item expanded affix "><li class="part-title">Benchmarks</li><li class="chapter-item expanded "><a href="benchmarks/setup.html"><strong aria-hidden="true">20.</strong> Setup</a></li><li class="chapter-item expanded "><a href="benchmarks/rew-ascii.html"><strong aria-hidden="true">21.</strong> rew ascii</a></li><li class="chapter-item expanded "><a href="benchmarks/rew-cat.html"><strong aria-hidden="true">22.</strong> rew cat</a></li><li class="chapter-item expanded "><a href="benchmarks/rew-first.html"><strong aria-hidden="true">23.</strong> rew first</a></li><li class="chapter-item expanded "><a href="benchmarks/rew-join.html"><strong aria-hidden="true">24.</strong> rew join</a></li><li class="chapter-item expanded "><a href="benchmarks/rew-last.html"><strong aria-hidden="true">25.</strong> rew last</a></li><li class="chapter-item expanded "><a href="benchmarks/rew-loop.html"><strong aria-hidden="true">26.</strong> rew loop</a></li><li class="chapter-item expanded "><a href="benchmarks/rew-lower.html"><strong aria-hidden="true">27.</strong> rew lower</a></li><li class="chapter-item expanded "><a href="benchmarks/rew-seq.html"><strong aria-hidden="true">28.</strong> rew seq</a></li><li class="chapter-item expanded "><a href="benchmarks/rew-skip.html"><strong aria-hidden="true">29.</strong> rew skip</a></li><li class="chapter-item expanded "><a href="benchmarks/rew-split.html"><strong aria-hidden="true">30.</strong> rew split</a></li><li class="chapter-item expanded "><a href="benchmarks/rew-stream.html"><strong aria-hidden="true">31.</strong> rew stream</a></li><li class="chapter-item expanded "><a href="benchmarks/rew-trim.html"><strong aria-hidden="true">32.</strong> rew trim</a></li><li class="chapter-item expanded "><a href="benchmarks/rew-upper.html"><strong aria-hidden="true">33.</strong> rew upper</a></li><li class="chapter-item expanded "><a href="benchmarks/rew-x.html"><strong aria-hidden="true">34.</strong> rew x</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">rew</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/jpikl/rew" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<p><strong>rew</strong> is a collection of command-line tools for line-oriented text processing.</p>
+<p>It includes tools for a wide range of tasks, such as:</p>
+<ul>
+<li>Text filtering, transformation and generation.</li>
+<li>File system paths manipulation.</li>
+<li>Composition of parallel process pipelines.</li>
+<li>Shell metaprogramming (code generation).</li>
+</ul>
+<p>All tools are distributed as a single binary (similar to <a href="https://www.busybox.net">BusyBox</a>).</p>
+<h2 id="showcase"><a class="header" href="#showcase">Showcase</a></h2>
+<p>Let's start with output of the standard Unix <code>find</code> command:</p>
+<pre><code class="language-sh">$ find -type f
+
+./README.TXT
+./image_1.JPG
+./image_2.JPEG
+</code></pre>
+<p>Use <code>rew</code> subcommands to query components of each path:</p>
+<pre><code class="language-sh">$ find -type f | rew base
+
+README
+image_1
+image_2
+</code></pre>
+<pre><code class="language-sh">$ find -type f | rew ext
+
+TXT
+JPG
+JPEG
+</code></pre>
+<p>Combine multiple <code>rew</code> subcommands to get normalized results:</p>
+<pre><code class="language-sh">$ find -type f | rew ext | rew lower
+
+txt
+jpg
+jpeg
+</code></pre>
+<pre><code class="language-sh">$ find -type f | rew ext | rew lower | rew replace eg g
+
+txt
+jpg
+jpg
+</code></pre>
+<p>Compose multiple pipelines using <code>x</code> subcommand:</p>
+<pre><code class="language-sh">$ find -type f | rew x 'out/{base}.{ext | lower | replace eg g}'
+
+out/README.txt
+out/image_1.jpg
+out/image_2.jpg
+</code></pre>
+<p>Update the pattern to generate shell code:</p>
+<pre><code class="language-sh">$ find -type f | rew x 'mv {} out/{base}.{ext | lower | replace eg g}'
+
+mv ./README.TXT out/README.txt
+mv ./image_1.JPG out/image_1.jpg
+mv ./image_2.JPEG out/image_2.jpg
+</code></pre>
+<p>And pipe it into a shell for execution:</p>
+<pre><code class="language-sh">$ find -type f | rew x 'mv {} out/{base}.{ext | lower | replace eg g}' | sh
+</code></pre>
+<p>Or into a tool like <a href="https://www.gnu.org/software/parallel/parallel.html">GNU parallel</a> for even faster execution:</p>
+<pre><code class="language-sh">$ find -type f | rew x 'mv {} out/{base}.{ext | lower | replace eg g}' | parallel
+</code></pre>
+<p>You are not limited only to <code>rew</code> subcommands. Call whatever tool you like.
+For example, let's use <code>sed</code> instead of <code>rew replace</code>:</p>
+<pre><code class="language-sh">$ find -type f | rew x 'mv {} out/{base}.{ext | lower | sed s/eg/g/}' | sh
+</code></pre>
+<p>More examples can be found in <a href="https://jpikl.github.io/rew/reference/rew-x.html#examples">rew x command reference</a> or by calling <code>rew x --examples</code>.</p>
+<p>Have fun using rew!</p>
+<h2 id="license"><a class="header" href="#license">License</a></h2>
+<p><strong>rew</strong> source and documentation are released under the
+<a href="https://github.com/jpikl/rew/blob/master/LICENSE.md">MIT License</a>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
+<p>There are multiple ways to install <strong>rew</strong>.</p>
+<h2 id="pre-compiled-binary"><a class="header" href="#pre-compiled-binary">Pre-compiled binary</a></h2>
+<p>Can be downloaded from <a href="https://github.com/jpikl/rew/releases">GitHub Releases page</a>.</p>
+<h2 id="building-from-sources"><a class="header" href="#building-from-sources">Building from sources</a></h2>
+<p>Set up a <a href="https://www.rust-lang.org/tools/install">Rust development environment</a>, then run one of the following commands:</p>
+<pre><code class="language-sh"># The latest stable version:
+cargo install rew
+
+# The latest development version:
+cargo install --git https://github.com/jpikl/rew.git rew
+</code></pre>
+<p>The result will be stored into Cargo's binary directory.
+By default, this is <code>~/.cargo/bin/</code>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="faq"><a class="header" href="#faq">FAQ</a></h1>
+<h2 id="what-does-the-rew-mean"><a class="header" href="#what-does-the-rew-mean">What does the "rew" mean?</a></h2>
+<p><strong>rew</strong> is a short for <em>"rewrite"</em>.</p>
+<h2 id="how-do-i-pronounce-rew"><a class="header" href="#how-do-i-pronounce-rew">How do I pronounce "rew"?</a></h2>
+<p><code>/ˌriː/</code> (like <em>"rewrite"</em> but without the <em>"-write"</em>)</p>
+<p>However, I personally do not care and often just pronounce it simply <em>"rev"</em>.</p>
+<h2 id="why-not-have-a-separate-binary-for-each-command"><a class="header" href="#why-not-have-a-separate-binary-for-each-command">Why not have a separate binary for each command?</a></h2>
+<p>There are several reasons:</p>
+<ol>
+<li>A single binary is much easier to distribute.</li>
+<li>Binaries produced by Rust can be quite large due to being statically linked.
+Although there are <a href="https://github.com/johnthagen/min-sized-rust">ways how to optimize this</a>, having just a single binary results in a huge size reduction overall.</li>
+<li>It is quite difficult to come up with reasonable names for new commands which do not already exist (<code>seq</code>, <code>last</code>).
+Having subcommands means I can name them whatever I want.</li>
+</ol>
+<p>If you find this inconvenient, feel free to add aliases for your shell:</p>
+<pre><code class="language-shell">alias trim='rew trim'
+alias x='rew x'
+...
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rew"><a class="header" href="#rew">rew</a></h1>
+<p>The Swiss Army Knife of line-oriented text processing.
+Transform text by composing parallel shell pipelines!</p>
+<h2 id="usage"><a class="header" href="#usage">Usage</a></h2>
+<pre><code>rew [OPTIONS] &lt;COMMAND&gt;
+</code></pre>
+<h2 id="commands"><a class="header" href="#commands">Commands</a></h2>
+<dl>
+<dt><a href="reference/rew-help.html"><code>help</code></a></dt>
+<dd>Print this message or the help of the given subcommand(s)</dd>
+</dl>
+<h2 id="transform-commands"><a class="header" href="#transform-commands">Transform commands</a></h2>
+<p>Transform input text to output. May output a different number of lines than was on input.</p>
+<dl>
+<dt><a href="reference/rew-join.html"><code>join</code></a></dt>
+<dd>Join input lines using a separator</dd>
+<dt><a href="reference/rew-loop.html"><code>loop</code></a></dt>
+<dd>Repeatedly output all captured input</dd>
+<dt><a href="reference/rew-split.html"><code>split</code></a></dt>
+<dd>Split input into lines using a separator</dd>
+<dt><a href="reference/rew-x.html"><code>x</code></a></dt>
+<dd>Compose parallel shell pipelines using a pattern</dd>
+</dl>
+<h2 id="mapper-commands"><a class="header" href="#mapper-commands">Mapper commands</a></h2>
+<p>Transform each input line to output. Should output the same number of lines as was on input.</p>
+<dl>
+<dt><a href="reference/rew-ascii.html"><code>ascii</code></a></dt>
+<dd>Convert characters to ASCII</dd>
+<dt><a href="reference/rew-cat.html"><code>cat</code></a></dt>
+<dd>Copy all input to output</dd>
+<dt><a href="reference/rew-lower.html"><code>lower</code></a></dt>
+<dd>Convert characters to lowercase</dd>
+<dt><a href="reference/rew-trim.html"><code>trim</code></a></dt>
+<dd>Trim whitespaces from each line</dd>
+<dt><a href="reference/rew-upper.html"><code>upper</code></a></dt>
+<dd>Convert characters to uppercase</dd>
+</dl>
+<h2 id="filter-commands"><a class="header" href="#filter-commands">Filter commands</a></h2>
+<p>Output only certain input lines based on some criteria.</p>
+<dl>
+<dt><a href="reference/rew-first.html"><code>first</code></a></dt>
+<dd>Output first N input lines</dd>
+<dt><a href="reference/rew-last.html"><code>last</code></a></dt>
+<dd>Output last N input lines</dd>
+<dt><a href="reference/rew-skip.html"><code>skip</code></a></dt>
+<dd>Skip first N input lines, output the rest</dd>
+</dl>
+<h2 id="generator-commands"><a class="header" href="#generator-commands">Generator commands</a></h2>
+<p>Generate lines, ignore standard input.</p>
+<dl>
+<dt><a href="reference/rew-seq.html"><code>seq</code></a></dt>
+<dd>Print sequence of numbers as lines</dd>
+<dt><a href="reference/rew-stream.html"><code>stream</code></a></dt>
+<dd>Print arguments as lines</dd>
+</dl>
+<h2 id="options"><a class="header" href="#options">Options</a></h2>
+<dl>
+<dt><code>-h, --help</code></dt>
+<dd>
+<p>Print help (see a summary with '-h')</p>
+</dd>
+<dt><code>-V, --version</code></dt>
+<dd>
+<p>Print version</p>
+</dd>
+</dl>
+<h2 id="global-options"><a class="header" href="#global-options">Global options</a></h2>
+<dl>
+<dt><code>-0, --null</code></dt>
+<dd>
+<p>Line delimiter is NUL, not newline</p>
+<p>Can be also set using <code>REW_NULL</code> environment variable.</p>
+</dd>
+<dt><code>--buf-mode &lt;MODE&gt;</code></dt>
+<dd>
+<p>Output buffering mode</p>
+<p>Possible values:</p>
+<ul>
+<li><code>line</code> - Writes to stdout after a line was processed or when the output buffer is full. Enabled by default when stdout is TTY (for interactive usage)</li>
+<li><code>full</code> - Writes to stdout only when the output buffer is full. Enabled by default when stdout is not TTY (for maximal throughput)</li>
+</ul>
+<p>Can be also set using <code>REW_BUF_MODE</code> environment variable.</p>
+</dd>
+<dt><code>--buf-size &lt;BYTES&gt;</code></dt>
+<dd>
+<p>Size of a buffer used for IO operations.</p>
+<p>Smaller values will reduce memory consumption but could negatively affect throughput.</p>
+<p>Larger values will increase memory consumption but may improve throughput in some cases.</p>
+<p>Certain commands (which can only operate with whole lines) won't be able to fetch a line bigger than this limit and will abort their execution instead.</p>
+<p>Default value: <code>32768</code></p>
+<p>Can be also set using <code>REW_BUF_SIZE</code> environment variable.</p>
+</dd>
+</dl>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rew-ascii"><a class="header" href="#rew-ascii">rew ascii</a></h1>
+<p>Convert characters to ASCII</p>
+<h2 id="usage-1"><a class="header" href="#usage-1">Usage</a></h2>
+<pre><code>rew ascii [OPTIONS]
+</code></pre>
+<h2 id="options-1"><a class="header" href="#options-1">Options</a></h2>
+<dl>
+<dt><code>-d, --delete</code></dt>
+<dd>
+<p>Delete non-ASCII characters instead of converting them</p>
+</dd>
+<dt><code>--examples</code></dt>
+<dd>
+<p>Print examples of the command usage</p>
+</dd>
+<dt><code>-h, --help</code></dt>
+<dd>
+<p>Print help (see a summary with '-h')</p>
+</dd>
+</dl>
+<h2 id="global-options-1"><a class="header" href="#global-options-1">Global options</a></h2>
+<p>See <a href="reference/rew.html#global-options">rew reference</a> for list of additional global options.</p>
+<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<p>Convert input to ASCII.</p>
+<pre><code class="language-sh">rew ascii
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>Æneid</code></li>
+<li><code>étude</code></li>
+<li><code>🦀rocks!</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>AEneid</code></li>
+<li><code>etude</code></li>
+<li><code>crab rocks!</code></li>
+</ul>
+</div>
+</div>
+<p>Delete non-ASCII characters from input.</p>
+<pre><code class="language-sh">rew ascii -d
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>Æneid</code></li>
+<li><code>étude</code></li>
+<li><code>🦀rocks!</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>neid</code></li>
+<li><code>tude</code></li>
+<li><code>rocks!</code></li>
+</ul>
+</div>
+</div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rew-cat"><a class="header" href="#rew-cat">rew cat</a></h1>
+<p>Copy all input to output</p>
+<p>Mostly useful for benchmarking raw IO throughput of rew.</p>
+<h2 id="usage-2"><a class="header" href="#usage-2">Usage</a></h2>
+<pre><code>rew cat [OPTIONS]
+</code></pre>
+<h2 id="options-2"><a class="header" href="#options-2">Options</a></h2>
+<dl>
+<dt><code>-l, --lines</code></dt>
+<dd>
+<p>Process data as lines.</p>
+<p>Will normalize newlines to LF as a side effect.</p>
+</dd>
+<dt><code>-c, --chars</code></dt>
+<dd>
+<p>Process data as character chunks</p>
+</dd>
+<dt><code>-b, --bytes</code></dt>
+<dd>
+<p>Process data as byte chunks</p>
+</dd>
+<dt><code>--examples</code></dt>
+<dd>
+<p>Print examples of the command usage</p>
+</dd>
+<dt><code>-h, --help</code></dt>
+<dd>
+<p>Print help (see a summary with '-h')</p>
+</dd>
+</dl>
+<h2 id="global-options-2"><a class="header" href="#global-options-2">Global options</a></h2>
+<p>See <a href="reference/rew.html#global-options">rew reference</a> for list of additional global options.</p>
+<h2 id="examples-1"><a class="header" href="#examples-1">Examples</a></h2>
+<p>Copy input to output.</p>
+<pre><code class="language-sh">rew cat
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+</div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rew-first"><a class="header" href="#rew-first">rew first</a></h1>
+<p>Output first N input lines</p>
+<h2 id="usage-3"><a class="header" href="#usage-3">Usage</a></h2>
+<pre><code>rew first [OPTIONS] [COUNT]
+</code></pre>
+<h2 id="arguments"><a class="header" href="#arguments">Arguments</a></h2>
+<dl>
+<dt><code>[COUNT]</code></dt>
+<dd>
+<p>Number of lines to print</p>
+<p>Default value: <code>1</code></p>
+</dd>
+</dl>
+<h2 id="options-3"><a class="header" href="#options-3">Options</a></h2>
+<dl>
+<dt><code>--examples</code></dt>
+<dd>
+<p>Print examples of the command usage</p>
+</dd>
+<dt><code>-h, --help</code></dt>
+<dd>
+<p>Print help (see a summary with '-h')</p>
+</dd>
+</dl>
+<h2 id="global-options-3"><a class="header" href="#global-options-3">Global options</a></h2>
+<p>See <a href="reference/rew.html#global-options">rew reference</a> for list of additional global options.</p>
+<h2 id="examples-2"><a class="header" href="#examples-2">Examples</a></h2>
+<p>Print the first line.</p>
+<pre><code class="language-sh">rew first
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>first</code></li>
+</ul>
+</div>
+</div>
+<p>Print the first two lines.</p>
+<pre><code class="language-sh">rew first 2
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+</ul>
+</div>
+</div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rew-join"><a class="header" href="#rew-join">rew join</a></h1>
+<p>Join input lines using a separator</p>
+<h2 id="usage-4"><a class="header" href="#usage-4">Usage</a></h2>
+<pre><code>rew join [OPTIONS] [SEPARATOR]
+</code></pre>
+<h2 id="arguments-1"><a class="header" href="#arguments-1">Arguments</a></h2>
+<dl>
+<dt><code>[SEPARATOR]</code></dt>
+<dd>
+<p>Separator</p>
+</dd>
+</dl>
+<h2 id="options-4"><a class="header" href="#options-4">Options</a></h2>
+<dl>
+<dt><code>-t, --trailing</code></dt>
+<dd>
+<p>Print trailing separator at the end</p>
+</dd>
+<dt><code>--examples</code></dt>
+<dd>
+<p>Print examples of the command usage</p>
+</dd>
+<dt><code>-h, --help</code></dt>
+<dd>
+<p>Print help (see a summary with '-h')</p>
+</dd>
+</dl>
+<h2 id="global-options-4"><a class="header" href="#global-options-4">Global options</a></h2>
+<p>See <a href="reference/rew.html#global-options">rew reference</a> for list of additional global options.</p>
+<h2 id="examples-3"><a class="header" href="#examples-3">Examples</a></h2>
+<p>Join lines using comma.</p>
+<pre><code class="language-sh">rew join ,
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>first,second,third</code></li>
+</ul>
+</div>
+</div>
+<p>Join lines using comma (include trailing comma).</p>
+<pre><code class="language-sh">rew join -t ,
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>first,second,third,</code></li>
+</ul>
+</div>
+</div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rew-last"><a class="header" href="#rew-last">rew last</a></h1>
+<p>Output last N input lines</p>
+<h2 id="usage-5"><a class="header" href="#usage-5">Usage</a></h2>
+<pre><code>rew last [OPTIONS] [COUNT]
+</code></pre>
+<h2 id="arguments-2"><a class="header" href="#arguments-2">Arguments</a></h2>
+<dl>
+<dt><code>[COUNT]</code></dt>
+<dd>
+<p>Number of lines to print</p>
+<p>Default value: <code>1</code></p>
+</dd>
+</dl>
+<h2 id="options-5"><a class="header" href="#options-5">Options</a></h2>
+<dl>
+<dt><code>--examples</code></dt>
+<dd>
+<p>Print examples of the command usage</p>
+</dd>
+<dt><code>-h, --help</code></dt>
+<dd>
+<p>Print help (see a summary with '-h')</p>
+</dd>
+</dl>
+<h2 id="global-options-5"><a class="header" href="#global-options-5">Global options</a></h2>
+<p>See <a href="reference/rew.html#global-options">rew reference</a> for list of additional global options.</p>
+<h2 id="examples-4"><a class="header" href="#examples-4">Examples</a></h2>
+<p>Print the last line.</p>
+<pre><code class="language-sh">rew last
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>third</code></li>
+</ul>
+</div>
+</div>
+<p>Print the last two lines.</p>
+<pre><code class="language-sh">rew last 2
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+</div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rew-loop"><a class="header" href="#rew-loop">rew loop</a></h1>
+<p>Repeatedly output all captured input</p>
+<h2 id="usage-6"><a class="header" href="#usage-6">Usage</a></h2>
+<pre><code>rew loop [OPTIONS] [COUNT]
+</code></pre>
+<h2 id="arguments-3"><a class="header" href="#arguments-3">Arguments</a></h2>
+<dl>
+<dt><code>[COUNT]</code></dt>
+<dd>
+<p>How many times do the repetition (default: forever)</p>
+</dd>
+</dl>
+<h2 id="options-6"><a class="header" href="#options-6">Options</a></h2>
+<dl>
+<dt><code>--examples</code></dt>
+<dd>
+<p>Print examples of the command usage</p>
+</dd>
+<dt><code>-h, --help</code></dt>
+<dd>
+<p>Print help (see a summary with '-h')</p>
+</dd>
+</dl>
+<h2 id="global-options-6"><a class="header" href="#global-options-6">Global options</a></h2>
+<p>See <a href="reference/rew.html#global-options">rew reference</a> for list of additional global options.</p>
+<h2 id="examples-5"><a class="header" href="#examples-5">Examples</a></h2>
+<p>Repeat all input two times.</p>
+<pre><code class="language-sh">rew loop 2
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>first</code></li>
+<li><code>second</code></li>
+</ul>
+</div>
+</div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rew-lower"><a class="header" href="#rew-lower">rew lower</a></h1>
+<p>Convert characters to lowercase</p>
+<h2 id="usage-7"><a class="header" href="#usage-7">Usage</a></h2>
+<pre><code>rew lower [OPTIONS]
+</code></pre>
+<h2 id="options-7"><a class="header" href="#options-7">Options</a></h2>
+<dl>
+<dt><code>--examples</code></dt>
+<dd>
+<p>Print examples of the command usage</p>
+</dd>
+<dt><code>-h, --help</code></dt>
+<dd>
+<p>Print help (see a summary with '-h')</p>
+</dd>
+</dl>
+<h2 id="global-options-7"><a class="header" href="#global-options-7">Global options</a></h2>
+<p>See <a href="reference/rew.html#global-options">rew reference</a> for list of additional global options.</p>
+<h2 id="examples-6"><a class="header" href="#examples-6">Examples</a></h2>
+<p>Convert characters to lowercase.</p>
+<pre><code class="language-sh">rew lower
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>hello world</code></li>
+<li><code>Hello World</code></li>
+<li><code>HELLO WORLD</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>hello world</code></li>
+<li><code>hello world</code></li>
+<li><code>hello world</code></li>
+</ul>
+</div>
+</div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rew-seq"><a class="header" href="#rew-seq">rew seq</a></h1>
+<p>Print sequence of numbers as lines</p>
+<h2 id="usage-8"><a class="header" href="#usage-8">Usage</a></h2>
+<pre><code>rew seq [OPTIONS] [FROM..[TO]] [STEP]
+</code></pre>
+<h2 id="arguments-4"><a class="header" href="#arguments-4">Arguments</a></h2>
+<dl>
+<dt><code>[FROM..[TO]]</code></dt>
+<dd>
+<p>Sequence range.</p>
+<p>Both <code>FROM</code> and <code>TO</code> are integers.</p>
+<p><code>TO</code> may be omitted to produce an infinite sequence.</p>
+<p>Default value: <code>1..</code></p>
+</dd>
+<dt><code>[STEP]</code></dt>
+<dd>
+<p>Increment between numbers in sequence.</p>
+<p>Default value: <code>1</code> (for increasing sequence), <code>-1</code> (for decreasing sequence)</p>
+</dd>
+</dl>
+<h2 id="options-8"><a class="header" href="#options-8">Options</a></h2>
+<dl>
+<dt><code>--examples</code></dt>
+<dd>
+<p>Print examples of the command usage</p>
+</dd>
+<dt><code>-h, --help</code></dt>
+<dd>
+<p>Print help (see a summary with '-h')</p>
+</dd>
+</dl>
+<h2 id="global-options-8"><a class="header" href="#global-options-8">Global options</a></h2>
+<p>See <a href="reference/rew.html#global-options">rew reference</a> for list of additional global options.</p>
+<h2 id="examples-7"><a class="header" href="#examples-7">Examples</a></h2>
+<p>Print numbers from 1 to 3.</p>
+<pre><code class="language-sh">rew seq 1..3
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>1</code></li>
+<li><code>2</code></li>
+<li><code>3</code></li>
+</ul>
+</div>
+</div>
+<p>Print numbers from 1 to 5 with step 2.</p>
+<pre><code class="language-sh">rew seq 1..5 2
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>1</code></li>
+<li><code>3</code></li>
+<li><code>5</code></li>
+</ul>
+</div>
+</div>
+<p>Print numbers from 1 to -1.</p>
+<pre><code class="language-sh">rew seq 1..-1
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>1</code></li>
+<li><code>0</code></li>
+<li><code>-1</code></li>
+</ul>
+</div>
+</div>
+<p>Print numbers from 1 to -3 with step -2.</p>
+<pre><code class="language-sh">rew seq 1..-3 -2
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>1</code></li>
+<li><code>-1</code></li>
+<li><code>-3</code></li>
+</ul>
+</div>
+</div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rew-skip"><a class="header" href="#rew-skip">rew skip</a></h1>
+<p>Skip first N input lines, output the rest</p>
+<h2 id="usage-9"><a class="header" href="#usage-9">Usage</a></h2>
+<pre><code>rew skip [OPTIONS] [COUNT]
+</code></pre>
+<h2 id="arguments-5"><a class="header" href="#arguments-5">Arguments</a></h2>
+<dl>
+<dt><code>[COUNT]</code></dt>
+<dd>
+<p>Number of lines to skip</p>
+</dd>
+</dl>
+<h2 id="options-9"><a class="header" href="#options-9">Options</a></h2>
+<dl>
+<dt><code>--examples</code></dt>
+<dd>
+<p>Print examples of the command usage</p>
+</dd>
+<dt><code>-h, --help</code></dt>
+<dd>
+<p>Print help (see a summary with '-h')</p>
+</dd>
+</dl>
+<h2 id="global-options-9"><a class="header" href="#global-options-9">Global options</a></h2>
+<p>See <a href="reference/rew.html#global-options">rew reference</a> for list of additional global options.</p>
+<h2 id="examples-8"><a class="header" href="#examples-8">Examples</a></h2>
+<p>Skip the first line.</p>
+<pre><code class="language-sh">rew skip 1
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+</div>
+<p>Skip the first two lines.</p>
+<pre><code class="language-sh">rew skip 2
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>third</code></li>
+</ul>
+</div>
+</div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rew-split"><a class="header" href="#rew-split">rew split</a></h1>
+<p>Split input into lines using a separator</p>
+<h2 id="usage-10"><a class="header" href="#usage-10">Usage</a></h2>
+<pre><code>rew split [OPTIONS] [SEPARATOR]
+</code></pre>
+<h2 id="arguments-6"><a class="header" href="#arguments-6">Arguments</a></h2>
+<dl>
+<dt><code>[SEPARATOR]</code></dt>
+<dd>
+<p>Separator (single byte character)</p>
+</dd>
+</dl>
+<h2 id="options-10"><a class="header" href="#options-10">Options</a></h2>
+<dl>
+<dt><code>-t, --ignore-trailing</code></dt>
+<dd>
+<p>Ignore trailing separator at the end of input</p>
+</dd>
+<dt><code>--examples</code></dt>
+<dd>
+<p>Print examples of the command usage</p>
+</dd>
+<dt><code>-h, --help</code></dt>
+<dd>
+<p>Print help (see a summary with '-h')</p>
+</dd>
+</dl>
+<h2 id="global-options-10"><a class="header" href="#global-options-10">Global options</a></h2>
+<p>See <a href="reference/rew.html#global-options">rew reference</a> for list of additional global options.</p>
+<h2 id="examples-9"><a class="header" href="#examples-9">Examples</a></h2>
+<p>Split input into lines on comma.</p>
+<pre><code class="language-sh">rew split ,
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first,second,third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+</div>
+<p>Split input into lines on comma (process trailing comma).</p>
+<pre><code class="language-sh">rew split ,
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first,second,third,</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+<li><code></code></li>
+</ul>
+</div>
+</div>
+<p>Split input into lines on comma (ignore trailing comma).</p>
+<pre><code class="language-sh">rew split -t ,
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first,second,third,</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+</div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rew-stream"><a class="header" href="#rew-stream">rew stream</a></h1>
+<p>Print arguments as lines</p>
+<h2 id="usage-11"><a class="header" href="#usage-11">Usage</a></h2>
+<pre><code>rew stream [OPTIONS] [VALUES]...
+</code></pre>
+<h2 id="arguments-7"><a class="header" href="#arguments-7">Arguments</a></h2>
+<dl>
+<dt><code>[VALUES]...</code></dt>
+<dd>
+<p>Values to print</p>
+</dd>
+</dl>
+<h2 id="options-11"><a class="header" href="#options-11">Options</a></h2>
+<dl>
+<dt><code>--examples</code></dt>
+<dd>
+<p>Print examples of the command usage</p>
+</dd>
+<dt><code>-h, --help</code></dt>
+<dd>
+<p>Print help (see a summary with '-h')</p>
+</dd>
+</dl>
+<h2 id="global-options-11"><a class="header" href="#global-options-11">Global options</a></h2>
+<p>See <a href="reference/rew.html#global-options">rew reference</a> for list of additional global options.</p>
+<h2 id="examples-10"><a class="header" href="#examples-10">Examples</a></h2>
+<p>Print arguments as lines.</p>
+<pre><code class="language-sh">rew stream first second third
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+</div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rew-trim"><a class="header" href="#rew-trim">rew trim</a></h1>
+<p>Trim whitespaces from each line.</p>
+<p>By default, both the beginning and the end are trimmed.</p>
+<h2 id="usage-12"><a class="header" href="#usage-12">Usage</a></h2>
+<pre><code>rew trim [OPTIONS]
+</code></pre>
+<h2 id="options-12"><a class="header" href="#options-12">Options</a></h2>
+<dl>
+<dt><code>-s, --start</code></dt>
+<dd>
+<p>Trim the beginning</p>
+</dd>
+<dt><code>-e, --end</code></dt>
+<dd>
+<p>Trim the end</p>
+</dd>
+<dt><code>--examples</code></dt>
+<dd>
+<p>Print examples of the command usage</p>
+</dd>
+<dt><code>-h, --help</code></dt>
+<dd>
+<p>Print help (see a summary with '-h')</p>
+</dd>
+</dl>
+<h2 id="global-options-12"><a class="header" href="#global-options-12">Global options</a></h2>
+<p>See <a href="reference/rew.html#global-options">rew reference</a> for list of additional global options.</p>
+<h2 id="examples-11"><a class="header" href="#examples-11">Examples</a></h2>
+<p>Trim whitespaces from both sides each line.</p>
+<pre><code class="language-sh">rew trim
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>  spaces around  </code></li>
+<li><code>  spaces before</code></li>
+<li><code>spaces after   </code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>spaces around</code></li>
+<li><code>spaces before</code></li>
+<li><code>spaces after</code></li>
+</ul>
+</div>
+</div>
+<p>Trim whitespaces from start of each line.</p>
+<pre><code class="language-sh">rew trim -s
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>  spaces around  </code></li>
+<li><code>  spaces before</code></li>
+<li><code>spaces after   </code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>spaces around  </code></li>
+<li><code>spaces before</code></li>
+<li><code>spaces after   </code></li>
+</ul>
+</div>
+</div>
+<p>Trim whitespaces from end of each line.</p>
+<pre><code class="language-sh">rew trim -e
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>  spaces around  </code></li>
+<li><code>  spaces before</code></li>
+<li><code>spaces after   </code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>  spaces around</code></li>
+<li><code>  spaces before</code></li>
+<li><code>spaces after</code></li>
+</ul>
+</div>
+</div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rew-upper"><a class="header" href="#rew-upper">rew upper</a></h1>
+<p>Convert characters to uppercase</p>
+<h2 id="usage-13"><a class="header" href="#usage-13">Usage</a></h2>
+<pre><code>rew upper [OPTIONS]
+</code></pre>
+<h2 id="options-13"><a class="header" href="#options-13">Options</a></h2>
+<dl>
+<dt><code>--examples</code></dt>
+<dd>
+<p>Print examples of the command usage</p>
+</dd>
+<dt><code>-h, --help</code></dt>
+<dd>
+<p>Print help (see a summary with '-h')</p>
+</dd>
+</dl>
+<h2 id="global-options-13"><a class="header" href="#global-options-13">Global options</a></h2>
+<p>See <a href="reference/rew.html#global-options">rew reference</a> for list of additional global options.</p>
+<h2 id="examples-12"><a class="header" href="#examples-12">Examples</a></h2>
+<p>Convert characters to uppercase.</p>
+<pre><code class="language-sh">rew upper
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>hello world</code></li>
+<li><code>Hello World</code></li>
+<li><code>HELLO WORLD</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>HELLO WORLD</code></li>
+<li><code>HELLO WORLD</code></li>
+<li><code>HELLO WORLD</code></li>
+</ul>
+</div>
+</div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rew-x"><a class="header" href="#rew-x">rew x</a></h1>
+<p>Compose parallel shell pipelines using a pattern</p>
+<h2 id="usage-14"><a class="header" href="#usage-14">Usage</a></h2>
+<pre><code>rew x [OPTIONS] [PATTERN]...
+</code></pre>
+<h2 id="arguments-8"><a class="header" href="#arguments-8">Arguments</a></h2>
+<dl>
+<dt><code>[PATTERN]...</code></dt>
+<dd>
+<p>Output pattern(s).</p>
+<p>A pattern describes how to transform each input line into output. Multiple patterns are joined together, using space <code>' '</code> as a delimiter.</p>
+<p>See examples (<code>--examples</code> option) for more details.</p>
+</dd>
+</dl>
+<h2 id="options-14"><a class="header" href="#options-14">Options</a></h2>
+<dl>
+<dt><code>-e, --escape &lt;CHAR&gt;</code></dt>
+<dd>
+<p>Escape character for the pattern</p>
+<p>Default value: <code>\</code></p>
+</dd>
+<dt><code>-s, --shell &lt;SHELL&gt;</code></dt>
+<dd>
+<p>Shell used to evaluate <code>{# ...}</code> expressions.</p>
+<p>Default value: <code>cmd</code> on Windows, <code>sh</code> everywhere else.</p>
+<p>Can be also set using <code>SHELL</code> environment variable.</p>
+</dd>
+<dt><code>-q, --quote</code></dt>
+<dd>
+<p>Wrap output of every pattern expression in quotes</p>
+<p>Use the flag once for single quotes <code>''</code> or twice for double quotes <code>""</code>.</p>
+</dd>
+<dt><code>--examples</code></dt>
+<dd>
+<p>Print examples of the command usage</p>
+</dd>
+<dt><code>-h, --help</code></dt>
+<dd>
+<p>Print help (see a summary with '-h')</p>
+</dd>
+</dl>
+<h2 id="global-options-14"><a class="header" href="#global-options-14">Global options</a></h2>
+<p>See <a href="reference/rew.html#global-options">rew reference</a> for list of additional global options.</p>
+<h2 id="examples-13"><a class="header" href="#examples-13">Examples</a></h2>
+<p>Empty expression <code>{}</code> is replaced by input line.</p>
+<pre><code class="language-sh">rew x 'Hello {}'
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>Hello first</code></li>
+<li><code>Hello second</code></li>
+<li><code>Hello third</code></li>
+</ul>
+</div>
+</div>
+<p>Expressions can call other <code>rew</code> commands to process the input.</p>
+<p>Here, we call the <code>rew upper</code> command which converts text to uppercase.</p>
+<pre><code class="language-sh">rew x 'Hello {upper}'
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>Hello FIRST</code></li>
+<li><code>Hello SECOND</code></li>
+<li><code>Hello THIRD</code></li>
+</ul>
+</div>
+</div>
+<p>Expressions can also call any external command.</p>
+<p>Here, we remove all <code>aeiou</code> characters from text using <code>tr</code>.</p>
+<pre><code class="language-sh">rew x 'Hello {tr -d aeiou}'
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>Hello frst</code></li>
+<li><code>Hello scnd</code></li>
+<li><code>Hello thrd</code></li>
+</ul>
+</div>
+</div>
+<p>Multiple commands can be joined into a pipeline.</p>
+<pre><code class="language-sh">rew x 'Hello {tr -d aeiou | upper}'
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>Hello FRST</code></li>
+<li><code>Hello SCND</code></li>
+<li><code>Hello THRD</code></li>
+</ul>
+</div>
+</div>
+<p>Multiple expressions are run in parallel and their output is combined. The execution runs until one of the expressions no longer produces any output.</p>
+<pre><code class="language-sh">rew x '{seq}. {tr -d aeiou | upper}'
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>1. FRST</code></li>
+<li><code>2. SCND</code></li>
+<li><code>3. THRD</code></li>
+</ul>
+</div>
+</div>
+<p>Arguments containing whitespaces must be wrapped in single quotes <code>''</code> or double quotes <code>""</code>.</p>
+<p>Here, we replace <code>aeiou</code> characters with single space <code>' '</code>.</p>
+<pre><code class="language-sh">rew x 'Hello {tr aeiou " " | upper}'
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>Hello F RST</code></li>
+<li><code>Hello S C ND</code></li>
+<li><code>Hello TH RD</code></li>
+</ul>
+</div>
+</div>
+<p>The <code>!</code> marker denotes an external command.</p>
+<p>Here, we call the system <code>seq</code> command instead of the built-in <code>rew seq</code>.</p>
+<pre><code class="language-sh">rew x '{!seq 1 3}. {}'
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>1. first</code></li>
+<li><code>2. second</code></li>
+<li><code>3. third</code></li>
+</ul>
+</div>
+</div>
+<p>The <code>#</code> marker denotes "raw shell expression". Everything after it is interpreted by the current shell.</p>
+<p><code>{# ...}</code> is basically a shortcut for <code>{sh -c '...'}</code>.</p>
+<pre><code class="language-sh">rew x '{# printf "%s\n" a b c}. {}'
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>a. first</code></li>
+<li><code>b. second</code></li>
+<li><code>c. third</code></li>
+</ul>
+</div>
+</div>
+<p>A specific shell for <code>{# ...}</code> can be set using the <code>-s, --shell</code> option or the <code>SHELL</code> environment variable.</p>
+<pre><code class="language-sh">rew x -s bash '{# for((i=0;i&lt;3;i++)); do echo $i; done}. {}'
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>0. first</code></li>
+<li><code>1. second</code></li>
+<li><code>2. third</code></li>
+</ul>
+</div>
+</div>
+<p>The <code>:</code> marker is a hint that the expression does not consume stdin. Without it, the overall execution might get stuck forever due to blocked IO calls.</p>
+<p>Only external commands need <code>:</code> to be explicitly specified. For built-in commands, <code>:</code> is detected automatically.</p>
+<pre><code class="language-sh">rew x '{seq 1..3} {: !seq 1 3} {:# printf "1\n2\n3\n"}'
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>1 1 1</code></li>
+<li><code>2 2 2</code></li>
+<li><code>3 3 3</code></li>
+</ul>
+</div>
+</div>
+<p>Backslash <code>\</code> can be used to escape special characters.</p>
+<pre><code class="language-sh">rew x '\{ "{}": {seq} \}'
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>{ "first": 1 }</code></li>
+<li><code>{ "second": 2 }</code></li>
+<li><code>{ "third": 3 }</code></li>
+</ul>
+</div>
+</div>
+<p>A custom escape character can be set using the <code>-e, --escape</code> option.</p>
+<pre><code class="language-sh">rew x -e% '%{ "{}": {seq} %}'
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>{ "first": 1 }</code></li>
+<li><code>{ "second": 2 }</code></li>
+<li><code>{ "third": 3 }</code></li>
+</ul>
+</div>
+</div>
+<p>Certain special characters like <code>|</code> have to be escaped only within a specific context.</p>
+<pre><code class="language-sh">rew x '| {echo "|"} {echo \|}'
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>| | |</code></li>
+</ul>
+</div>
+</div>
+<p>Escape character can be also used to produce line feed <code>\n</code>, carriage return <code>\r</code> or tab <code>\t</code>.</p>
+<pre><code class="language-sh">rew x '{seq}:\n\t{}'
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>first</code></li>
+<li><code>second</code></li>
+<li><code>third</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>1:</code></li>
+<li><code>    first</code></li>
+<li><code>2:</code></li>
+<li><code>    second</code></li>
+<li><code>3:</code></li>
+<li><code>    third</code></li>
+</ul>
+</div>
+</div>
+<p>You can enable automatic expression quoting using the <code>-q, --quote</code> flag.</p>
+<pre><code class="language-sh">rew x -q 'mv {} {lower | tr " " "_"}'
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>IMG 1.jpg</code></li>
+<li><code>IMG 2.jpg</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>mv 'IMG 1.jpg' 'img_1.jpg'</code></li>
+<li><code>mv 'IMG 2.jpg' 'img_2.jpg'</code></li>
+</ul>
+</div>
+</div>
+<p>Double the <code>-q, --quote</code> to use double quotes instead of single quotes.</p>
+<pre><code class="language-sh">rew x -qq 'mv {} {lower | tr " " "_"}'
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>IMG 1.jpg</code></li>
+<li><code>IMG 2.jpg</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>mv "IMG 1.jpg" "img_1.jpg"</code></li>
+<li><code>mv "IMG 2.jpg" "img_2.jpg"</code></li>
+</ul>
+</div>
+</div>
+<p>All global options <code>-0, --null</code>, <code>--buf-size</code> and <code>--buf-mode</code> are propagated to rew subcommands. Do not forget configure NUL separator manually for any external command.</p>
+<pre><code class="language-sh">rew x --null '{upper | sed --null-data "s/^.//g"}'
+</code></pre>
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>aa\0bb\0cc\0</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>A\0B\0C\0</code></li>
+</ul>
+</div>
+</div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rew-help"><a class="header" href="#rew-help">rew help</a></h1>
+<p>Print this message or the help of the given subcommand(s)</p>
+<h2 id="usage-15"><a class="header" href="#usage-15">Usage</a></h2>
+<pre><code>rew help [COMMAND]...
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="benchmarks"><a class="header" href="#benchmarks">Benchmarks</a></h1>
+<p>This section contains <code>rew</code> benchmarks against various other tools, like:</p>
+<ul>
+<li><a href="https://github.com/uutils/coreutils">uutils coreutils</a></li>
+<li><a href="https://www.gnu.org/software/coreutils/">GNU coreutils</a></li>
+<li><a href="https://www.gnu.org/software/bash/">GNU bash</a></li>
+<li><a href="https://www.gnu.org/software/sed/">GNU sed</a></li>
+<li><a href="https://www.gnu.org/software/gawk/">GNU awk</a></li>
+</ul>
+<h2 id="environment"><a class="header" href="#environment">Environment</a></h2>
+<p>All benchmarks were run using the following environment.</p>
+<h3 id="system"><a class="header" href="#system">System</a></h3>
+<details>
+<summary><code>neofetch --stdout os distro kernel shell model cpu memory</code></summary>
+<pre><code>os: Linux 
+distro: Arch Linux x86_64 
+kernel: 6.7.6-201.fsync.fc39.x86_64 
+shell: bash 5.2.26 
+model: MS-7971 2.0 
+cpu: Intel i5-6500 (4) @ 3.600GHz 
+memory: 6842MiB / 32052MiB 
+</code></pre>
+</details>
+<details>
+<summary><code>uname -a</code></summary>
+<pre><code>Linux arch.jpikl-pc 6.7.6-201.fsync.fc39.x86_64 #1 SMP PREEMPT_DYNAMIC Fri Mar  1 11:09:49 UTC 2024 x86_64 GNU/Linux
+</code></pre>
+</details>
+<details>
+<summary><code>lscpu</code></summary>
+<pre><code>Architecture:                       x86_64
+CPU op-mode(s):                     32-bit, 64-bit
+Address sizes:                      39 bits physical, 48 bits virtual
+Byte Order:                         Little Endian
+CPU(s):                             4
+On-line CPU(s) list:                0-3
+Vendor ID:                          GenuineIntel
+Model name:                         Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz
+CPU family:                         6
+Model:                              94
+Thread(s) per core:                 1
+Core(s) per socket:                 4
+Socket(s):                          1
+Stepping:                           3
+CPU(s) scaling MHz:                 92%
+CPU max MHz:                        3600.0000
+CPU min MHz:                        800.0000
+BogoMIPS:                           6399.96
+Flags:                              fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault pti ssbd ibrs ibpb stibp tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp vnmi md_clear flush_l1d arch_capabilities
+Virtualization:                     VT-x
+L1d cache:                          128 KiB (4 instances)
+L1i cache:                          128 KiB (4 instances)
+L2 cache:                           1 MiB (4 instances)
+L3 cache:                           6 MiB (1 instance)
+NUMA node(s):                       1
+NUMA node0 CPU(s):                  0-3
+Vulnerability Gather data sampling: Vulnerable: No microcode
+Vulnerability Itlb multihit:        KVM: Mitigation: VMX disabled
+Vulnerability L1tf:                 Mitigation; PTE Inversion; VMX conditional cache flushes, SMT disabled
+Vulnerability Mds:                  Mitigation; Clear CPU buffers; SMT disabled
+Vulnerability Meltdown:             Mitigation; PTI
+Vulnerability Mmio stale data:      Mitigation; Clear CPU buffers; SMT disabled
+Vulnerability Retbleed:             Mitigation; IBRS
+Vulnerability Spec rstack overflow: Not affected
+Vulnerability Spec store bypass:    Mitigation; Speculative Store Bypass disabled via prctl
+Vulnerability Spectre v1:           Mitigation; usercopy/swapgs barriers and __user pointer sanitization
+Vulnerability Spectre v2:           Mitigation; IBRS, IBPB conditional, STIBP disabled, RSB filling, PBRSB-eIBRS Not affected
+Vulnerability Srbds:                Mitigation; Microcode
+Vulnerability Tsx async abort:      Mitigation; TSX disabled
+</code></pre>
+</details>
+<details>
+<summary><code>lsmem</code></summary>
+<pre><code>RANGE                                  SIZE  STATE REMOVABLE  BLOCK
+0x0000000000000000-0x000000008fffffff  2.3G online       yes   0-17
+0x0000000100000000-0x000000086fffffff 29.8G online       yes 32-269
+
+Memory block size:       128M
+Total online memory:      32G
+Total offline memory:      0B
+</code></pre>
+</details>
+<details>
+<summary><code>free -h</code></summary>
+<pre><code>               total        used        free      shared  buff/cache   available
+Mem:            31Gi       7.1Gi       1.6Gi       362Mi        23Gi        24Gi
+Swap:          4.0Gi       1.6Gi       2.4Gi
+</code></pre>
+</details>
+<h3 id="software"><a class="header" href="#software">Software</a></h3>
+<pre><code>hyperfine 1.18.0
+rew 0.4.0
+coreutils 0.0.24 (multi-call binary)
+GNU Awk 5.3.0, API 4.0, PMA Avon 8-g1, (GNU MPFR 4.2.1, GNU MP 6.3.0)
+GNU bash, version 5.2.26(1)-release (x86_64-pc-linux-gnu)
+dd (coreutils) 9.4
+head (GNU coreutils) 9.4
+sed (GNU sed) 4.9
+seq (GNU coreutils) 9.4
+tail (GNU coreutils) 9.4
+tr (GNU coreutils) 9.4
+</code></pre>
+<h2 id="data"><a class="header" href="#data">Data</a></h2>
+<p>We are using the following files as input for benchmarking:</p>
+<div class="table-wrapper"><table><thead><tr><th></th><th><a href="https://jpikl.github.io/data/svejk.txt">svejk.txt</a></th><th><a href="https://jpikl.github.io/data/rur.txt">rur.txt</a></th></tr></thead><tbody>
+<tr><td>Encoding</td><td>UTF-8</td><td>UTF-8</td></tr>
+<tr><td>Characters</td><td>Czech / German diacritics</td><td>Czech diacritics</td></tr>
+<tr><td>Size</td><td>1.31 MiB</td><td>143 KiB</td></tr>
+<tr><td>Line count</td><td>5913</td><td>4477</td></tr>
+<tr><td>Line width</td><td>up to 4925 characters</td><td>up to 81 characters</td></tr>
+<tr><td>Whitespaces</td><td>Trimmed</td><td>Around lines</td></tr>
+</tbody></table>
+</div>
+<p>Both files can be downloaded using the following commands:</p>
+<pre><code class="language-shell">curl https://jpikl.github.io/data/svejk.txt -o svejk.txt
+curl https://jpikl.github.io/data/rur.txt -o rur.txt
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rew-ascii-1"><a class="header" href="#rew-ascii-1">rew ascii</a></h1>
+<p>This page contains benchmarks for <a href="benchmarks/../reference/rew-ascii.html">rew ascii</a> command.</p>
+<p>See <a href="benchmarks/./setup.html">benchmark setup</a> for information about testing environemt and input data files.</p>
+<h2 id="benchmark-1"><a class="header" href="#benchmark-1">Benchmark #1</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 2 &lt;svejk.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew ascii &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew ascii &lt;input.txt</code></td><td style="text-align: right">22.9 ± 1.0</td><td style="text-align: right">21.3</td><td style="text-align: right">26.3</td><td style="text-align: right">1.00</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-2"><a class="header" href="#benchmark-2">Benchmark #2</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 2 &lt;svejk.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew ascii -d &lt;input.txt" \
+    "LC_ALL=C sed 's/[^\x00-\x7F]//g' &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew ascii -d &lt;input.txt</code></td><td style="text-align: right">11.7 ± 0.6</td><td style="text-align: right">10.8</td><td style="text-align: right">14.0</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>LC_ALL=C sed 's/[^\x00-\x7F]//g' &lt;input.txt</code></td><td style="text-align: right">77.2 ± 1.7</td><td style="text-align: right">74.8</td><td style="text-align: right">82.1</td><td style="text-align: right">6.58 ± 0.38</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="rew-cat-1"><a class="header" href="#rew-cat-1">rew cat</a></h1>
+<p>This page contains benchmarks for <a href="benchmarks/../reference/rew-cat.html">rew cat</a> command.</p>
+<p>See <a href="benchmarks/./setup.html">benchmark setup</a> for information about testing environemt and input data files.</p>
+<h2 id="benchmark-1-1"><a class="header" href="#benchmark-1-1">Benchmark #1</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 500 &lt;svejk.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "cat &lt;input.txt" \
+    "coreutils cat &lt;input.txt" \
+    "rew cat &lt;input.txt" \
+    "rew cat --bytes &lt;input.txt" \
+    "rew cat --chars &lt;input.txt" \
+    "rew cat --lines &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew cat &lt;input.txt</code></td><td style="text-align: right">26.2 ± 1.4</td><td style="text-align: right">23.6</td><td style="text-align: right">33.2</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>coreutils cat &lt;input.txt</code></td><td style="text-align: right">52.2 ± 4.0</td><td style="text-align: right">49.8</td><td style="text-align: right">75.3</td><td style="text-align: right">1.99 ± 0.18</td></tr>
+<tr><td style="text-align: left"><code>cat &lt;input.txt</code></td><td style="text-align: right">89.1 ± 2.1</td><td style="text-align: right">86.1</td><td style="text-align: right">95.2</td><td style="text-align: right">3.40 ± 0.20</td></tr>
+<tr><td style="text-align: left"><code>rew cat --chars &lt;input.txt</code></td><td style="text-align: right">155.0 ± 1.7</td><td style="text-align: right">152.4</td><td style="text-align: right">159.1</td><td style="text-align: right">5.91 ± 0.32</td></tr>
+<tr><td style="text-align: left"><code>rew cat --bytes &lt;input.txt</code></td><td style="text-align: right">156.9 ± 2.3</td><td style="text-align: right">152.7</td><td style="text-align: right">160.8</td><td style="text-align: right">5.99 ± 0.33</td></tr>
+<tr><td style="text-align: left"><code>rew cat --lines &lt;input.txt</code></td><td style="text-align: right">273.6 ± 3.7</td><td style="text-align: right">268.1</td><td style="text-align: right">279.1</td><td style="text-align: right">10.44 ± 0.57</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-2-1"><a class="header" href="#benchmark-2-1">Benchmark #2</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 5000 &lt;rur.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "cat &lt;input.txt" \
+    "coreutils cat &lt;input.txt" \
+    "rew cat &lt;input.txt" \
+    "rew cat --bytes &lt;input.txt" \
+    "rew cat --chars &lt;input.txt" \
+    "rew cat --lines &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew cat &lt;input.txt</code></td><td style="text-align: right">27.3 ± 1.6</td><td style="text-align: right">25.1</td><td style="text-align: right">38.4</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>coreutils cat &lt;input.txt</code></td><td style="text-align: right">54.5 ± 0.7</td><td style="text-align: right">52.8</td><td style="text-align: right">55.9</td><td style="text-align: right">2.00 ± 0.12</td></tr>
+<tr><td style="text-align: left"><code>cat &lt;input.txt</code></td><td style="text-align: right">94.2 ± 2.5</td><td style="text-align: right">91.1</td><td style="text-align: right">100.1</td><td style="text-align: right">3.46 ± 0.22</td></tr>
+<tr><td style="text-align: left"><code>rew cat --bytes &lt;input.txt</code></td><td style="text-align: right">163.6 ± 2.2</td><td style="text-align: right">160.7</td><td style="text-align: right">169.5</td><td style="text-align: right">6.00 ± 0.36</td></tr>
+<tr><td style="text-align: left"><code>rew cat --chars &lt;input.txt</code></td><td style="text-align: right">165.7 ± 2.0</td><td style="text-align: right">162.7</td><td style="text-align: right">170.0</td><td style="text-align: right">6.08 ± 0.36</td></tr>
+<tr><td style="text-align: left"><code>rew cat --lines &lt;input.txt</code></td><td style="text-align: right">753.3 ± 23.0</td><td style="text-align: right">736.3</td><td style="text-align: right">815.0</td><td style="text-align: right">27.64 ± 1.81</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="rew-first-1"><a class="header" href="#rew-first-1">rew first</a></h1>
+<p>This page contains benchmarks for <a href="benchmarks/../reference/rew-first.html">rew first</a> command.</p>
+<p>See <a href="benchmarks/./setup.html">benchmark setup</a> for information about testing environemt and input data files.</p>
+<h2 id="benchmark-1-2"><a class="header" href="#benchmark-1-2">Benchmark #1</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 100 &lt;svejk.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "head -n 200000 &lt;input.txt" \
+    "coreutils head -n 200000 &lt;input.txt" \
+    "rew first 200000 &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew first 200000 &lt;input.txt</code></td><td style="text-align: right">18.9 ± 1.1</td><td style="text-align: right">17.2</td><td style="text-align: right">25.7</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>coreutils head -n 200000 &lt;input.txt</code></td><td style="text-align: right">25.0 ± 0.8</td><td style="text-align: right">23.2</td><td style="text-align: right">28.4</td><td style="text-align: right">1.32 ± 0.09</td></tr>
+<tr><td style="text-align: left"><code>head -n 200000 &lt;input.txt</code></td><td style="text-align: right">48.6 ± 0.9</td><td style="text-align: right">46.6</td><td style="text-align: right">50.6</td><td style="text-align: right">2.57 ± 0.15</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-2-2"><a class="header" href="#benchmark-2-2">Benchmark #2</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 1000 &lt;rur.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "head -n 2000000 &lt;input.txt" \
+    "coreutils head -n 2000000 &lt;input.txt" \
+    "rew first 2000000 &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew first 2000000 &lt;input.txt</code></td><td style="text-align: right">45.4 ± 1.0</td><td style="text-align: right">43.1</td><td style="text-align: right">48.6</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>coreutils head -n 2000000 &lt;input.txt</code></td><td style="text-align: right">51.7 ± 1.4</td><td style="text-align: right">48.5</td><td style="text-align: right">56.4</td><td style="text-align: right">1.14 ± 0.04</td></tr>
+<tr><td style="text-align: left"><code>head -n 2000000 &lt;input.txt</code></td><td style="text-align: right">85.1 ± 1.3</td><td style="text-align: right">82.9</td><td style="text-align: right">89.2</td><td style="text-align: right">1.87 ± 0.05</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="rew-join-1"><a class="header" href="#rew-join-1">rew join</a></h1>
+<p>This page contains benchmarks for <a href="benchmarks/../reference/rew-join.html">rew join</a> command.</p>
+<p>See <a href="benchmarks/./setup.html">benchmark setup</a> for information about testing environemt and input data files.</p>
+<h2 id="benchmark-1-3"><a class="header" href="#benchmark-1-3">Benchmark #1</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 50 &lt;svejk.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "(tr '\n' ' ' &amp;&amp; echo) &lt;input.txt" \
+    "rew join -t ' ' &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew join -t ' ' &lt;input.txt</code></td><td style="text-align: right">29.8 ± 0.8</td><td style="text-align: right">27.8</td><td style="text-align: right">31.8</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>(tr '\n' ' ' &amp;&amp; echo) &lt;input.txt</code></td><td style="text-align: right">72.2 ± 1.0</td><td style="text-align: right">70.1</td><td style="text-align: right">74.7</td><td style="text-align: right">2.42 ± 0.07</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="rew-last-1"><a class="header" href="#rew-last-1">rew last</a></h1>
+<p>This page contains benchmarks for <a href="benchmarks/../reference/rew-last.html">rew last</a> command.</p>
+<p>See <a href="benchmarks/./setup.html">benchmark setup</a> for information about testing environemt and input data files.</p>
+<h2 id="benchmark-1-4"><a class="header" href="#benchmark-1-4">Benchmark #1</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 100 &lt;svejk.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "tail -n 200000 &lt;input.txt" \
+    "coreutils tail -n 200000 &lt;input.txt" \
+    "rew last 200000 &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>tail -n 200000 &lt;input.txt</code></td><td style="text-align: right">54.4 ± 0.8</td><td style="text-align: right">52.7</td><td style="text-align: right">56.1</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>coreutils tail -n 200000 &lt;input.txt</code></td><td style="text-align: right">63.5 ± 0.8</td><td style="text-align: right">61.2</td><td style="text-align: right">66.4</td><td style="text-align: right">1.17 ± 0.02</td></tr>
+<tr><td style="text-align: left"><code>rew last 200000 &lt;input.txt</code></td><td style="text-align: right">84.4 ± 1.8</td><td style="text-align: right">82.3</td><td style="text-align: right">92.6</td><td style="text-align: right">1.55 ± 0.04</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-2-3"><a class="header" href="#benchmark-2-3">Benchmark #2</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 1000 &lt;rur.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "tail -n 2000000 &lt;input.txt" \
+    "coreutils tail -n 2000000 &lt;input.txt" \
+    "rew last 2000000 &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>tail -n 2000000 &lt;input.txt</code></td><td style="text-align: right">92.6 ± 1.0</td><td style="text-align: right">90.9</td><td style="text-align: right">94.9</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>coreutils tail -n 2000000 &lt;input.txt</code></td><td style="text-align: right">100.2 ± 1.6</td><td style="text-align: right">98.1</td><td style="text-align: right">104.4</td><td style="text-align: right">1.08 ± 0.02</td></tr>
+<tr><td style="text-align: left"><code>rew last 2000000 &lt;input.txt</code></td><td style="text-align: right">144.4 ± 2.8</td><td style="text-align: right">141.8</td><td style="text-align: right">150.2</td><td style="text-align: right">1.56 ± 0.03</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="rew-loop-1"><a class="header" href="#rew-loop-1">rew loop</a></h1>
+<p>This page contains benchmarks for <a href="benchmarks/../reference/rew-loop.html">rew loop</a> command.</p>
+<p>See <a href="benchmarks/./setup.html">benchmark setup</a> for information about testing environemt and input data files.</p>
+<h2 id="benchmark-1-5"><a class="header" href="#benchmark-1-5">Benchmark #1</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 10 &lt;svejk.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew loop 10 &lt;input.txt" \
+    "for((i=0;i&lt;10;i++)); do cat input.txt; done"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew loop 10 &lt;input.txt</code></td><td style="text-align: right">14.7 ± 0.7</td><td style="text-align: right">13.6</td><td style="text-align: right">17.6</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>for((i=0;i&lt;10;i++)); do cat input.txt; done</code></td><td style="text-align: right">44.3 ± 1.1</td><td style="text-align: right">42.9</td><td style="text-align: right">49.0</td><td style="text-align: right">3.02 ± 0.16</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="rew-lower-1"><a class="header" href="#rew-lower-1">rew lower</a></h1>
+<p>This page contains benchmarks for <a href="benchmarks/../reference/rew-lower.html">rew lower</a> command.</p>
+<p>See <a href="benchmarks/./setup.html">benchmark setup</a> for information about testing environemt and input data files.</p>
+<h2 id="benchmark-1-6"><a class="header" href="#benchmark-1-6">Benchmark #1</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 1 &lt;svejk.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew lower &lt;input.txt" \
+    "sed 's/\(.*\)/\L\1/' &lt;input.txt" \
+    "while IFS= read -r l;do printf '%s\n' \"${l,,}\";done &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew lower &lt;input.txt</code></td><td style="text-align: right">13.5 ± 0.6</td><td style="text-align: right">12.6</td><td style="text-align: right">14.9</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>sed 's/\(.*\)/\L\1/' &lt;input.txt</code></td><td style="text-align: right">209.3 ± 2.1</td><td style="text-align: right">206.7</td><td style="text-align: right">214.3</td><td style="text-align: right">15.53 ± 0.67</td></tr>
+<tr><td style="text-align: left"><code>while IFS= read -r l;do printf '%s\n' "${l,,}";done &lt;input.txt</code></td><td style="text-align: right">240.0 ± 3.6</td><td style="text-align: right">234.6</td><td style="text-align: right">246.7</td><td style="text-align: right">17.80 ± 0.80</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-2-4"><a class="header" href="#benchmark-2-4">Benchmark #2</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 10 &lt;rur.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew lower &lt;input.txt" \
+    "sed 's/\(.*\)/\L\1/' &lt;input.txt" \
+    "while IFS= read -r l;do printf '%s\n' \"${l,,}\";done &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew lower &lt;input.txt</code></td><td style="text-align: right">11.9 ± 0.6</td><td style="text-align: right">11.1</td><td style="text-align: right">13.8</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>sed 's/\(.*\)/\L\1/' &lt;input.txt</code></td><td style="text-align: right">250.3 ± 2.6</td><td style="text-align: right">246.6</td><td style="text-align: right">254.5</td><td style="text-align: right">21.06 ± 1.01</td></tr>
+<tr><td style="text-align: left"><code>while IFS= read -r l;do printf '%s\n' "${l,,}";done &lt;input.txt</code></td><td style="text-align: right">715.4 ± 9.2</td><td style="text-align: right">707.1</td><td style="text-align: right">733.5</td><td style="text-align: right">60.19 ± 2.92</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-3"><a class="header" href="#benchmark-3">Benchmark #3</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew ascii &lt;svejk.txt | rew loop 20 &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew lower &lt;input.txt" \
+    "dd conv=lcase status=none &lt;input.txt" \
+    "tr '[:upper:]' '[:lower:]' &lt;input.txt" \
+    "sed 's/\(.*\)/\L\1/' &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew lower &lt;input.txt</code></td><td style="text-align: right">10.4 ± 1.9</td><td style="text-align: right">9.3</td><td style="text-align: right">27.5</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>tr '[:upper:]' '[:lower:]' &lt;input.txt</code></td><td style="text-align: right">27.7 ± 0.9</td><td style="text-align: right">25.9</td><td style="text-align: right">30.0</td><td style="text-align: right">2.67 ± 0.50</td></tr>
+<tr><td style="text-align: left"><code>dd conv=lcase status=none &lt;input.txt</code></td><td style="text-align: right">143.4 ± 1.4</td><td style="text-align: right">141.0</td><td style="text-align: right">145.5</td><td style="text-align: right">13.86 ± 2.58</td></tr>
+<tr><td style="text-align: left"><code>sed 's/\(.*\)/\L\1/' &lt;input.txt</code></td><td style="text-align: right">3874.5 ± 69.6</td><td style="text-align: right">3821.6</td><td style="text-align: right">4032.9</td><td style="text-align: right">374.25 ± 69.94</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-4"><a class="header" href="#benchmark-4">Benchmark #4</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew ascii &lt;rur.txt | rew loop 100 &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew lower &lt;input.txt" \
+    "dd conv=lcase status=none &lt;input.txt" \
+    "tr '[:upper:]' '[:lower:]' &lt;input.txt" \
+    "sed 's/\(.*\)/\L\1/' &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew lower &lt;input.txt</code></td><td style="text-align: right">6.7 ± 0.7</td><td style="text-align: right">5.7</td><td style="text-align: right">9.6</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>tr '[:upper:]' '[:lower:]' &lt;input.txt</code></td><td style="text-align: right">16.7 ± 1.0</td><td style="text-align: right">15.2</td><td style="text-align: right">21.6</td><td style="text-align: right">2.50 ± 0.31</td></tr>
+<tr><td style="text-align: left"><code>dd conv=lcase status=none &lt;input.txt</code></td><td style="text-align: right">81.3 ± 1.7</td><td style="text-align: right">79.3</td><td style="text-align: right">88.4</td><td style="text-align: right">12.19 ± 1.34</td></tr>
+<tr><td style="text-align: left"><code>sed 's/\(.*\)/\L\1/' &lt;input.txt</code></td><td style="text-align: right">2398.9 ± 37.3</td><td style="text-align: right">2353.8</td><td style="text-align: right">2493.8</td><td style="text-align: right">359.73 ± 39.21</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="rew-seq-1"><a class="header" href="#rew-seq-1">rew seq</a></h1>
+<p>This page contains benchmarks for <a href="benchmarks/../reference/rew-seq.html">rew seq</a> command.</p>
+<p>See <a href="benchmarks/./setup.html">benchmark setup</a> for information about testing environemt and input data files.</p>
+<h2 id="benchmark-1-7"><a class="header" href="#benchmark-1-7">Benchmark #1</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    "seq 1 1 1000000" \
+    "coreutils seq 1 1 1000000" \
+    "rew seq 1..1000000 1"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>seq 1 1 1000000</code></td><td style="text-align: right">10.9 ± 0.9</td><td style="text-align: right">9.6</td><td style="text-align: right">13.6</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>rew seq 1..1000000 1</code></td><td style="text-align: right">13.5 ± 0.8</td><td style="text-align: right">12.2</td><td style="text-align: right">15.8</td><td style="text-align: right">1.24 ± 0.12</td></tr>
+<tr><td style="text-align: left"><code>coreutils seq 1 1 1000000</code></td><td style="text-align: right">1528.1 ± 24.8</td><td style="text-align: right">1499.8</td><td style="text-align: right">1558.1</td><td style="text-align: right">139.97 ± 11.61</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-2-5"><a class="header" href="#benchmark-2-5">Benchmark #2</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    "seq 1 10 10000000" \
+    "coreutils seq 1 10 10000000" \
+    "rew seq 1..10000000 10"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew seq 1..10000000 10</code></td><td style="text-align: right">13.7 ± 0.5</td><td style="text-align: right">12.8</td><td style="text-align: right">15.1</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>seq 1 10 10000000</code></td><td style="text-align: right">24.3 ± 0.9</td><td style="text-align: right">22.3</td><td style="text-align: right">26.6</td><td style="text-align: right">1.78 ± 0.10</td></tr>
+<tr><td style="text-align: left"><code>coreutils seq 1 10 10000000</code></td><td style="text-align: right">1488.1 ± 15.8</td><td style="text-align: right">1459.6</td><td style="text-align: right">1512.5</td><td style="text-align: right">108.88 ± 4.52</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-3-1"><a class="header" href="#benchmark-3-1">Benchmark #3</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    "seq 1 100 100000000" \
+    "coreutils seq 1 100 100000000" \
+    "rew seq 1..100000000 100"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew seq 1..100000000 100</code></td><td style="text-align: right">14.0 ± 0.7</td><td style="text-align: right">13.0</td><td style="text-align: right">17.0</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>seq 1 100 100000000</code></td><td style="text-align: right">160.3 ± 2.1</td><td style="text-align: right">157.5</td><td style="text-align: right">165.4</td><td style="text-align: right">11.43 ± 0.59</td></tr>
+<tr><td style="text-align: left"><code>coreutils seq 1 100 100000000</code></td><td style="text-align: right">1500.0 ± 18.8</td><td style="text-align: right">1469.9</td><td style="text-align: right">1528.9</td><td style="text-align: right">106.96 ± 5.52</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="rew-skip-1"><a class="header" href="#rew-skip-1">rew skip</a></h1>
+<p>This page contains benchmarks for <a href="benchmarks/../reference/rew-skip.html">rew skip</a> command.</p>
+<p>See <a href="benchmarks/./setup.html">benchmark setup</a> for information about testing environemt and input data files.</p>
+<h2 id="benchmark-1-8"><a class="header" href="#benchmark-1-8">Benchmark #1</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 100 &lt;svejk.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "tail -n +200001 &lt;input.txt" \
+    "coreutils tail -n +200001 &lt;input.txt" \
+    "rew skip 200000 &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew skip 200000 &lt;input.txt</code></td><td style="text-align: right">18.1 ± 0.8</td><td style="text-align: right">16.6</td><td style="text-align: right">20.8</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>coreutils tail -n +200001 &lt;input.txt</code></td><td style="text-align: right">26.5 ± 3.4</td><td style="text-align: right">24.2</td><td style="text-align: right">57.9</td><td style="text-align: right">1.47 ± 0.20</td></tr>
+<tr><td style="text-align: left"><code>tail -n +200001 &lt;input.txt</code></td><td style="text-align: right">74.2 ± 1.8</td><td style="text-align: right">71.7</td><td style="text-align: right">78.6</td><td style="text-align: right">4.11 ± 0.21</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-2-6"><a class="header" href="#benchmark-2-6">Benchmark #2</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 1000 &lt;rur.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "tail -n +2000001 &lt;input.txt" \
+    "coreutils tail -n +2000001 &lt;input.txt" \
+    "rew skip 2000000 &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew skip 2000000 &lt;input.txt</code></td><td style="text-align: right">41.9 ± 1.2</td><td style="text-align: right">39.5</td><td style="text-align: right">45.5</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>coreutils tail -n +2000001 &lt;input.txt</code></td><td style="text-align: right">58.1 ± 2.2</td><td style="text-align: right">55.4</td><td style="text-align: right">66.3</td><td style="text-align: right">1.39 ± 0.07</td></tr>
+<tr><td style="text-align: left"><code>tail -n +2000001 &lt;input.txt</code></td><td style="text-align: right">90.6 ± 1.9</td><td style="text-align: right">87.5</td><td style="text-align: right">94.9</td><td style="text-align: right">2.16 ± 0.08</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="rew-split-1"><a class="header" href="#rew-split-1">rew split</a></h1>
+<p>This page contains benchmarks for <a href="benchmarks/../reference/rew-split.html">rew split</a> command.</p>
+<p>See <a href="benchmarks/./setup.html">benchmark setup</a> for information about testing environemt and input data files.</p>
+<h2 id="benchmark-1-9"><a class="header" href="#benchmark-1-9">Benchmark #1</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 50 &lt;svejk.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "tr ',' '\n' &lt;input.txt" \
+    "rew split ',' &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew split ',' &lt;input.txt</code></td><td style="text-align: right">39.7 ± 0.9</td><td style="text-align: right">37.7</td><td style="text-align: right">41.8</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>tr ',' '\n' &lt;input.txt</code></td><td style="text-align: right">72.3 ± 1.2</td><td style="text-align: right">69.4</td><td style="text-align: right">75.0</td><td style="text-align: right">1.82 ± 0.05</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-2-7"><a class="header" href="#benchmark-2-7">Benchmark #2</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 50 &lt;svejk.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "tr ' ' '\n' &lt;input.txt" \
+    "rew split ' ' &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>tr ' ' '\n' &lt;input.txt</code></td><td style="text-align: right">73.2 ± 4.3</td><td style="text-align: right">70.4</td><td style="text-align: right">95.4</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>rew split ' ' &lt;input.txt</code></td><td style="text-align: right">90.4 ± 1.8</td><td style="text-align: right">87.5</td><td style="text-align: right">96.9</td><td style="text-align: right">1.23 ± 0.08</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="rew-stream-1"><a class="header" href="#rew-stream-1">rew stream</a></h1>
+<p>This page contains benchmarks for <a href="benchmarks/../reference/rew-stream.html">rew stream</a> command.</p>
+<p>See <a href="benchmarks/./setup.html">benchmark setup</a> for information about testing environemt and input data files.</p>
+<h2 id="benchmark-1-10"><a class="header" href="#benchmark-1-10">Benchmark #1</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "seq 1 100000 &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew stream {1..100000}" \
+    "printf '%s\n' {1..100000}" \
+    "xargs rew stream &lt;input.txt" \
+    "xargs printf '%s\n' &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>xargs printf '%s\n' &lt;input.txt</code></td><td style="text-align: right">90.2 ± 1.5</td><td style="text-align: right">86.7</td><td style="text-align: right">92.3</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>xargs rew stream &lt;input.txt</code></td><td style="text-align: right">133.5 ± 2.0</td><td style="text-align: right">130.3</td><td style="text-align: right">137.1</td><td style="text-align: right">1.48 ± 0.03</td></tr>
+<tr><td style="text-align: left"><code>rew stream {1..100000}</code></td><td style="text-align: right">199.3 ± 2.1</td><td style="text-align: right">195.1</td><td style="text-align: right">203.5</td><td style="text-align: right">2.21 ± 0.04</td></tr>
+<tr><td style="text-align: left"><code>printf '%s\n' {1..100000}</code></td><td style="text-align: right">207.1 ± 2.1</td><td style="text-align: right">204.4</td><td style="text-align: right">210.6</td><td style="text-align: right">2.30 ± 0.04</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="rew-trim-1"><a class="header" href="#rew-trim-1">rew trim</a></h1>
+<p>This page contains benchmarks for <a href="benchmarks/../reference/rew-trim.html">rew trim</a> command.</p>
+<p>See <a href="benchmarks/./setup.html">benchmark setup</a> for information about testing environemt and input data files.</p>
+<h2 id="benchmark-1-11"><a class="header" href="#benchmark-1-11">Benchmark #1</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 10 &lt;svejk.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew trim &lt;input.txt" \
+    "awk '{ gsub(/^\s+|\s+$/, \"\"); print }' &lt;input.txt" \
+    "sed -E 's/^\s+|\s+$//' &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew trim &lt;input.txt</code></td><td style="text-align: right">9.9 ± 0.6</td><td style="text-align: right">9.1</td><td style="text-align: right">12.9</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>awk '{ gsub(/^\s+|\s+$/, ""); print }' &lt;input.txt</code></td><td style="text-align: right">664.7 ± 10.7</td><td style="text-align: right">652.8</td><td style="text-align: right">689.0</td><td style="text-align: right">67.18 ± 3.97</td></tr>
+<tr><td style="text-align: left"><code>sed -E 's/^\s+|\s+$//' &lt;input.txt</code></td><td style="text-align: right">753.7 ± 11.9</td><td style="text-align: right">737.6</td><td style="text-align: right">771.1</td><td style="text-align: right">76.18 ± 4.50</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-2-8"><a class="header" href="#benchmark-2-8">Benchmark #2</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 100 &lt;rur.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew trim &lt;input.txt" \
+    "awk '{ gsub(/^\s+|\s+$/, \"\"); print }' &lt;input.txt" \
+    "sed -E 's/^\s+|\s+$//' &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew trim &lt;input.txt</code></td><td style="text-align: right">33.7 ± 1.1</td><td style="text-align: right">31.6</td><td style="text-align: right">37.2</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>sed -E 's/^\s+|\s+$//' &lt;input.txt</code></td><td style="text-align: right">564.1 ± 10.0</td><td style="text-align: right">557.1</td><td style="text-align: right">589.9</td><td style="text-align: right">16.73 ± 0.61</td></tr>
+<tr><td style="text-align: left"><code>awk '{ gsub(/^\s+|\s+$/, ""); print }' &lt;input.txt</code></td><td style="text-align: right">821.2 ± 22.1</td><td style="text-align: right">800.5</td><td style="text-align: right">862.8</td><td style="text-align: right">24.36 ± 1.02</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="rew-upper-1"><a class="header" href="#rew-upper-1">rew upper</a></h1>
+<p>This page contains benchmarks for <a href="benchmarks/../reference/rew-upper.html">rew upper</a> command.</p>
+<p>See <a href="benchmarks/./setup.html">benchmark setup</a> for information about testing environemt and input data files.</p>
+<h2 id="benchmark-1-12"><a class="header" href="#benchmark-1-12">Benchmark #1</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "sed s/ß/s/g &lt;svejk.txt | rew loop 1 &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew upper &lt;input.txt" \
+    "sed 's/\(.*\)/\U\1/' &lt;input.txt" \
+    "while IFS= read -r l;do printf '%s\n' \"${l^^}\";done &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew upper &lt;input.txt</code></td><td style="text-align: right">13.3 ± 0.6</td><td style="text-align: right">12.3</td><td style="text-align: right">15.3</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>sed 's/\(.*\)/\U\1/' &lt;input.txt</code></td><td style="text-align: right">209.9 ± 3.0</td><td style="text-align: right">204.6</td><td style="text-align: right">214.8</td><td style="text-align: right">15.75 ± 0.77</td></tr>
+<tr><td style="text-align: left"><code>while IFS= read -r l;do printf '%s\n' "${l^^}";done &lt;input.txt</code></td><td style="text-align: right">242.7 ± 2.3</td><td style="text-align: right">240.0</td><td style="text-align: right">249.3</td><td style="text-align: right">18.22 ± 0.87</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-2-9"><a class="header" href="#benchmark-2-9">Benchmark #2</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "sed s/ß/s/g &lt;rur.txt | rew loop 10 &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew upper &lt;input.txt" \
+    "sed 's/\(.*\)/\U\1/' &lt;input.txt" \
+    "while IFS= read -r l;do printf '%s\n' \"${l^^}\";done &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew upper &lt;input.txt</code></td><td style="text-align: right">11.7 ± 0.6</td><td style="text-align: right">10.7</td><td style="text-align: right">13.6</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>sed 's/\(.*\)/\U\1/' &lt;input.txt</code></td><td style="text-align: right">248.3 ± 2.3</td><td style="text-align: right">245.1</td><td style="text-align: right">252.6</td><td style="text-align: right">21.14 ± 1.11</td></tr>
+<tr><td style="text-align: left"><code>while IFS= read -r l;do printf '%s\n' "${l^^}";done &lt;input.txt</code></td><td style="text-align: right">721.6 ± 6.7</td><td style="text-align: right">709.3</td><td style="text-align: right">731.0</td><td style="text-align: right">61.43 ± 3.22</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-3-2"><a class="header" href="#benchmark-3-2">Benchmark #3</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew ascii &lt;svejk.txt | rew loop 20 &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew upper &lt;input.txt" \
+    "dd conv=ucase status=none &lt;input.txt" \
+    "coreutils dd conv=ucase status=none &lt;input.txt" \
+    "tr '[:lower:]' '[:upper:]' &lt;input.txt" \
+    "coreutils tr '[:lower:]' '[:upper:]' &lt;input.txt" \
+    "sed 's/\(.*\)/\U\1/' &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew upper &lt;input.txt</code></td><td style="text-align: right">10.2 ± 0.9</td><td style="text-align: right">9.3</td><td style="text-align: right">18.0</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>tr '[:lower:]' '[:upper:]' &lt;input.txt</code></td><td style="text-align: right">27.8 ± 1.2</td><td style="text-align: right">25.7</td><td style="text-align: right">32.0</td><td style="text-align: right">2.73 ± 0.26</td></tr>
+<tr><td style="text-align: left"><code>dd conv=ucase status=none &lt;input.txt</code></td><td style="text-align: right">143.6 ± 0.9</td><td style="text-align: right">142.1</td><td style="text-align: right">146.0</td><td style="text-align: right">14.13 ± 1.23</td></tr>
+<tr><td style="text-align: left"><code>coreutils dd conv=ucase status=none &lt;input.txt</code></td><td style="text-align: right">149.7 ± 2.7</td><td style="text-align: right">145.9</td><td style="text-align: right">158.4</td><td style="text-align: right">14.73 ± 1.30</td></tr>
+<tr><td style="text-align: left"><code>coreutils tr '[:lower:]' '[:upper:]' &lt;input.txt</code></td><td style="text-align: right">821.7 ± 25.1</td><td style="text-align: right">770.8</td><td style="text-align: right">855.7</td><td style="text-align: right">80.86 ± 7.42</td></tr>
+<tr><td style="text-align: left"><code>sed 's/\(.*\)/\U\1/' &lt;input.txt</code></td><td style="text-align: right">3808.9 ± 31.0</td><td style="text-align: right">3782.8</td><td style="text-align: right">3873.1</td><td style="text-align: right">374.80 ± 32.57</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-4-1"><a class="header" href="#benchmark-4-1">Benchmark #4</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew ascii &lt;rur.txt | rew loop 100 &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew upper &lt;input.txt" \
+    "dd conv=ucase status=none &lt;input.txt" \
+    "coreutils dd conv=ucase status=none &lt;input.txt" \
+    "tr '[:lower:]' '[:upper:]' &lt;input.txt" \
+    "coreutils tr '[:lower:]' '[:upper:]' &lt;input.txt" \
+    "sed 's/\(.*\)/\U\1/' &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew upper &lt;input.txt</code></td><td style="text-align: right">6.1 ± 0.4</td><td style="text-align: right">5.5</td><td style="text-align: right">7.8</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>tr '[:lower:]' '[:upper:]' &lt;input.txt</code></td><td style="text-align: right">16.4 ± 0.8</td><td style="text-align: right">15.1</td><td style="text-align: right">19.0</td><td style="text-align: right">2.69 ± 0.22</td></tr>
+<tr><td style="text-align: left"><code>dd conv=ucase status=none &lt;input.txt</code></td><td style="text-align: right">80.8 ± 1.5</td><td style="text-align: right">77.7</td><td style="text-align: right">84.8</td><td style="text-align: right">13.25 ± 0.92</td></tr>
+<tr><td style="text-align: left"><code>coreutils dd conv=ucase status=none &lt;input.txt</code></td><td style="text-align: right">84.1 ± 2.5</td><td style="text-align: right">79.2</td><td style="text-align: right">91.4</td><td style="text-align: right">13.79 ± 1.01</td></tr>
+<tr><td style="text-align: left"><code>coreutils tr '[:lower:]' '[:upper:]' &lt;input.txt</code></td><td style="text-align: right">459.0 ± 12.8</td><td style="text-align: right">426.8</td><td style="text-align: right">473.2</td><td style="text-align: right">75.26 ± 5.46</td></tr>
+<tr><td style="text-align: left"><code>sed 's/\(.*\)/\U\1/' &lt;input.txt</code></td><td style="text-align: right">2321.3 ± 10.3</td><td style="text-align: right">2306.1</td><td style="text-align: right">2338.5</td><td style="text-align: right">380.62 ± 25.56</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="rew-x-1"><a class="header" href="#rew-x-1">rew x</a></h1>
+<p>This page contains benchmarks for <a href="benchmarks/../reference/rew-x.html">rew x</a> command.</p>
+<p>See <a href="benchmarks/./setup.html">benchmark setup</a> for information about testing environemt and input data files.</p>
+<h2 id="benchmark-1-13"><a class="header" href="#benchmark-1-13">Benchmark #1</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 100 &lt;svejk.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew x '{}' &lt;input.txt" \
+    "rew x '{cat}' &lt;input.txt" \
+    "rew x '{cat | cat}' &lt;input.txt" \
+    "rew x '{cat | cat | cat}' &lt;input.txt" \
+    "rew x '{cat | cat | cat | cat}' &lt;input.txt" \
+    "rew x '{cat | cat | cat | cat | cat}' &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew x '{}' &lt;input.txt</code></td><td style="text-align: right">58.6 ± 3.1</td><td style="text-align: right">54.7</td><td style="text-align: right">70.3</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat | cat | cat}' &lt;input.txt</code></td><td style="text-align: right">115.7 ± 7.1</td><td style="text-align: right">106.6</td><td style="text-align: right">132.1</td><td style="text-align: right">1.98 ± 0.16</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat | cat}' &lt;input.txt</code></td><td style="text-align: right">132.1 ± 37.8</td><td style="text-align: right">95.0</td><td style="text-align: right">214.8</td><td style="text-align: right">2.26 ± 0.66</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat | cat | cat | cat | cat}' &lt;input.txt</code></td><td style="text-align: right">144.6 ± 12.7</td><td style="text-align: right">123.7</td><td style="text-align: right">163.6</td><td style="text-align: right">2.47 ± 0.25</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat | cat | cat | cat}' &lt;input.txt</code></td><td style="text-align: right">146.3 ± 26.7</td><td style="text-align: right">112.8</td><td style="text-align: right">219.7</td><td style="text-align: right">2.50 ± 0.48</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat}' &lt;input.txt</code></td><td style="text-align: right">188.8 ± 63.9</td><td style="text-align: right">110.4</td><td style="text-align: right">288.9</td><td style="text-align: right">3.22 ± 1.10</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-2-10"><a class="header" href="#benchmark-2-10">Benchmark #2</a></h2>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 1000 &lt;rur.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew x '{}' &lt;input.txt" \
+    "rew x '{cat}' &lt;input.txt" \
+    "rew x '{cat | cat}' &lt;input.txt" \
+    "rew x '{cat | cat | cat}' &lt;input.txt" \
+    "rew x '{cat | cat | cat | cat}' &lt;input.txt" \
+    "rew x '{cat | cat | cat | cat | cat}' &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew x '{}' &lt;input.txt</code></td><td style="text-align: right">169.2 ± 29.1</td><td style="text-align: right">153.6</td><td style="text-align: right">246.1</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat | cat}' &lt;input.txt</code></td><td style="text-align: right">215.8 ± 9.7</td><td style="text-align: right">199.3</td><td style="text-align: right">234.3</td><td style="text-align: right">1.28 ± 0.23</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat | cat | cat}' &lt;input.txt</code></td><td style="text-align: right">235.4 ± 38.7</td><td style="text-align: right">204.0</td><td style="text-align: right">326.8</td><td style="text-align: right">1.39 ± 0.33</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat | cat | cat | cat | cat}' &lt;input.txt</code></td><td style="text-align: right">251.2 ± 25.7</td><td style="text-align: right">227.2</td><td style="text-align: right">321.9</td><td style="text-align: right">1.48 ± 0.30</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat | cat | cat | cat}' &lt;input.txt</code></td><td style="text-align: right">252.7 ± 42.8</td><td style="text-align: right">215.2</td><td style="text-align: right">339.4</td><td style="text-align: right">1.49 ± 0.36</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat}' &lt;input.txt</code></td><td style="text-align: right">307.6 ± 61.9</td><td style="text-align: right">207.3</td><td style="text-align: right">399.0</td><td style="text-align: right">1.82 ± 0.48</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-3-3"><a class="header" href="#benchmark-3-3">Benchmark #3</a></h2>
+<blockquote>
+<p><strong>Note:</strong> Each benchmarked command produces different output.</p>
+</blockquote>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 100 &lt;svejk.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew x '{}' &lt;input.txt" \
+    "rew x '{cat}' &lt;input.txt" \
+    "rew x '{cat}{cat}' &lt;input.txt" \
+    "rew x '{cat}{cat}{cat}' &lt;input.txt" \
+    "rew x '{cat}{cat}{cat}{cat}' &lt;input.txt" \
+    "rew x '{cat}{cat}{cat}{cat}{cat}' &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew x '{}' &lt;input.txt</code></td><td style="text-align: right">60.0 ± 1.9</td><td style="text-align: right">55.8</td><td style="text-align: right">63.9</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat}' &lt;input.txt</code></td><td style="text-align: right">210.5 ± 58.3</td><td style="text-align: right">97.8</td><td style="text-align: right">319.8</td><td style="text-align: right">3.51 ± 0.98</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat}{cat}' &lt;input.txt</code></td><td style="text-align: right">252.6 ± 68.1</td><td style="text-align: right">162.0</td><td style="text-align: right">393.5</td><td style="text-align: right">4.21 ± 1.14</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat}{cat}{cat}' &lt;input.txt</code></td><td style="text-align: right">345.9 ± 68.5</td><td style="text-align: right">269.7</td><td style="text-align: right">485.4</td><td style="text-align: right">5.77 ± 1.16</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat}{cat}{cat}{cat}' &lt;input.txt</code></td><td style="text-align: right">469.9 ± 92.3</td><td style="text-align: right">348.7</td><td style="text-align: right">650.0</td><td style="text-align: right">7.83 ± 1.56</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat}{cat}{cat}{cat}{cat}' &lt;input.txt</code></td><td style="text-align: right">517.3 ± 67.2</td><td style="text-align: right">452.0</td><td style="text-align: right">686.5</td><td style="text-align: right">8.62 ± 1.15</td></tr>
+</tbody></table>
+</div>
+<h2 id="benchmark-4-2"><a class="header" href="#benchmark-4-2">Benchmark #4</a></h2>
+<blockquote>
+<p><strong>Note:</strong> Each benchmarked command produces different output.</p>
+</blockquote>
+<p>Command:</p>
+<pre><code class="language-shell">hyperfine \
+    --warmup 5 \
+    --setup "rew loop 1000 &lt;rur.txt &gt;input.txt" \
+    --cleanup "rm input.txt" \
+    "rew x '{}' &lt;input.txt" \
+    "rew x '{cat}' &lt;input.txt" \
+    "rew x '{cat}{cat}' &lt;input.txt" \
+    "rew x '{cat}{cat}{cat}' &lt;input.txt" \
+    "rew x '{cat}{cat}{cat}{cat}' &lt;input.txt" \
+    "rew x '{cat}{cat}{cat}{cat}{cat}' &lt;input.txt"
+</code></pre>
+<p>Results:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Command</th><th style="text-align: right">Mean [ms]</th><th style="text-align: right">Min [ms]</th><th style="text-align: right">Max [ms]</th><th style="text-align: right">Relative</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>rew x '{}' &lt;input.txt</code></td><td style="text-align: right">158.6 ± 3.8</td><td style="text-align: right">154.8</td><td style="text-align: right">166.0</td><td style="text-align: right">1.00</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat}' &lt;input.txt</code></td><td style="text-align: right">332.9 ± 80.0</td><td style="text-align: right">207.0</td><td style="text-align: right">467.4</td><td style="text-align: right">2.10 ± 0.51</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat}{cat}' &lt;input.txt</code></td><td style="text-align: right">388.9 ± 85.4</td><td style="text-align: right">309.6</td><td style="text-align: right">571.8</td><td style="text-align: right">2.45 ± 0.54</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat}{cat}{cat}' &lt;input.txt</code></td><td style="text-align: right">508.2 ± 85.9</td><td style="text-align: right">452.7</td><td style="text-align: right">724.8</td><td style="text-align: right">3.20 ± 0.55</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat}{cat}{cat}{cat}' &lt;input.txt</code></td><td style="text-align: right">714.5 ± 44.8</td><td style="text-align: right">667.3</td><td style="text-align: right">797.1</td><td style="text-align: right">4.51 ± 0.30</td></tr>
+<tr><td style="text-align: left"><code>rew x '{cat}{cat}{cat}{cat}{cat}' &lt;input.txt</code></td><td style="text-align: right">809.0 ± 104.2</td><td style="text-align: right">704.4</td><td style="text-align: right">969.2</td><td style="text-align: right">5.10 ± 0.67</td></tr>
+</tbody></table>
+</div>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+    </div>
+    </body>
+</html>

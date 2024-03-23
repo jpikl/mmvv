@@ -1,0 +1,39 @@
+/* No table centering. */
+table {
+  margin-inline: 0;
+}
+
+/* Better link contrast in table headers. */
+th a {
+  color: var(--fg) !important;
+}
+
+/* Code border for dark themes. */
+.hljs {
+  border: 1px solid #ffffff20;
+}
+
+/* Code border for light themes. */
+.light .hljs,
+.rust .hljs {
+  border: 1px solid #00000020;
+}
+
+.example-io {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 2rem;
+}
+
+.example-io-stream {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 1rem;
+}
+
+.example-io-stream ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
