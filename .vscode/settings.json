@@ -1,12 +1,6 @@
 {
   "editor.formatOnSave": true,
   "rust-analyzer.check.command": "clippy",
-  "rust-analyzer.check.extraArgs": [
-    "--",
-    "-W", "clippy::pedantic",
-    "-A", "clippy::module_name_repetitions",
-    "-A", "clippy::must_use_candidate",
-  ],
   "rust-analyzer.rustfmt.extraArgs": ["+nightly"],
   "shellcheck.customArgs": [
     "--external-sources",

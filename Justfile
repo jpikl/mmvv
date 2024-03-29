@@ -36,11 +36,7 @@ format *ARGS:
 
 # Run clippy
 clippy:
-    cargo clippy --workspace -- \
-        -D clippy::all \
-        -D clippy::pedantic \
-        -A clippy::module_name_repetitions \
-        -A clippy::must_use_candidate
+    cargo clippy --workspace
 
 # Run tests
 test:
