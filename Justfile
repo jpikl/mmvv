@@ -88,7 +88,7 @@ pages-deploy:
 
 # Run shellcheck on scripts
 shellcheck:
-    shellcheck -xa benches/*.sh benches/commands/*.sh
+    shellcheck benches/*.sh benches/commands/*.sh
 
 # Clean generated files
 clean:
