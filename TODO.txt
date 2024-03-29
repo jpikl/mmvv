@@ -1,5 +1,4 @@
 0.4
-- Fix `--examples` order in generated docs.
 - Make `rew x` escape sequences forward compatible (errors for unkown escape sequences).
 - Better shell specific examples for `rew x` + cleanup and reorder all `rew x` examples.
 - Add `REW_PREFIX` env var to enforce stderr prefix over detecting it from argv[0]?
