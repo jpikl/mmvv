@@ -375,7 +375,7 @@ rew x -e% '%{ "{}": {seq} %}'
 </div>
 </div>
 
-Certain special characters like `|` needs to be escaped only within a specific context.
+Certain special characters like `|` must be escaped only within a specific context.
 
 ```sh
 rew x '| {echo "|"} {echo \|}'

@@ -118,7 +118,7 @@ pub const META: Meta = command_meta! {
             input: &["first", "second", "third"],
             output: &["{ \"first\": 1 }", "{ \"second\": 2 }", "{ \"third\": 3 }"],
         },
-        "Certain special characters like `|` needs to be escaped only within a specific context.": {
+        "Certain special characters like `|` must be escaped only within a specific context.": {
             args: &["| {echo \"|\"} {echo \\|}"],
             input: &[],
             output: &["| | |"],

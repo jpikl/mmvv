@@ -51,6 +51,10 @@ pub enum ErrorKind {
     MissingExprEnd,
     #[display("empty shell command")]
     EmptyShellCommand,
+    #[display("'{_0}{_1}' is not a valid escape sequence in this context")]
+    InvalidEscapeSequence(char, char),
+    #[display("unterminated escape sequence '{_0}'")]
+    UnternimatedEscapeSequence(char),
 }
 
 impl Display for Error {
@@ -251,7 +255,7 @@ impl Parser<'_> {
                 EXPR_END => return Err(self.err(ErrorKind::MissingExprStart)),
                 char if char == self.escape => {
                     let is_escapable = |char| matches!(char, EXPR_START | EXPR_END);
-                    constant.push(self.parse_escape_sequence(is_escapable));
+                    constant.push(self.parse_escape_sequence(is_escapable)?);
                 }
                 char => constant.push(self.consume(char)),
             }
@@ -297,7 +301,7 @@ impl Parser<'_> {
                 EXPR_END => break,
                 char if char == self.escape => {
                     let is_escapable = |char| matches!(char, EXPR_START | EXPR_END);
-                    command.push(self.parse_escape_sequence(is_escapable));
+                    command.push(self.parse_escape_sequence(is_escapable)?);
                 }
                 _ => command.push(self.consume(char)),
             }
@@ -369,7 +373,7 @@ impl Parser<'_> {
                 EXPR_START | PIPE | EXPR_END => break,
                 char if char.is_whitespace() => break,
                 char @ (SINGLE_QUOTE | DOUBLE_QUOTE) => arg.push_str(&self.parse_quoted_arg(char)?),
-                _ => arg.push_str(&self.parse_unquote_arg()),
+                _ => arg.push_str(&self.parse_unquote_arg()?),
             }
         }
 
@@ -387,7 +391,7 @@ impl Parser<'_> {
                 self.consume(quote);
                 return Ok(arg);
             } else if char == self.escape {
-                arg.push(self.parse_escape_sequence(|char| char == quote));
+                arg.push(self.parse_escape_sequence(|char| char == quote)?);
             } else {
                 arg.push(self.consume(char));
             }
@@ -396,7 +400,7 @@ impl Parser<'_> {
         Err(self.err_at(ErrorKind::MissingClosingQuote(quote), start_position))
     }
 
-    fn parse_unquote_arg(&mut self) -> String {
+    fn parse_unquote_arg(&mut self) -> Result<String> {
         let mut arg = String::new();
 
         while let Some(char) = self.peek() {
@@ -408,25 +412,26 @@ impl Parser<'_> {
                         EXPR_START | PIPE | EXPR_END | SINGLE_QUOTE | DOUBLE_QUOTE => true,
                         char if char.is_whitespace() => true,
                         _ => false,
-                    }));
+                    })?);
                 }
                 char => arg.push(self.consume(char)),
             };
         }
 
-        arg
+        Ok(arg)
     }
 
-    fn parse_escape_sequence(&mut self, is_escapable: impl Fn(char) -> bool) -> char {
+    fn parse_escape_sequence(&mut self, is_escapable: impl Fn(char) -> bool) -> Result<char> {
         self.consume(self.escape);
 
         match self.peek() {
-            Some(ESCAPED_LF) => self.consume_as(ESCAPED_LF, '\n'),
-            Some(ESCAPED_CR) => self.consume_as(ESCAPED_CR, '\r'),
-            Some(ESCAPED_TAB) => self.consume_as(ESCAPED_TAB, '\t'),
-            Some(char) if char == self.escape => self.consume(char),
-            Some(char) if is_escapable(char) => self.consume(char),
-            _ => self.escape, // If this is not a valid escape sequence, keep the escape character
+            Some(ESCAPED_LF) => Ok(self.consume_as(ESCAPED_LF, '\n')),
+            Some(ESCAPED_CR) => Ok(self.consume_as(ESCAPED_CR, '\r')),
+            Some(ESCAPED_TAB) => Ok(self.consume_as(ESCAPED_TAB, '\t')),
+            Some(char) if char == self.escape => Ok(self.consume(char)),
+            Some(char) if is_escapable(char) => Ok(self.consume(char)),
+            Some(char) => Err(self.err(ErrorKind::InvalidEscapeSequence(self.escape, char))),
+            _ => Err(self.err(ErrorKind::UnternimatedEscapeSequence(self.escape))),
         }
     }
 
@@ -556,50 +561,27 @@ mod tests {
     #[case("{ #:n1|n2}", "{`#:n1`|`n2`}")] // #: is part for command name
     #[case("{ #: n1|n2}", "{`#:` `n1`|`n2`}")] // #: is separate command
     // Escaping - General
-    #[case("%",  "%")] // No
-    #[case("%%", "%")] // Yes
-    #[case("%n", "\n")] // Yes
-    #[case("%r", "\r")] // Yes
-    #[case("%t", "\t")] // Yes
+    #[case("%%", "%")]
+    #[case("%n", "\n")]
+    #[case("%r", "\r")]
+    #[case("%t", "\t")]
     // Escaping - Constants
-    #[case("%}",  "}")] // Yes
-    #[case("%{",  "{")] // Yes
-    #[case("%'",  "%'")] // No
-    #[case("%\"",  "%\"")] // No
-    #[case("%|",  "%|")] // No
-    #[case("%x",  "%x")] // No
+    #[case("%}",  "}")]
+    #[case("%{",  "{")]
     // Escaping - Unquoted arg
-    #[case("{a% b}", "{`a b`}")] // Yes
-    #[case("{a%'b}", "{`a'b`}")] // Yes
-    #[case("{a%\"b}", "{`a\"b`}")] // Yes
-    #[case("{a%|b}", "{`a|b`}")] // Yes
-    #[case("{a%{b}", "{`a{b`}")] // Yes
-    #[case("{a%}b}", "{`a}b`}")] // Yes
-    #[case("{a%xb}", "{`a%xb`}")] // No
+    #[case("{a% b}", "{`a b`}")]
+    #[case("{a%'b}", "{`a'b`}")]
+    #[case("{a%\"b}", "{`a\"b`}")]
+    #[case("{a%|b}", "{`a|b`}")]
+    #[case("{a%{b}", "{`a{b`}")]
+    #[case("{a%}b}", "{`a}b`}")]
     // Escaping - Single quoted arg
-    #[case("{'a%'b'}", "{`a'b`}")] // Yes
-    #[case("{'a% b'}", "{`a% b`}")] // No
-    #[case("{'a%\"b'}", "{`a%\"b`}")] // No
-    #[case("{'a%|b'}", "{`a%|b`}")] // No
-    #[case("{'a%{b'}", "{`a%{b`}")] // No
-    #[case("{'a%}b'}", "{`a%}b`}")] // No
-    #[case("{'a%xb'}", "{`a%xb`}")] // No
+    #[case("{'a%'b'}", "{`a'b`}")]
     // Escaped - Double quoted arg
-    #[case("{\"a%\"b\"}", "{`a\"b`}")] // Yes
-    #[case("{\"a% b\"}", "{`a% b`}")] // No
-    #[case("{\"a%'b\"}", "{`a%'b`}")] // No
-    #[case("{\"a%|b\"}", "{`a%|b`}")] // No
-    #[case("{\"a%{b\"}", "{`a%{b`}")] // No
-    #[case("{\"a%}b\"}", "{`a%}b`}")] // No
-    #[case("{\"a%xb\"}", "{`a%xb`}")] // No
+    #[case("{\"a%\"b\"}", "{`a\"b`}")]
     // Escaping - Raw shell
-    #[case("{#a% b}", "{#`a% b`}")] // No
-    #[case("{#a%'b}", "{#`a%'b`}")] // No
-    #[case("{#a%\"b}", "{#`a%\"b`}")] // No
-    #[case("{#a%|b}", "{#`a%|b`}")] // No
-    #[case("{#a%{b}", "{#`a{b`}")] // Yes
-    #[case("{#a%}b}", "{#`a}b`}")] // Yes
-    #[case("{#a%xb}", "{#`a%xb`}")] // No
+    #[case("{#a%{b}", "{#`a{b`}")]
+    #[case("{#a%}b}", "{#`a}b`}")]
     // Consecutive quoted joined args
     #[case("{a'b'\"c\"}", "{`abc`}")]
     #[case("{a\"c\"'b'}", "{`acb`}")]
@@ -614,18 +596,47 @@ mod tests {
     }
 
     #[rstest]
-    #[case("{{",    1, ErrorKind::UnexpectedExprStart)]
-    #[case("{a{",   2, ErrorKind::UnexpectedExprStart)] // Different condition than the one before
-    #[case("{#a{",  3, ErrorKind::UnexpectedExprStart)] // Different condition for raw shell
-    #[case("{|",    1, ErrorKind::MissingCommandBefore)]
-    #[case("{a|",   3, ErrorKind::MissingCommandAfter)]
-    #[case("{a|}",  3, ErrorKind::MissingCommandAfter)] // Different condition than the one before
-    #[case("{'a",   1, ErrorKind::MissingClosingQuote('\''))]
-    #[case("{\"a",  1, ErrorKind::MissingClosingQuote('"'))]
-    #[case("}",     0, ErrorKind::MissingExprStart)]
-    #[case("{",     0, ErrorKind::MissingExprEnd)]
-    #[case("{#}",   2, ErrorKind::EmptyShellCommand)]
-    #[case("{# }",  3, ErrorKind::EmptyShellCommand)]
+    #[case("{{",   1, ErrorKind::UnexpectedExprStart)]
+    #[case("{a{",  2, ErrorKind::UnexpectedExprStart)] // Different condition than the one before
+    #[case("{#a{", 3, ErrorKind::UnexpectedExprStart)] // Different condition for raw shell
+    #[case("{|",   1, ErrorKind::MissingCommandBefore)]
+    #[case("{a|",  3, ErrorKind::MissingCommandAfter)]
+    #[case("{a|}", 3, ErrorKind::MissingCommandAfter)] // Different condition than the one before
+    #[case("{'a",  1, ErrorKind::MissingClosingQuote('\''))]
+    #[case("{\"a", 1, ErrorKind::MissingClosingQuote('"'))]
+    #[case("}",    0, ErrorKind::MissingExprStart)]
+    #[case("{",    0, ErrorKind::MissingExprEnd)]
+    #[case("{#}",  2, ErrorKind::EmptyShellCommand)]
+    #[case("{# }", 3, ErrorKind::EmptyShellCommand)]
+    // Escaping - General
+    #[case("%", 1, ErrorKind::UnternimatedEscapeSequence('%'))]
+    // Escaping - Constants
+    #[case("%'",  1, ErrorKind::InvalidEscapeSequence('%', '\''))]
+    #[case("%\"", 1, ErrorKind::InvalidEscapeSequence('%', '"'))]
+    #[case("%|",  1, ErrorKind::InvalidEscapeSequence('%', '|'))]
+    #[case("%x",  1, ErrorKind::InvalidEscapeSequence('%', 'x'))]
+    // Escaping - Unquoted arg
+    #[case("{a%xb}", 3, ErrorKind::InvalidEscapeSequence('%', 'x'))]
+    // Escaping - Single quoted arg
+    #[case("{'a% b'}",  4, ErrorKind::InvalidEscapeSequence('%', ' '))]
+    #[case("{'a%\"b'}", 4, ErrorKind::InvalidEscapeSequence('%', '"'))]
+    #[case("{'a%|b'}",  4, ErrorKind::InvalidEscapeSequence('%', '|'))]
+    #[case("{'a%{b'}",  4, ErrorKind::InvalidEscapeSequence('%', '{'))]
+    #[case("{'a%}b'}",  4, ErrorKind::InvalidEscapeSequence('%', '}'))]
+    #[case("{'a%xb'}",  4, ErrorKind::InvalidEscapeSequence('%', 'x'))]
+    // Escaped - Double quoted arg
+    #[case("{\"a% b\"}", 4, ErrorKind::InvalidEscapeSequence('%', ' '))]
+    #[case("{\"a%'b\"}", 4, ErrorKind::InvalidEscapeSequence('%', '\''))]
+    #[case("{\"a%|b\"}", 4, ErrorKind::InvalidEscapeSequence('%', '|'))]
+    #[case("{\"a%{b\"}", 4, ErrorKind::InvalidEscapeSequence('%', '{'))]
+    #[case("{\"a%}b\"}", 4, ErrorKind::InvalidEscapeSequence('%', '}'))]
+    #[case("{\"a%xb\"}", 4, ErrorKind::InvalidEscapeSequence('%', 'x'))]
+    // Escaping - Raw shell
+    #[case("{#a% b}",  4, ErrorKind::InvalidEscapeSequence('%', ' '))]
+    #[case("{#a%'b}",  4, ErrorKind::InvalidEscapeSequence('%', '\''))]
+    #[case("{#a%\"b}", 4, ErrorKind::InvalidEscapeSequence('%', '"'))]
+    #[case("{#a%|b}",  4, ErrorKind::InvalidEscapeSequence('%', '|'))]
+    #[case("{#a%xb}",  4, ErrorKind::InvalidEscapeSequence('%', 'x'))]
     #[timeout(Duration::from_secs(1))] // To protect against possible infinite loops
     fn parse_err(#[case] input: &str, #[case] position: usize, #[case] kind: ErrorKind) {
         let error = assert_err!(Pattern::parse(input, '%'));
