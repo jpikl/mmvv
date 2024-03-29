@@ -1,8 +1,7 @@
 0.4
-- Better shell specific examples for `rew x`.
-- Add `rew x --quote` with examples.
 - Fix `--examples` order in generated docs.
 - Make `rew x` escape sequences forward compatible (errors for unkown escape sequences).
+- Better shell specific examples for `rew x` + cleanup and reorder all `rew x` examples.
 - Add `REW_PREFIX` env var to enforce stderr prefix over detecting it from argv[0]?
 - Refactor and split `x.rs` into multiple files.
 - Add missing unit test to increase code coverage.

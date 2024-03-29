@@ -2,6 +2,7 @@ use crate::colors::BOLD_RED;
 use crate::colors::RESET;
 use crate::colors::YELLOW;
 use derive_more::Display;
+use derive_more::IsVariant;
 use std::fmt;
 use std::fmt::Debug;
 use std::fmt::Formatter;
@@ -74,7 +75,7 @@ pub struct Pattern(Vec<Item>);
 
 pub struct SimplePattern(Vec<SimpleItem>);
 
-#[derive(Debug, Display, Clone, PartialEq)]
+#[derive(Debug, Display, Clone, PartialEq, IsVariant)]
 pub enum Item {
     Constant(String),
     Expression(Expression),
@@ -106,12 +107,29 @@ pub struct Command {
 }
 
 impl Pattern {
-    pub fn parse(input: &str, escape: char) -> Result<Pattern> {
+    pub fn parse(input: &str, escape: char) -> Result<Self> {
         Parser::new(input, escape).parse().map(Self)
     }
 
     pub fn items(&self) -> &Vec<Item> {
         &self.0
+    }
+
+    #[must_use]
+    pub fn quote_expressions(self, quote: char) -> Self {
+        let mut items = Vec::new();
+
+        for item in self.0 {
+            if item.is_expression() {
+                items.push(Item::Constant(quote.to_string()));
+                items.push(item);
+                items.push(Item::Constant(quote.to_string()));
+            } else {
+                items.push(item);
+            }
+        }
+
+        Self(items)
     }
 
     pub fn try_simplify(&self) -> Option<SimplePattern> {
@@ -630,6 +648,17 @@ mod tests {
             Some(Item::Expression(expr)) => assert_eq!(expr.raw_value, value),
             _ => panic!("no expression at position {position}"),
         }
+    }
+
+    #[rstest]
+    #[case("", "")]
+    #[case("{}", "'{}'")]
+    #[case("{}{}", "'{}''{}'")]
+    #[case(" {} {} ", " '{}' '{}' ")]
+    #[case(" {n1} {n2 a21 | n3 a31 a32} ", " '{`n1`}' '{`n2` `a21`|`n3` `a31` `a32`}' ")]
+    fn quote(#[case] input: &str, #[case] normalized: &str) {
+        let pattern = assert_ok!(Pattern::parse(input, '%'));
+        assert_eq!(pattern.quote_expressions('\'').to_string(), normalized);
     }
 
     #[test]

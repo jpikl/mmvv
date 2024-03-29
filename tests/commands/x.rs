@@ -37,4 +37,6 @@ command_test!("x", {
     // Should not get stuck by pipeline command not reading its stdin
     cat_and_generator_many: [ sh "seq 1 100000 | %cmd% {} {seq 1..100000} | cksum" assert "" => "774411998 1177790\n" ],
     shell_and_generator_many: [ sh "seq 1 100000 | %cmd% {} {:# seq 1 100000} | cksum" assert "" => "774411998 1177790\n" ],
+    single_quote: [ cmd "-q" "mv {} {lower | tr ' ' '_'}" assert "My Notes.txt" => "mv 'My Notes.txt' 'my_notes.txt'\n" ],
+    double_quote: [ cmd "-qq" "mv {} {lower | tr ' ' '_'}" assert "My Notes.txt" => "mv \"My Notes.txt\" \"my_notes.txt\"\n" ],
 });

@@ -28,6 +28,7 @@ use anyhow::Error;
 use anyhow::Result;
 use bstr::ByteVec;
 use clap::crate_name;
+use clap::ArgAction;
 use std::env;
 use std::io;
 use std::io::Write;
@@ -127,6 +128,16 @@ pub const META: Meta = command_meta! {
             input: &["first", "second", "third"],
             output: &["1:", "\tfirst", "2:", "\tsecond", "3:", "\tthird"],
         },
+        "You can enable automatic expression quoting using `-q, --quote` flag.": {
+            args: &["-q", "mv {} {lower | tr ' ' '_'}"],
+            input: &["IMG 1.jpg", "IMG 2.jpg"],
+            output: &["mv 'IMG 1.jpg' 'img_1.jpg'", "mv 'IMG 2.jpg' 'img_2.jpg'"],
+        },
+        "Double the `-q, --quote` to use double quotes instead of single quotes.": {
+            args: &["-qq", "mv {} {lower | tr ' ' '_'}"],
+            input: &["IMG 1.jpg", "IMG 2.jpg"],
+            output: &["mv \"IMG 1.jpg\" \"img_1.jpg\"", "mv \"IMG 2.jpg\" \"img_2.jpg\""],
+        },
         "All global options `-0, --null`, `--buf-size` and `--buf-mode` are propagated to rew subcommands. \
          Do not forget configure NUL separator manually for any external commands.": {
             args: &["--null", "{upper | sed --null-data 's/^.//g'}"],
@@ -157,11 +168,22 @@ struct Args {
     /// Default value: `cmd` on Windows, `sh` everywhere else.
     #[arg(short, long, env = "SHELL")]
     shell: Option<String>,
+
+    /// Wrap output of every pattern expression in quotes
+    ///
+    /// Use the flag once for single quotes `''` or twice for double quotes `""`.
+    #[clap(short, long, action = ArgAction::Count)]
+    pub quote: u8,
 }
 
 fn run(context: &Context, args: &Args) -> Result<()> {
     let raw_pattern = args.pattern.join(" ");
-    let pattern = Pattern::parse(&raw_pattern, args.escape)?;
+    let mut pattern = Pattern::parse(&raw_pattern, args.escape)?;
+
+    if args.quote > 0 {
+        let quote = if args.quote > 1 { '"' } else { '\'' };
+        pattern = pattern.quote_expressions(quote);
+    }
 
     if let Some(pattern) = pattern.try_simplify() {
         return eval_simple_pattern(context, &pattern);

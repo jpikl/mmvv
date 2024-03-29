@@ -44,6 +44,14 @@ Default value: `cmd` on Windows, `sh` everywhere else.
 Can be also set using `SHELL` environment variable.
 </dd>
 
+<dt><code>-q, --quote</code></dt>
+<dd>
+
+Wrap output of every pattern expression in quotes
+
+Use the flag once for single quotes `''` or twice for double quotes `""`.
+</dd>
+
 <dt><code>--examples</code></dt>
 <dd>
 
@@ -406,6 +414,52 @@ rew x '{seq}:\n\t{}'
 <li><code>    second</code></li>
 <li><code>3:</code></li>
 <li><code>    third</code></li>
+</ul>
+</div>
+</div>
+
+You can enable automatic expression quoting using `-q, --quote` flag.
+
+```sh
+rew x -q 'mv {} {lower | tr " " "_"}'
+```
+
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>IMG 1.jpg</code></li>
+<li><code>IMG 2.jpg</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>mv 'IMG 1.jpg' 'img_1.jpg'</code></li>
+<li><code>mv 'IMG 2.jpg' 'img_2.jpg'</code></li>
+</ul>
+</div>
+</div>
+
+Double the `-q, --quote` to use double quotes instead of single quotes.
+
+```sh
+rew x -qq 'mv {} {lower | tr " " "_"}'
+```
+
+<div class="example-io">
+<div class="example-io-stream">
+<small><b>stdin:</b></small>
+<ul>
+<li><code>IMG 1.jpg</code></li>
+<li><code>IMG 2.jpg</code></li>
+</ul>
+</div>
+<div class="example-io-stream">
+<small><b>stdout:</b></small>
+<ul>
+<li><code>mv "IMG 1.jpg" "img_1.jpg"</code></li>
+<li><code>mv "IMG 2.jpg" "img_2.jpg"</code></li>
 </ul>
 </div>
 </div>
