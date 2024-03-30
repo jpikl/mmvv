@@ -1,5 +1,4 @@
 0.4
-- Rething syntax of `rew x` expression prefixes `:#`.
 - Better shell specific examples for `rew x` + cleanup and reorder all `rew x` examples.
 - Add `REW_PREFIX` env var to enforce stderr prefix over detecting it from argv[0]?
 - Refactor and split `x.rs` into multiple files.

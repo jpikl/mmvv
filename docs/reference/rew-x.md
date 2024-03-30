@@ -254,7 +254,7 @@ rew x '{!seq 1 3}. {}'
 </div>
 </div>
 
-The `#` marker makes the rest of the expression to be interpreted by the current shell.
+The `#` marker denotes "raw shell expression". Everything after it will be interpreted by the current shell.
 
 For example, the following expression is equivalent to `{sh -c 'printf "%s\n" a b c'}`
 

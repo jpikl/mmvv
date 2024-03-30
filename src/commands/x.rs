@@ -89,7 +89,8 @@ pub const META: Meta = command_meta! {
            input: &["first", "second", "third"],
            output: &["1. first", "2. second", "3. third"],
        },
-       "The `#` marker makes the rest of the expression to be interpreted by the current shell.\n\n\
+       "The `#` marker denotes \"raw shell expression\". \
+        Everything after it will be interpreted by the current shell.\n\n\
         For example, the following expression is equivalent to `{sh -c 'printf \"%s\\n\" a b c'}`": {
             args: &["{# printf '%s\\n' a b c}. {}"],
             input: &["first", "second", "third"],

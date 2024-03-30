@@ -556,10 +556,18 @@ mod tests {
     #[case("{:# n1|n2}", "{:#`n1|n2`}")]
     #[case("{ :#n1|n2}", "{`:#n1`|`n2`}")] // :# is part for command name
     #[case("{ :# n1|n2}", "{`:#` `n1`|`n2`}")] // :# is separate command
+    #[case("{: #n1|n2}", "{:`#n1`|`n2`}")] // # is part for command name
+    #[case("{: # n1|n2}", "{:`#` `n1`|`n2`}")] // # is separate command
+    #[case("{ : #n1|n2}", "{`:` `#n1`|`n2`}")] // : is separate command, # is part of its argument
+    #[case("{ : # n1|n2}", "{`:` `#` `n1`|`n2`}")] // : is separate command, # is its argument
     #[case("{#:n1|n2}", "{#`:n1|n2`}")] // : is part of shell command
     #[case("{#: n1|n2}", "{#`: n1|n2`}")] // : is part of shell command
     #[case("{ #:n1|n2}", "{`#:n1`|`n2`}")] // #: is part for command name
     #[case("{ #: n1|n2}", "{`#:` `n1`|`n2`}")] // #: is separate command
+    #[case("{# :n1|n2}", "{#`:n1|n2`}")] // : is part for command name
+    #[case("{# : n1|n2}", "{#`: n1|n2`}")] // : is separate command
+    #[case("{ # :n1|n2}", "{`#` `:n1`|`n2`}")] // # is separate command, : is part of its argument
+    #[case("{ # : n1|n2}", "{`#` `:` `n1`|`n2`}")] // # is separate command, : is its argument
     // Escaping - General
     #[case("%%", "%")]
     #[case("%n", "\n")]
