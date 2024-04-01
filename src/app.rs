@@ -1,4 +1,3 @@
-use crate::args::get_bin_name;
 use crate::args::GlobalArgs;
 use crate::colors::BOLD;
 use crate::colors::RESET;
@@ -42,23 +41,4 @@ fn get_after_help(cmd: Option<&str>) -> String {
         format!("{app}.html")
     };
     format!("Visit {BOLD}{REFERENCE_URL}/{file}.html{RESET} for a complete reference and examples.")
-}
-
-pub fn get_prefix(app: &Command, spawned_by: Option<&str>) -> String {
-    let bin_name = get_bin_name();
-
-    let prefix = app
-        .clone()
-        .ignore_errors(true)
-        .try_get_matches()
-        .ok()
-        .and_then(|matches| matches.subcommand_name().map(ToString::to_string))
-        .map(|cmd_name| format!("{} {cmd_name}", &bin_name))
-        .unwrap_or(bin_name);
-
-    if let Some(spawned_by) = spawned_by {
-        format!("{BOLD}{prefix}{RESET} (spawned by '{BOLD}{spawned_by}{RESET}')")
-    } else {
-        format!("{BOLD}{prefix}{RESET}")
-    }
 }

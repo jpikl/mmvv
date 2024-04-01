@@ -1,5 +1,5 @@
 use super::get_meta;
-use crate::args::get_bin_path;
+use crate::args::get_spawned_by;
 use crate::args::ENV_BUF_MODE;
 use crate::args::ENV_BUF_SIZE;
 use crate::args::ENV_NULL;
@@ -30,6 +30,7 @@ use bstr::ByteVec;
 use clap::crate_name;
 use clap::ArgAction;
 use std::env;
+use std::env::current_exe;
 use std::io;
 use std::io::Write;
 use std::panic::resume_unwind;
@@ -638,16 +639,13 @@ impl<'a> CommandBuilder<'a> {
     }
 
     fn build_internal_command(&self, name: Option<&str>, args: &[String]) -> Result<Command> {
-        let bin_path = get_bin_path().context("could not detect current executable")?;
-        let mut command = Command::new(&bin_path);
+        let program = current_exe().context("could not detect current executable")?;
+        let mut command = Command::new(program);
 
         command.env(ENV_NULL, self.context.separator().is_null().to_string());
         command.env(ENV_BUF_MODE, self.context.buf_mode().to_string());
         command.env(ENV_BUF_SIZE, self.context.buf_size().to_string());
-        command.env(
-            ENV_SPAWNED_BY,
-            format!("{} {}", bin_path.to_string_lossy(), META.name),
-        );
+        command.env(ENV_SPAWNED_BY, get_spawned_by(META.name));
 
         if let Some(name) = name {
             command.arg(name);
