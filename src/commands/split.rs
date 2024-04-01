@@ -1,8 +1,9 @@
 use crate::command::Context;
 use crate::command::Group;
 use crate::command::Meta;
+use crate::command_examples;
 use crate::command_meta;
-use crate::examples;
+use crate::examples::Example;
 use anyhow::Result;
 use memchr::memchr;
 use std::result;
@@ -12,24 +13,26 @@ pub const META: Meta = command_meta! {
     group: Group::Transformers,
     args: Args,
     run: run,
-    examples: examples! [
-        "Split input into lines on comma.": {
-            args: &[","],
-            input: &["first,second,third"],
-            output: &["first", "second", "third"],
-        },
-        "Split input into lines on comma (process trailing comma).": {
-            args: &[","],
-            input: &["first,second,third,"],
-            output: &["first", "second", "third", ""],
-        },
-        "Split input into lines on comma (ignore trailing comma).": {
-            args: &["-t", ","],
-            input: &["first,second,third,"],
-            output: &["first", "second", "third"],
-        },
-    ],
+    examples: EXAMPLES,
 };
+
+const EXAMPLES: &[Example] = command_examples![
+    "Split input into lines on comma.": {
+        args: &[","],
+        input: &["first,second,third"],
+        output: &["first", "second", "third"],
+    },
+    "Split input into lines on comma (process trailing comma).": {
+        args: &[","],
+        input: &["first,second,third,"],
+        output: &["first", "second", "third", ""],
+    },
+    "Split input into lines on comma (ignore trailing comma).": {
+        args: &["-t", ","],
+        input: &["first,second,third,"],
+        output: &["first", "second", "third"],
+    },
+];
 
 /// Split input into lines using a separator.
 #[derive(clap::Args)]

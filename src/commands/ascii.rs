@@ -1,8 +1,9 @@
 use crate::command::Context;
 use crate::command::Group;
 use crate::command::Meta;
+use crate::command_examples;
 use crate::command_meta;
-use crate::examples;
+use crate::examples::Example;
 use anyhow::Result;
 use bstr::ByteSlice;
 use bstr::ByteVec;
@@ -13,19 +14,21 @@ pub const META: Meta = command_meta! {
     group: Group::Mappers,
     args: Args,
     run: run,
-    examples: examples! [
-        "Convert input to ASCII.":  {
-            args: &[],
-            input: &["Æneid", "étude", "🦀rocks!"],
-            output: &["AEneid", "etude", "crab rocks!"],
-        },
-        "Delete non-ASCII characters from input.": {
-            args: &["-d"],
-            input: &["Æneid", "étude", "🦀rocks!"],
-            output: &["neid", "tude", "rocks!"],
-        },
-    ],
+    examples: EXAMPLES,
 };
+
+const EXAMPLES: &[Example] = command_examples! [
+    "Convert input to ASCII.":  {
+        args: &[],
+        input: &["Æneid", "étude", "🦀rocks!"],
+        output: &["AEneid", "etude", "crab rocks!"],
+    },
+    "Delete non-ASCII characters from input.": {
+        args: &["-d"],
+        input: &["Æneid", "étude", "🦀rocks!"],
+        output: &["neid", "tude", "rocks!"],
+    },
+];
 
 /// Convert characters to ASCII.
 #[derive(clap::Args)]

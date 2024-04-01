@@ -1,8 +1,9 @@
 use crate::command::Context;
 use crate::command::Group;
 use crate::command::Meta;
+use crate::command_examples;
 use crate::command_meta;
-use crate::examples;
+use crate::examples::Example;
 use anyhow::Result;
 use memchr::memchr;
 
@@ -11,19 +12,21 @@ pub const META: Meta = command_meta! {
     group: Group::Transformers,
     args: Args,
     run: run,
-    examples: examples![
-        "Join lines using comma.": {
-            args: &[","],
-            input: &["first", "second", "third"],
-            output: &["first,second,third"],
-        },
-        "Join lines using comma (include trailing comma).": {
-            args: &["-t", ","],
-            input: &["first", "second", "third"],
-            output: &["first,second,third,"],
-        },
-    ],
+    examples: EXAMPLES,
 };
+
+const EXAMPLES: &[Example] = command_examples![
+    "Join lines using comma.": {
+        args: &[","],
+        input: &["first", "second", "third"],
+        output: &["first,second,third"],
+    },
+    "Join lines using comma (include trailing comma).": {
+        args: &["-t", ","],
+        input: &["first", "second", "third"],
+        output: &["first,second,third,"],
+    },
+];
 
 /// Join input lines using a separator.
 #[derive(clap::Args)]

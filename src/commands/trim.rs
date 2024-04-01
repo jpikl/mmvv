@@ -1,8 +1,9 @@
 use crate::command::Context;
 use crate::command::Group;
 use crate::command::Meta;
+use crate::command_examples;
 use crate::command_meta;
-use crate::examples;
+use crate::examples::Example;
 use anyhow::Result;
 use bstr::ByteSlice;
 
@@ -11,24 +12,26 @@ pub const META: Meta = command_meta! {
     group: Group::Mappers,
     args: Args,
     run: run,
-    examples: examples! [
-        "Trim whitespaces from both sides each line.": {
-            args: &[],
-            input: &["  spaces around  ", "  spaces before", "spaces after   "],
-            output: &["spaces around", "spaces before", "spaces after"],
-        },
-        "Trim whitespaces from start of each line.": {
-            args: &["-s"],
-            input: &["  spaces around  ", "  spaces before", "spaces after   "],
-            output: &["spaces around  ", "spaces before", "spaces after   "],
-        },
-        "Trim whitespaces from end of each line.": {
-            args: &["-e"],
-            input: &["  spaces around  ", "  spaces before", "spaces after   "],
-            output: &["  spaces around", "  spaces before", "spaces after"],
-        },
-    ],
+    examples: EXAMPLES,
 };
+
+const EXAMPLES: &[Example] = command_examples![
+    "Trim whitespaces from both sides each line.": {
+        args: &[],
+        input: &["  spaces around  ", "  spaces before", "spaces after   "],
+        output: &["spaces around", "spaces before", "spaces after"],
+    },
+    "Trim whitespaces from start of each line.": {
+        args: &["-s"],
+        input: &["  spaces around  ", "  spaces before", "spaces after   "],
+        output: &["spaces around  ", "spaces before", "spaces after   "],
+    },
+    "Trim whitespaces from end of each line.": {
+        args: &["-e"],
+        input: &["  spaces around  ", "  spaces before", "spaces after   "],
+        output: &["  spaces around", "  spaces before", "spaces after"],
+    },
+];
 
 /// Trim whitespaces from each line.
 ///

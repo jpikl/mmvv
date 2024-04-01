@@ -1,5 +1,4 @@
 0.4
-- Move examples to the bottom of command rs files.
 - Better shell specific examples for `rew x` + cleanup and reorder all `rew x` examples.
 - Refactor and split `x.rs` into multiple files.
 - Add missing unit test to increase code coverage.

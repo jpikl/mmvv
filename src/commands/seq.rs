@@ -1,8 +1,9 @@
 use crate::command::Context;
 use crate::command::Group;
 use crate::command::Meta;
+use crate::command_examples;
 use crate::command_meta;
-use crate::examples;
+use crate::examples::Example;
 use crate::range::StartRange;
 use anyhow::format_err;
 use anyhow::Result;
@@ -12,29 +13,31 @@ pub const META: Meta = command_meta! {
     group: Group::Generators,
     args: Args,
     run: run,
-    examples: examples! [
-        "Print numbers from 1 to 3.": {
-            args: &["1..3"],
-            input: &[],
-            output: &["1", "2", "3"],
-        },
-        "Print numbers from 1 to 5 with step 2.": {
-            args: &["1..5", "2"],
-            input: &[],
-            output: &["1", "3", "5"],
-        },
-        "Print numbers from 1 to -1.": {
-            args: &["1..-1"],
-            input: &[],
-            output: &["1", "0", "-1"],
-        },
-        "Print numbers from 1 to -3 with step -2.": {
-            args: &["1..-3", "-2"],
-            input: &[],
-            output: &["1", "-1", "-3"],
-        },
-    ],
+    examples: EXAMPLES,
 };
+
+const EXAMPLES: &[Example] = command_examples![
+    "Print numbers from 1 to 3.": {
+        args: &["1..3"],
+        input: &[],
+        output: &["1", "2", "3"],
+    },
+    "Print numbers from 1 to 5 with step 2.": {
+        args: &["1..5", "2"],
+        input: &[],
+        output: &["1", "3", "5"],
+    },
+    "Print numbers from 1 to -1.": {
+        args: &["1..-1"],
+        input: &[],
+        output: &["1", "0", "-1"],
+    },
+    "Print numbers from 1 to -3 with step -2.": {
+        args: &["1..-3", "-2"],
+        input: &[],
+        output: &["1", "-1", "-3"],
+    },
+];
 
 /// Print sequence of numbers as lines
 #[derive(clap::Args)]

@@ -1,8 +1,9 @@
 use crate::command::Context;
 use crate::command::Group;
 use crate::command::Meta;
+use crate::command_examples;
 use crate::command_meta;
-use crate::examples;
+use crate::examples::Example;
 use anyhow::Result;
 use bstr::ByteSlice;
 
@@ -11,14 +12,16 @@ pub const META: Meta = command_meta! {
     group: Group::Mappers,
     args: Args,
     run: run,
-    examples: examples! [
-        "Convert characters to lowercase.": {
-            args: &[],
-            input: &["hello world", "Hello World", "HELLO WORLD"],
-            output: &["hello world", "hello world", "hello world"],
-        },
-    ],
+    examples: EXAMPLES,
 };
+
+const EXAMPLES: &[Example] = command_examples![
+    "Convert characters to lowercase.": {
+        args: &[],
+        input: &["hello world", "Hello World", "HELLO WORLD"],
+        output: &["hello world", "hello world", "hello world"],
+    },
+];
 
 /// Convert characters to lowercase.
 #[derive(clap::Args)]

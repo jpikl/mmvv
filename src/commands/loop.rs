@@ -1,8 +1,9 @@
 use crate::command::Context;
 use crate::command::Group;
 use crate::command::Meta;
+use crate::command_examples;
 use crate::command_meta;
-use crate::examples;
+use crate::examples::Example;
 use anyhow::Result;
 use std::io::copy;
 use std::io::Read;
@@ -12,14 +13,16 @@ pub const META: Meta = command_meta! {
     group: Group::Transformers,
     args: Args,
     run: run,
-    examples: examples! [
-        "Repeat all input two times.": {
-            args: &["2"],
-            input: &["first", "second"],
-            output: &["first", "second", "first", "second"],
-        },
-    ],
+    examples: EXAMPLES,
 };
+
+const EXAMPLES: &[Example] = command_examples![
+    "Repeat all input two times.": {
+        args: &["2"],
+        input: &["first", "second"],
+        output: &["first", "second", "first", "second"],
+    },
+];
 
 /// Repeatedly output all captured input.
 #[derive(clap::Args)]

@@ -1,8 +1,9 @@
 use crate::command::Context;
 use crate::command::Group;
 use crate::command::Meta;
+use crate::command_examples;
 use crate::command_meta;
-use crate::examples;
+use crate::examples::Example;
 use anyhow::Result;
 use memchr::memchr;
 use std::io::copy;
@@ -12,19 +13,21 @@ pub const META: Meta = command_meta! {
     group: Group::Filters,
     args: Args,
     run: run,
-    examples: examples! [
-        "Skip the first line.": {
-            args: &["1"],
-            input: &["first", "second", "third"],
-            output: &["second", "third"],
-        },
-        "Skip the first two lines.": {
-            args: &["2"],
-            input: &["first", "second", "third"],
-            output: &["third"],
-        },
-    ],
+    examples: EXAMPLES,
 };
+
+const EXAMPLES: &[Example] = command_examples![
+    "Skip the first line.": {
+        args: &["1"],
+        input: &["first", "second", "third"],
+        output: &["second", "third"],
+    },
+    "Skip the first two lines.": {
+        args: &["2"],
+        input: &["first", "second", "third"],
+        output: &["third"],
+    },
+];
 
 /// Skip first N input lines, output the rest.
 #[derive(clap::Args)]

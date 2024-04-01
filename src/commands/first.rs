@@ -1,8 +1,9 @@
 use crate::command::Context;
 use crate::command::Group;
 use crate::command::Meta;
+use crate::command_examples;
 use crate::command_meta;
-use crate::examples;
+use crate::examples::Example;
 use anyhow::Result;
 use memchr::memchr;
 
@@ -11,19 +12,21 @@ pub const META: Meta = command_meta! {
     group: Group::Filters,
     args: Args,
     run: run,
-    examples: examples![
-        "Print the first line.": {
-            args: &[],
-            input: &["first", "second", "third"],
-            output: &["first"],
-        },
-        "Print the first two lines.": {
-            args: &["2"],
-            input: &["first", "second", "third"],
-            output: &["first", "second"],
-        },
-    ],
+    examples: EXAMPLES,
 };
+
+const EXAMPLES: &[Example] = command_examples![
+    "Print the first line.": {
+        args: &[],
+        input: &["first", "second", "third"],
+        output: &["first"],
+    },
+    "Print the first two lines.": {
+        args: &["2"],
+        input: &["first", "second", "third"],
+        output: &["first", "second"],
+    },
+];
 
 /// Output first N input lines.
 #[derive(clap::Args)]

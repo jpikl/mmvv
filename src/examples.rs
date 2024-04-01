@@ -36,7 +36,7 @@ impl Example {
 }
 
 #[macro_export]
-macro_rules! examples {
+macro_rules! command_examples {
     ($($text:literal: { args: $args:expr, input: $input:expr, output: $output:expr, }),*,) => {
         &[$($crate::examples::Example { text: $text, args: $args, input: $input, output: $output }),*]
     };
