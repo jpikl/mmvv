@@ -27,10 +27,9 @@ pub fn build(metas: &[&'static command::Meta]) -> Command {
 
 fn get_version() -> String {
     let version = crate_version!();
-    let hash = env!("BUILD_COMMIT_HASH");
-    let date = env!("BUILD_COMMIT_DATE");
+    let commit = option_env!("BUILD_COMMIT").unwrap_or("unknown Git commit");
 
-    format!("{version} ({hash} {date})")
+    format!("{version} ({commit})")
 }
 
 fn get_after_help(cmd: Option<&str>) -> String {
