@@ -69,7 +69,7 @@
             <div class="input input-failure" data-exit-status="1" title="This command exited with non-zero code"><pre><span class="prompt">$</span> rew x &quot;{cat --unknown}&quot;</pre></div>
             <div class="output"><pre><span class="bold">rew cat</span> (spawned by '<span class="bold">rew x</span>'): <span class="bold fg1">invalid usage:</span> unexpected argument found
 <span class="bold">rew x</span>: <span class="bold fg1">error:</span> failed execution of expression <span class="fg3">{cat --unknown}</span>
-<span class="bold">rew x</span>: └─&gt; failed execution of command <span class="fg3">REW_BUF_MODE="full" REW_BUF_SIZE="32768" <b class="hard-br"><br/></b>REW_NULL="false" _REW_SPAWNED_BY="rew x" "/home/jpikl/.local/bin/rew" "cat" "--u<b class="hard-br"><br/></b>nknown"</span>
+<span class="bold">rew x</span>: └─&gt; failed execution of command <span class="fg3">REW_BUF_MODE="full" REW_BUF_SIZE="32768" <b class="hard-br"><br/></b>REW_NULL="false" _REW_SPAWNED_BY="rew x" "rew" "cat" "--u<b class="hard-br"><br/></b>nknown"</span>
 <span class="bold">rew x</span>: └─&gt; child process exited with code <span class="fg1">2</span></pre></div>
           </div>
         </foreignObject>

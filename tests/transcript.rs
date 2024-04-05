@@ -1,6 +1,8 @@
 use assert_cmd::crate_name;
 use std::env;
+use std::ffi::OsString;
 use std::path::Path;
+use std::path::PathBuf;
 use term_transcript::svg::NamedPalette;
 use term_transcript::svg::Template;
 use term_transcript::svg::TemplateOptions;
@@ -38,7 +40,9 @@ const STATUS_COMMAND: &str = "echo %errorlevel%";
 
 fn transcript(snapshot: &str, args: &str) {
     let shell_options = ShellOptions::default()
-        .with_cargo_path()
+        // `.with_cargo_path()` is useless because it appends the cargo target path at the end.
+        // We need it first, so it's prioritized over the other paths which might contain binary with the same name.
+        .with_env("PATH", custom_path_env())
         .with_env("CLICOLOR_FORCE", "1")
         .with_current_dir(env!("CARGO_MANIFEST_DIR"))
         .with_status_check(STATUS_COMMAND, |output| {
@@ -58,4 +62,16 @@ fn transcript(snapshot: &str, args: &str) {
         .with_match_kind(MatchKind::Precise)
         .with_template(Template::new(template_options))
         .test(path, [input.as_ref()]);
+}
+
+fn custom_path_env() -> OsString {
+    let path_env = env::var_os("PATH").unwrap_or_default();
+    let mut paths = env::split_paths(&path_env).collect::<Vec<_>>();
+    paths.insert(0, bin_directory());
+    env::join_paths(paths).unwrap()
+}
+
+fn bin_directory() -> PathBuf {
+    let bin_path = env!(concat!("CARGO_BIN_EXE_", crate_name!()));
+    Path::new(&bin_path).parent().unwrap().to_owned()
 }

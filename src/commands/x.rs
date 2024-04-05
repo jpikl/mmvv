@@ -410,15 +410,16 @@ fn format_command(command: &Command) -> Result<String> {
         write!(&mut output, "{key}={val:?} ",)?;
     }
 
-    // We want to obfuscate program path to make "transcript" tests reproducible.
-    if cfg!(debug_assertions) && env::var_os("NEXTEST").is_some() {
-        let program = Path::new(command.get_program())
+    let program = if cfg!(debug_assertions) && env::var_os("NEXTEST").is_some() {
+        // We want to obfuscate program path to make "transcript" tests reproducible.
+        Path::new(command.get_program())
             .file_stem()
-            .unwrap_or_default();
-        write!(&mut output, "{program:?}")?;
+            .unwrap_or_default()
     } else {
-        write!(&mut output, "{:?}", command.get_program())?;
-    }
+        command.get_program()
+    };
+
+    write!(&mut output, "{program:?}")?;
 
     for arg in command.get_args() {
         write!(&mut output, " {arg:?}")?;
