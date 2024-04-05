@@ -1,6 +1,7 @@
 # rew
 
-The Swiss Army Knife of line-oriented text processing. Transform text by composing parallel shell pipelines!
+The Swiss Army Knife of line-oriented text processing.
+Transform text by composing parallel shell pipelines!
 
 ## Usage
 

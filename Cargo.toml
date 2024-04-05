@@ -45,6 +45,7 @@ which = "6.0.0"
 assert_cmd = "2.0.13"
 claims = "0.7.1"
 rstest = "0.18.2"
+term-transcript = "0.3.0"
 
 [profile.release]
 codegen-units = 1

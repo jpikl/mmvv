@@ -6,5 +6,6 @@
     "timonwong.shellcheck",
     "foxundermoon.shell-format",
     "ryanluker.vscode-coverage-gutters",
+    "jock.svg",
   ]
 }

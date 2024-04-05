@@ -35,6 +35,7 @@ use std::env::current_exe;
 use std::io;
 use std::io::Write;
 use std::panic::resume_unwind;
+use std::path::Path;
 use std::process::Child;
 use std::process::ChildStdin;
 use std::process::ChildStdout;
@@ -364,7 +365,7 @@ struct EvalContext {
 impl EvalContext {
     fn from_command(command: &Command) -> Self {
         Self {
-            raw_command: Some(format!("{command:?}")),
+            raw_command: Some(format_command(command).unwrap_or_else(|_| format!("{command:?}"))),
             raw_expr: None,
         }
     }
@@ -397,6 +398,33 @@ impl EvalContext {
 
         err
     }
+}
+
+fn format_command(command: &Command) -> Result<String> {
+    use std::fmt::Write;
+    let mut output = String::new();
+
+    for (key, val) in command.get_envs() {
+        let key = key.to_string_lossy();
+        let val = val.unwrap_or_default();
+        write!(&mut output, "{key}={val:?} ",)?;
+    }
+
+    // We want to obfuscate program path to make "transcript" tests reproducible.
+    if cfg!(debug_assertions) && env::var_os("NEXTEST").is_some() {
+        let program = Path::new(command.get_program())
+            .file_stem()
+            .unwrap_or_default();
+        write!(&mut output, "{program:?}")?;
+    } else {
+        write!(&mut output, "{:?}", command.get_program())?;
+    }
+
+    for arg in command.get_args() {
+        write!(&mut output, " {arg:?}")?;
+    }
+
+    Ok(output)
 }
 
 trait WithEvalContext<T> {

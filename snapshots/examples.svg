@@ -1,0 +1,246 @@
+<!-- Created with term-transcript v0.3.0 (https://github.com/slowli/term-transcript) -->
+<svg viewBox="0 0 720 3162" width="720" height="3162" xmlns="http://www.w3.org/2000/svg">
+  <switch>
+    <g requiredExtensions="http://www.w3.org/1999/xhtml">
+      <style>
+        .container {
+          padding: 0 10px;
+          color: #e5e5e5;
+          line-height: 18px;
+        }
+        .container pre {
+          padding: 0;
+          margin: 0;
+          font: 14px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+          line-height: inherit;
+        }
+        .input {
+          margin: 0 -10px 6px;
+          color: #e5e5e5;
+          background: rgba(255, 255, 255, 0.1);
+          padding: 2px 10px;
+        }
+        .input-hidden { display: none; }
+        .output { margin-bottom: 6px; }
+        .bold,.prompt { font-weight: bold; }
+        .italic { font-style: italic; }
+        .underline { text-decoration: underline; }
+        .dimmed { opacity: 0.7; }
+        .hard-br {
+          position: relative;
+          margin-left: 5px;
+        }
+        .hard-br:before {
+          content: '↓';
+          font-size: 16px;
+          height: 16px;
+          position: absolute;
+          bottom: 0;
+          transform: rotate(45deg);
+          opacity: 0.8;
+        }
+        .fg0 { color: #000000; } .bg0 { background: #000000; }
+        .fg1 { color: #cd0000; } .bg1 { background: #cd0000; }
+        .fg2 { color: #00cd00; } .bg2 { background: #00cd00; }
+        .fg3 { color: #cdcd00; } .bg3 { background: #cdcd00; }
+        .fg4 { color: #0000ee; } .bg4 { background: #0000ee; }
+        .fg5 { color: #cd00cd; } .bg5 { background: #cd00cd; }
+        .fg6 { color: #00cdcd; } .bg6 { background: #00cdcd; }
+        .fg7 { color: #e5e5e5; } .bg7 { background: #e5e5e5; }
+        .fg8 { color: #7f7f7f; } .bg8 { background: #7f7f7f; }
+        .fg9 { color: #ff0000; } .bg9 { background: #ff0000; }
+        .fg10 { color: #00ff00; } .bg10 { background: #00ff00; }
+        .fg11 { color: #ffff00; } .bg11 { background: #ffff00; }
+        .fg12 { color: #5c5cff; } .bg12 { background: #5c5cff; }
+        .fg13 { color: #ff00ff; } .bg13 { background: #ff00ff; }
+        .fg14 { color: #00ffff; } .bg14 { background: #00ffff; }
+        .fg15 { color: #ffffff; } .bg15 { background: #ffffff; }
+      </style>
+      <rect width="100%" height="100%" y="0" rx="4.5" style="fill: #000000;" />
+      <svg x="0" y="10" width="720" height="3142" viewBox="0 0 720 3142">
+        <foreignObject width="720" height="3142">
+          <div xmlns="http://www.w3.org/1999/xhtml" class="container">
+            <div class="input" data-exit-status="0"><pre><span class="prompt">$</span> rew x --examples</pre></div>
+            <div class="output"><pre>
+Empty expression <span class="fg3">{}</span> is replaced by input line. 
+
+ <span class="fg2">╭────────────────────────────────────────╮</span>
+ <span class="fg2">│$ </span>rew x <span class="fg3">'Hello {}'</span>                      <span class="fg2">│</span>
+ <span class="fg2">╰────────────────────────────────────────╯</span>
+  <span class="fg2">stdin:</span> <span class="fg2">"</span>first<span class="fg2">"</span>     <span class="fg2">stdout:</span> <span class="fg2">"</span>Hello first<span class="fg2">"</span> 
+         <span class="fg2">"</span>second<span class="fg2">"</span>            <span class="fg2">"</span>Hello second<span class="fg2">"</span>
+         <span class="fg2">"</span>third<span class="fg2">"</span>             <span class="fg2">"</span>Hello third<span class="fg2">"</span> 
+
+Expressions can call other <span class="fg3">rew</span> commands to process the input. 
+ 
+Here, we call the <span class="fg3">rew upper</span> command which converts text to uppercase. 
+
+ <span class="fg2">╭────────────────────────────────────────╮</span>
+ <span class="fg2">│$ </span>rew x <span class="fg3">'Hello {upper}'</span>                 <span class="fg2">│</span>
+ <span class="fg2">╰────────────────────────────────────────╯</span>
+  <span class="fg2">stdin:</span> <span class="fg2">"</span>first<span class="fg2">"</span>     <span class="fg2">stdout:</span> <span class="fg2">"</span>Hello FIRST<span class="fg2">"</span> 
+         <span class="fg2">"</span>second<span class="fg2">"</span>            <span class="fg2">"</span>Hello SECOND<span class="fg2">"</span>
+         <span class="fg2">"</span>third<span class="fg2">"</span>             <span class="fg2">"</span>Hello THIRD<span class="fg2">"</span> 
+
+Expressions can also call any external command. 
+ 
+Let's remove all <span class="fg3">aeiou</span> characters from text using <span class="fg3">tr</span>. 
+
+ <span class="fg2">╭────────────────────────────────────────╮</span>
+ <span class="fg2">│$ </span>rew x <span class="fg3">'Hello {tr -d aeiou}'</span>           <span class="fg2">│</span>
+ <span class="fg2">╰────────────────────────────────────────╯</span>
+  <span class="fg2">stdin:</span> <span class="fg2">"</span>first<span class="fg2">"</span>     <span class="fg2">stdout:</span> <span class="fg2">"</span>Hello frst<span class="fg2">"</span>
+         <span class="fg2">"</span>second<span class="fg2">"</span>            <span class="fg2">"</span>Hello scnd<span class="fg2">"</span>
+         <span class="fg2">"</span>third<span class="fg2">"</span>             <span class="fg2">"</span>Hello thrd<span class="fg2">"</span>
+
+Multiple commands can be joined into a pipeline. 
+
+ <span class="fg2">╭────────────────────────────────────────╮</span>
+ <span class="fg2">│$ </span>rew x <span class="fg3">'Hello {tr -d aeiou | upper}'</span>   <span class="fg2">│</span>
+ <span class="fg2">╰────────────────────────────────────────╯</span>
+  <span class="fg2">stdin:</span> <span class="fg2">"</span>first<span class="fg2">"</span>     <span class="fg2">stdout:</span> <span class="fg2">"</span>Hello FRST<span class="fg2">"</span>
+         <span class="fg2">"</span>second<span class="fg2">"</span>            <span class="fg2">"</span>Hello SCND<span class="fg2">"</span>
+         <span class="fg2">"</span>third<span class="fg2">"</span>             <span class="fg2">"</span>Hello THRD<span class="fg2">"</span>
+
+Multiple expressions are run in parallel and their output is combined. The 
+excution runs until one of the expressions no longer produces any output. 
+
+ <span class="fg2">╭────────────────────────────────────────╮</span>
+ <span class="fg2">│$ </span>rew x <span class="fg3">'{seq}. {tr -d aeiou | upper}'</span>  <span class="fg2">│</span>
+ <span class="fg2">╰────────────────────────────────────────╯</span>
+  <span class="fg2">stdin:</span> <span class="fg2">"</span>first<span class="fg2">"</span>     <span class="fg2">stdout:</span> <span class="fg2">"</span>1. FRST<span class="fg2">"</span>
+         <span class="fg2">"</span>second<span class="fg2">"</span>            <span class="fg2">"</span>2. SCND<span class="fg2">"</span>
+         <span class="fg2">"</span>third<span class="fg2">"</span>             <span class="fg2">"</span>3. THRD<span class="fg2">"</span>
+
+Arguments containing whitepaces must be wrapped in single <span class="fg3">''</span> or double quotes 
+<span class="fg3">""</span>. 
+ 
+Here, we replace <span class="fg3">aeiou</span> characters with space <span class="fg3">' '</span>. 
+
+ <span class="fg2">╭────────────────────────────────────────╮</span>
+ <span class="fg2">│$ </span>rew x <span class="fg3">'Hello {tr aeiou " " | upper}'</span>  <span class="fg2">│</span>
+ <span class="fg2">╰────────────────────────────────────────╯</span>
+  <span class="fg2">stdin:</span> <span class="fg2">"</span>first<span class="fg2">"</span>     <span class="fg2">stdout:</span> <span class="fg2">"</span>Hello F RST<span class="fg2">"</span> 
+         <span class="fg2">"</span>second<span class="fg2">"</span>            <span class="fg2">"</span>Hello S C ND<span class="fg2">"</span>
+         <span class="fg2">"</span>third<span class="fg2">"</span>             <span class="fg2">"</span>Hello TH RD<span class="fg2">"</span> 
+
+The <span class="fg3">!</span> marker denotes an external command. 
+ 
+Let's call the standard <span class="fg3">seq</span> command instead of the built-in <span class="fg3">rew seq</span>. 
+
+ <span class="fg2">╭────────────────────────────────────────╮</span>
+ <span class="fg2">│$ </span>rew x <span class="fg3">'{!seq 1 3}. {}'</span>                <span class="fg2">│</span>
+ <span class="fg2">╰────────────────────────────────────────╯</span>
+  <span class="fg2">stdin:</span> <span class="fg2">"</span>first<span class="fg2">"</span>     <span class="fg2">stdout:</span> <span class="fg2">"</span>1. first<span class="fg2">"</span> 
+         <span class="fg2">"</span>second<span class="fg2">"</span>            <span class="fg2">"</span>2. second<span class="fg2">"</span>
+         <span class="fg2">"</span>third<span class="fg2">"</span>             <span class="fg2">"</span>3. third<span class="fg2">"</span> 
+
+The <span class="fg3">#</span> marker denotes "raw shell expression". Everything after it will be 
+interpreted by the current shell. 
+ 
+For example, the following expression is equivalent to <span class="fg3">{sh -c 'printf "%s\n" a 
+b c'}</span> 
+
+ <span class="fg2">╭────────────────────────────────────────╮</span>
+ <span class="fg2">│$ </span>rew x <span class="fg3">'{# printf "%s\n" a b c}. {}'</span>   <span class="fg2">│</span>
+ <span class="fg2">╰────────────────────────────────────────╯</span>
+  <span class="fg2">stdin:</span> <span class="fg2">"</span>first<span class="fg2">"</span>     <span class="fg2">stdout:</span> <span class="fg2">"</span>a. first<span class="fg2">"</span> 
+         <span class="fg2">"</span>second<span class="fg2">"</span>            <span class="fg2">"</span>b. second<span class="fg2">"</span>
+         <span class="fg2">"</span>third<span class="fg2">"</span>             <span class="fg2">"</span>c. third<span class="fg2">"</span> 
+
+A specific shell for <span class="fg3">{# ...}</span> can be set using the <span class="fg3">-s, --shell</span> option or the 
+<span class="fg3">SHELL</span> environment variable. 
+
+ <span class="fg2">╭──────────────────────────────────────────────────────────────╮</span>
+ <span class="fg2">│$ </span>rew x -s bash <span class="fg3">'{# for((i=0;i&lt;3;i++)); do echo $i; done}. {}'</span><span class="fg2">│</span>
+ <span class="fg2">╰──────────────────────────────────────────────────────────────╯</span>
+  <span class="fg2">stdin:</span> <span class="fg2">"</span>first<span class="fg2">"</span>     <span class="fg2">stdout:</span> <span class="fg2">"</span>0. first<span class="fg2">"</span> 
+         <span class="fg2">"</span>second<span class="fg2">"</span>            <span class="fg2">"</span>1. second<span class="fg2">"</span>
+         <span class="fg2">"</span>third<span class="fg2">"</span>             <span class="fg2">"</span>2. third<span class="fg2">"</span> 
+
+The <span class="fg3">:</span> marker is a hint that an expression does not consume stdin. Without it, 
+the overall execution might get stuck forever due to blocked IO calls. 
+ 
+Only external commands need <span class="fg3">:</span> to be explicitely specified. For built-in 
+commands, <span class="fg3">:</span> is detected automatically. 
+
+ <span class="fg2">╭─────────────────────────────────────────────────────────────╮</span>
+ <span class="fg2">│$ </span>rew x <span class="fg3">'{seq 1..3} {: !seq 1 3} {:# echo 1; echo 2; echo 3}'</span><span class="fg2">│</span>
+ <span class="fg2">╰─────────────────────────────────────────────────────────────╯</span>
+  <span class="fg2">stdout:</span> <span class="fg2">"</span>1 1 1<span class="fg2">"</span>
+          <span class="fg2">"</span>2 2 2<span class="fg2">"</span>
+          <span class="fg2">"</span>3 3 3<span class="fg2">"</span>
+
+Backslash <span class="fg3">\</span> can be used to escape special characters 
+
+ <span class="fg2">╭────────────────────────────────────────╮</span>
+ <span class="fg2">│$ </span>rew x <span class="fg3">'\{ "{}": {seq} \}'</span>             <span class="fg2">│</span>
+ <span class="fg2">╰────────────────────────────────────────╯</span>
+  <span class="fg2">stdin:</span> <span class="fg2">"</span>first<span class="fg2">"</span>     <span class="fg2">stdout:</span> <span class="fg2">"</span>{ "first": 1 }<span class="fg2">"</span> 
+         <span class="fg2">"</span>second<span class="fg2">"</span>            <span class="fg2">"</span>{ "second": 2 }<span class="fg2">"</span>
+         <span class="fg2">"</span>third<span class="fg2">"</span>             <span class="fg2">"</span>{ "third": 3 }<span class="fg2">"</span> 
+
+A custom escape character can be set using the <span class="fg3">-e, --escape</span> option. 
+
+ <span class="fg2">╭────────────────────────────────────────╮</span>
+ <span class="fg2">│$ </span>rew x -e% <span class="fg3">'%{ "{}": {seq} %}'</span>         <span class="fg2">│</span>
+ <span class="fg2">╰────────────────────────────────────────╯</span>
+  <span class="fg2">stdin:</span> <span class="fg2">"</span>first<span class="fg2">"</span>     <span class="fg2">stdout:</span> <span class="fg2">"</span>{ "first": 1 }<span class="fg2">"</span> 
+         <span class="fg2">"</span>second<span class="fg2">"</span>            <span class="fg2">"</span>{ "second": 2 }<span class="fg2">"</span>
+         <span class="fg2">"</span>third<span class="fg2">"</span>             <span class="fg2">"</span>{ "third": 3 }<span class="fg2">"</span> 
+
+Certain special characters like <span class="fg3">|</span> must be escaped only within a specific 
+context. 
+
+ <span class="fg2">╭────────────────────────────────────────╮</span>
+ <span class="fg2">│$ </span>rew x <span class="fg3">'| {echo "|"} {echo \|}'</span>        <span class="fg2">│</span>
+ <span class="fg2">╰────────────────────────────────────────╯</span>
+  <span class="fg2">stdout:</span> <span class="fg2">"</span>| | |<span class="fg2">"</span>
+
+Escape character can be also used to produce line feed <span class="fg3">\n</span>, carriage return <span class="fg3">\r</span> 
+or tab <span class="fg3">\t</span>. 
+
+ <span class="fg2">╭────────────────────────────────────────╮</span>
+ <span class="fg2">│$ </span>rew x <span class="fg3">'{seq}:\n\t{}'</span>                  <span class="fg2">│</span>
+ <span class="fg2">╰────────────────────────────────────────╯</span>
+  <span class="fg2">stdin:</span> <span class="fg2">"</span>first<span class="fg2">"</span>     <span class="fg2">stdout:</span> <span class="fg2">"</span>1:<span class="fg2">"</span>        
+         <span class="fg2">"</span>second<span class="fg2">"</span>            <span class="fg2">"</span>    first<span class="fg2">"</span> 
+         <span class="fg2">"</span>third<span class="fg2">"</span>             <span class="fg2">"</span>2:<span class="fg2">"</span>        
+                             <span class="fg2">"</span>    second<span class="fg2">"</span>
+                             <span class="fg2">"</span>3:<span class="fg2">"</span>        
+                             <span class="fg2">"</span>    third<span class="fg2">"</span> 
+
+You can enable automatic expression quoting using <span class="fg3">-q, --quote</span> flag. 
+
+ <span class="fg2">╭────────────────────────────────────────╮</span>
+ <span class="fg2">│$ </span>rew x -q <span class="fg3">'mv {} {lower | tr " " "_"}'</span> <span class="fg2">│</span>
+ <span class="fg2">╰────────────────────────────────────────╯</span>
+  <span class="fg2">stdin:</span> <span class="fg2">"</span>IMG 1.jpg<span class="fg2">"</span>    <span class="fg2">stdout:</span> <span class="fg2">"</span>mv 'IMG 1.jpg' 'img_1.jpg'<span class="fg2">"</span>
+         <span class="fg2">"</span>IMG 2.jpg<span class="fg2">"</span>            <span class="fg2">"</span>mv 'IMG 2.jpg' 'img_2.jpg'<span class="fg2">"</span>
+
+Double the <span class="fg3">-q, --quote</span> to use double quotes instead of single quotes. 
+
+ <span class="fg2">╭────────────────────────────────────────╮</span>
+ <span class="fg2">│$ </span>rew x -qq <span class="fg3">'mv {} {lower | tr " " "_"}'</span><span class="fg2">│</span>
+ <span class="fg2">╰────────────────────────────────────────╯</span>
+  <span class="fg2">stdin:</span> <span class="fg2">"</span>IMG 1.jpg<span class="fg2">"</span>    <span class="fg2">stdout:</span> <span class="fg2">"</span>mv "IMG 1.jpg" "img_1.jpg"<span class="fg2">"</span>
+         <span class="fg2">"</span>IMG 2.jpg<span class="fg2">"</span>            <span class="fg2">"</span>mv "IMG 2.jpg" "img_2.jpg"<span class="fg2">"</span>
+
+All global options <span class="fg3">-0, --null</span>, <span class="fg3">--buf-size</span> and <span class="fg3">--buf-mode</span> are propagated to rew 
+subcommands. Do not forget configure NUL separator manually for any external com<b class="hard-br"><br/></b>mands. 
+
+ <span class="fg2">╭────────────────────────────────────────────────────╮</span>
+ <span class="fg2">│$ </span>rew x --null <span class="fg3">'{upper | sed --null-data "s/^.//g"}'</span><span class="fg2">│</span>
+ <span class="fg2">╰────────────────────────────────────────────────────╯</span>
+  <span class="fg2">stdin:</span> <span class="fg2">"</span>aa<span class="fg3">\0</span>bb<span class="fg3">\0</span>cc<span class="fg3">\0</span><span class="fg2">"</span>    <span class="fg2">stdout:</span> <span class="fg2">"</span>A<span class="fg3">\0</span>B<span class="fg3">\0</span>C<span class="fg3">\0</span><span class="fg2">"</span>
+</pre></div>
+          </div>
+        </foreignObject>
+      </svg>
+    </g>
+    <text x="10" y="18" style="font: 14px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace; fill: #cd0000;">
+      HTML embedding not supported.
+      Consult <tspan style="text-decoration: underline; text-decoration-thickness: 1px;"><a href="https://github.com/slowli/term-transcript/blob/HEAD/FAQ.md">term-transcript docs</a></tspan> for details.
+    </text>
+  </switch>
+</svg>
