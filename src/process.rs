@@ -161,7 +161,7 @@ impl CommandEx for Command {
             }
             context
         } else {
-            Context::new(format!("command {self:?}"))
+            Context::new(format!("command: {YELLOW}{self:?}{RESET}"))
         }
     }
 }
