@@ -1,7 +1,6 @@
 use crate::colors::RED;
 use crate::colors::RESET;
 use crate::colors::YELLOW;
-use crate::error::Context;
 use crate::io::LineReader;
 use anyhow::Error;
 use anyhow::Result;
@@ -15,6 +14,33 @@ use std::process::ChildStdout;
 use std::process::Command;
 use std::process::ExitStatus;
 
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum StdinMode {
+    Connected,
+    Disconnected,
+}
+
+#[derive(Clone)]
+pub struct Context(Vec<String>);
+
+impl Context {
+    pub fn new(value: impl Into<String>) -> Self {
+        Self(vec![value.into()])
+    }
+
+    pub fn add(&mut self, value: impl Into<String>) {
+        self.0.push(value.into());
+    }
+
+    pub fn apply<E: Into<anyhow::Error>>(&self, error: E) -> anyhow::Error {
+        let mut error = error.into();
+        for context in &self.0 {
+            error = error.context(context.clone());
+        }
+        error
+    }
+}
+
 pub struct Spawned<T> {
     pub inner: T,
     pub context: Context,
@@ -25,7 +51,7 @@ impl<T> Spawned<T> {
         Self { inner, context }
     }
 
-    pub fn map<V>(self, mapper: impl Fn(T) -> V) -> Spawned<V> {
+    pub fn move_context<V>(self, mapper: impl Fn(T) -> V) -> Spawned<V> {
         Spawned::new(mapper(self.inner), self.context.clone())
     }
 
@@ -105,42 +131,19 @@ impl Spawned<Child> {
 }
 
 fn exit_error(status: ExitStatus) -> Error {
-    Error::msg(format!(
-        "child process exited with code {RED}{}{RESET}",
-        status.code().unwrap_or_default(),
-    ))
+    let message = match status.code() {
+        Some(code) => format!("child process exited with code {RED}{code}{RESET}"),
+        None => "child process was terminated by a signal".to_owned(),
+    };
+    Error::msg(message)
 }
 
-pub struct Pipeline {
-    pub stdin: Option<Spawned<ChildStdin>>,
-    pub stdout: Spawned<ChildStdout>,
-    pub children: Vec<Spawned<Child>>,
-}
-
-impl Pipeline {
-    #[must_use]
-    pub fn context(mut self, context: impl Into<String>) -> Self {
-        let context = context.into();
-
-        if let Some(stdin) = &mut self.stdin {
-            stdin.context.add(context.clone());
-        }
-
-        for child in &mut self.children {
-            child.context.add(context.clone());
-        }
-
-        self.stdout.context.add(context);
-        self
-    }
-}
-
-pub trait CommandEx {
+pub trait SpawnWithContext {
     fn spawn_with_context(&mut self) -> Result<Spawned<Child>>;
     fn context(&self) -> Context;
 }
 
-impl CommandEx for Command {
+impl SpawnWithContext for Command {
     fn spawn_with_context(&mut self) -> Result<Spawned<Child>> {
         match self.spawn() {
             Ok(child) => Ok(Spawned::new(child, self.context())),

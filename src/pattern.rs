@@ -1,6 +1,7 @@
 use crate::colors::BOLD_RED;
 use crate::colors::RESET;
 use crate::colors::YELLOW;
+use crate::process::StdinMode;
 use derive_more::Display;
 use derive_more::IsVariant;
 use std::fmt;
@@ -92,7 +93,7 @@ pub enum SimpleItem {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Expression {
-    pub no_stdin: bool,
+    pub stdin_mode: StdinMode,
     pub value: ExpressionValue,
     pub raw_value: String,
 }
@@ -174,7 +175,7 @@ impl Display for Pattern {
 impl Display for Expression {
     fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
         write!(fmt, "{{")?;
-        if self.no_stdin {
+        if self.stdin_mode == StdinMode::Disconnected {
             write!(fmt, ":")?;
         }
         write!(fmt, "{}", self.value)?;
@@ -275,6 +276,12 @@ impl Parser<'_> {
 
         self.consume_whitespaces();
 
+        let stdin_mode = if no_stdin {
+            StdinMode::Disconnected
+        } else {
+            StdinMode::Connected
+        };
+
         let value = if raw_shell {
             ExpressionValue::RawShell(self.parse_raw_shell()?)
         } else {
@@ -283,7 +290,7 @@ impl Parser<'_> {
 
         if self.try_consume(EXPR_END) {
             Ok(Expression {
-                no_stdin,
+                stdin_mode,
                 value,
                 raw_value: self.input[start_offset..self.offset].into(),
             })
