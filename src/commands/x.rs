@@ -167,8 +167,8 @@ struct Args {
     /// Shell used to evaluate `{# ...}` expressions.
     ///
     /// Default value: `cmd` on Windows, `sh` everywhere else.
-    #[arg(short, long, env = "SHELL")]
-    shell: Option<String>,
+    #[arg(short, long, env = "SHELL", default_value_t = Shell::default(), hide_default_value = true)]
+    shell: Shell,
 
     /// Wrap output of every pattern expression in quotes
     ///
@@ -189,7 +189,7 @@ fn run(context: &Context, args: &Args) -> Result<()> {
     if let Some(pattern) = pattern.try_simplify() {
         eval_simple_pattern(context, &pattern)
     } else {
-        eval_pattern(context, &pattern, args.shell.as_deref())
+        eval_pattern(context, &pattern, args.shell.clone())
     }
 }
 
@@ -210,7 +210,7 @@ fn eval_simple_pattern(context: &Context, pattern: &SimplePattern) -> Result<()>
     Ok(())
 }
 
-fn eval_pattern(context: &Context, pattern: &Pattern, shell: Option<&str>) -> Result<()> {
+fn eval_pattern(context: &Context, pattern: &Pattern, shell: Shell) -> Result<()> {
     let mut builder = CommandBuilder::new(context, shell);
     let mut children = Vec::new();
     let mut items = Vec::new();
@@ -337,10 +337,10 @@ struct CommandBuilder<'a> {
 }
 
 impl<'a> CommandBuilder<'a> {
-    fn new(context: &'a Context, shell: Option<&'a str>) -> Self {
+    fn new(context: &'a Context, shell: Shell) -> Self {
         Self {
             context,
-            shell: shell.map(Shell::new).unwrap_or_default(),
+            shell,
             stdbuf: StdBuf::default(),
         }
     }

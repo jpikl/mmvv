@@ -1,6 +1,9 @@
+use derive_more::Display;
 use std::borrow::Cow;
 use std::ffi::OsStr;
 use std::ffi::OsString;
+use std::fmt;
+use std::fmt::Formatter;
 use std::path::Path;
 use std::process::Command;
 
@@ -29,7 +32,14 @@ impl ShellKind {
     }
 }
 
+#[derive(Clone)]
 pub struct Shell(OsString);
+
+impl Display for Shell {
+    fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
+        write!(fmt, "{}", self.0.to_string_lossy())
+    }
+}
 
 impl Default for Shell {
     #[cfg(target_os = "windows")]
@@ -40,6 +50,12 @@ impl Default for Shell {
     #[cfg(not(target_os = "windows"))]
     fn default() -> Self {
         Self("sh".into())
+    }
+}
+
+impl From<&OsStr> for Shell {
+    fn from(value: &OsStr) -> Self {
+        Self::new(value)
     }
 }
 
