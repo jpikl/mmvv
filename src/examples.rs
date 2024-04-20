@@ -2,7 +2,7 @@ use crate::colors::Colorizer;
 use crate::colors::GREEN;
 use crate::colors::RESET;
 use crate::colors::YELLOW;
-use crate::pager;
+use crate::pager::Pager;
 use anstream::adapter::strip_str;
 use anstream::stdout;
 use anyhow::Result;
@@ -13,8 +13,6 @@ use clap::ArgMatches;
 use clap::Command;
 use std::io;
 use std::io::Write;
-use std::panic::resume_unwind;
-use std::thread;
 use terminal_size::terminal_size;
 use terminal_size::Width;
 use unicode_width::UnicodeWidthStr;
@@ -75,22 +73,8 @@ pub fn is_arg_set(matches: &ArgMatches) -> bool {
 }
 
 pub fn print(command: &'static str, examples: &'static [Example]) -> Result<()> {
-    if let Some(mut pager) = pager::open()? {
-        let mut stdin = pager.take_stdin().expect("could not get pager stdin");
-
-        let thread = thread::spawn(move || {
-            write(&mut stdin.inner, command, examples).map_err(|err| {
-                stdin
-                    .context
-                    .apply(err)
-                    .context("failed to write to child process stdin")
-            })
-        });
-
-        pager.wait()?;
-        thread.join().map_err(resume_unwind)??;
-
-        Ok(())
+    if let Some(mut pager) = Pager::detect() {
+        pager.open(|stdin| write(stdin, command, examples))
     } else {
         write(&mut stdout().lock(), command, examples)
     }
