@@ -11,41 +11,17 @@ use std::process::Stdio;
 pub struct Pipeline {
     pub children: Vec<Spawned<Child>>,
     pub stdin: Option<Spawned<ChildStdin>>,
-    pub stdout: Spawned<ChildStdout>,
+    pub stdout: Option<Spawned<ChildStdout>>,
+    stdin_mode: StdinMode,
 }
 
 impl Pipeline {
-    #[must_use]
-    pub fn context(mut self, context: impl Into<String>) -> Self {
-        let context = context.into();
-
-        if let Some(stdin) = &mut self.stdin {
-            stdin.context.add(context.clone());
-        }
-
-        for child in &mut self.children {
-            child.context.add(context.clone());
-        }
-
-        self.stdout.context.add(context);
-        self
-    }
-}
-
-pub struct Builder {
-    children: Vec<Spawned<Child>>,
-    stdin: Option<Spawned<ChildStdin>>,
-    stdin_mode: StdinMode,
-    stdout: Option<Spawned<ChildStdout>>,
-}
-
-impl Builder {
     pub fn new(stdin_mode: StdinMode) -> Self {
         Self {
             children: Vec::new(),
             stdin: None,
-            stdin_mode,
             stdout: None,
+            stdin_mode,
         }
     }
 
@@ -79,14 +55,22 @@ impl Builder {
         Ok(self)
     }
 
-    pub fn build(mut self) -> Pipeline {
-        Pipeline {
-            children: self.children,
-            stdin: self.stdin,
-            stdout: self
-                .stdout
-                .take()
-                .expect("constructed pipeline without stdout"),
+    #[must_use]
+    pub fn context(mut self, context: impl Into<String>) -> Self {
+        let context = context.into();
+
+        for child in &mut self.children {
+            child.context.add(context.clone());
         }
+
+        if let Some(stdin) = &mut self.stdin {
+            stdin.context.add(context.clone());
+        }
+
+        if let Some(stdout) = &mut self.stdout {
+            stdout.context.add(context);
+        }
+
+        self
     }
 }

@@ -21,7 +21,6 @@ use crate::pattern::Item;
 use crate::pattern::Pattern;
 use crate::pattern::SimpleItem;
 use crate::pattern::SimplePattern;
-use crate::pipeline;
 use crate::pipeline::Pipeline;
 use crate::process::Spawned;
 use crate::process::StdinMode;
@@ -35,10 +34,11 @@ use clap::ArgAction;
 use std::env;
 use std::env::current_exe;
 use std::panic::resume_unwind;
+use std::process::Child;
+use std::process::ChildStdin;
 use std::process::ChildStdout;
 use std::process::Command;
 use std::thread;
-use std::thread::JoinHandle;
 use std::time::Duration;
 
 pub const META: Meta = command_meta! {
@@ -189,7 +189,7 @@ fn run(context: &Context, args: &Args) -> Result<()> {
     if let Some(pattern) = pattern.try_simplify() {
         eval_simple_pattern(context, &pattern)
     } else {
-        eval_pattern(context, &pattern, args.shell.clone())
+        eval_pattern(context, &pattern, &args.shell)
     }
 }
 
@@ -210,77 +210,102 @@ fn eval_simple_pattern(context: &Context, pattern: &SimplePattern) -> Result<()>
     Ok(())
 }
 
-fn eval_pattern(context: &Context, pattern: &Pattern, shell: Shell) -> Result<()> {
-    let mut builder = CommandBuilder::new(context, shell);
+fn eval_pattern(context: &Context, pattern: &Pattern, shell: &Shell) -> Result<()> {
+    let mut stdbuf = StdBuf::default();
     let mut children = Vec::new();
-    let mut items = Vec::new();
-    let mut stdins = Vec::new();
+    let mut consumers = Vec::new();
+    let mut producers = Vec::new();
 
-    // Build and spawn child process pipelines.
     for item in pattern.items() {
         match &item {
-            Item::Constant(value) => items.push(EvalItem::Constant(value.clone())),
-            Item::Expression(ref expression) => {
-                let pipeline = builder.build(expression)?;
+            Item::Constant(value) => producers.push(Producer::Constant(value.clone())),
+            Item::Expression(ref expr) => {
+                let pipeline = build_pipeline(context, &mut stdbuf, shell, expr)?;
 
                 for child in pipeline.children {
                     children.push(child);
                 }
 
-                items.push(EvalItem::Reader(
-                    pipeline
-                        .stdout
-                        .move_context(|inner| context.line_reader_from(inner)),
-                ));
+                if let Some(stdout) = pipeline.stdout {
+                    producers.push(Producer::Child(
+                        stdout.move_context(|inner| context.line_reader_from(inner)),
+                    ));
+                }
 
                 if pipeline.stdin.is_some() {
-                    stdins.push(pipeline.stdin);
+                    consumers.push(pipeline.stdin);
                 }
             }
         }
     }
 
-    // "reader" thread which forwards main process stdin to every child process.
+    // Helper thead forwards main process stdin to every child process.
     let thread_context = context.clone();
-    let thread: JoinHandle<Result<()>> = thread::spawn(move || {
-        if stdins.iter().all(Option::is_none) {
-            return Ok(()); // None of the child proceses use stdin.
-        }
+    let thread = thread::spawn(move || forward_input(&thread_context, consumers));
 
-        let mut reader = thread_context.byte_chunk_reader();
+    // Main thread collects output from stdout of every child process.
+    collect_output(context, producers)?;
+    wait_children(children)?;
 
-        while let Some(chunk) = reader.read_chunk()? {
-            for stdin in &mut stdins {
-                if let Some(writer) = stdin {
-                    if !writer.write_all(chunk)? {
-                        // Could not write to child process stdin because it ended.
-                        // Do not end the whole thread yet, keep writing to the other running child processes.
-                        stdin.take();
-                    }
+    if thread.is_finished() {
+        // Join the thread only if it actually endeded.
+        // Otherwise, this would be stucked forewer!
+        thread.join().map_err(resume_unwind)?
+    } else {
+        // The helper thread is blocked on read from stdin.
+        // There is no way how to interrupt it, so we just let the thread die alongside the main process.
+        // Reimplementing this with async Rust is probably not worth the effort, because:
+        // 1. It only happens during interactive usage when stdin is TTY.
+        // 2. And all process pipelines must contain at least one process which does not read from stdin.
+        Ok(())
+    }
+}
+
+enum Producer {
+    Constant(String),
+    Child(Spawned<LineReader<ChildStdout>>),
+}
+
+fn forward_input(context: &Context, mut stdins: Vec<Option<Spawned<ChildStdin>>>) -> Result<()> {
+    if stdins.iter().all(Option::is_none) {
+        return Ok(()); // None of the child proceses use stdin.
+    }
+
+    let mut reader = context.byte_chunk_reader();
+
+    while let Some(chunk) = reader.read_chunk()? {
+        for stdin in &mut stdins {
+            if let Some(writer) = stdin {
+                if !writer.write_all(chunk)? {
+                    // Could not write to child process stdin because it ended.
+                    // Do not end the whole thread yet, keep writing to the other running child processes.
+                    stdin.take();
                 }
             }
-
-            if stdins.iter().all(Option::is_none) {
-                break; // Stdin of every child process was closed.
-            }
         }
 
-        Ok(())
-    });
+        if stdins.iter().all(Option::is_none) {
+            break; // Stdin of every child process was closed.
+        }
+    }
 
+    Ok(())
+}
+
+fn collect_output(context: &Context, mut producers: Vec<Producer>) -> Result<()> {
     let mut writer = context.writer();
     let mut buffer = context.uninit_buf();
 
     // Combine output from stdout of every child process.
-    'outer: loop {
-        for item in &mut items {
-            match item {
-                EvalItem::Constant(value) => buffer.push_str(value),
-                EvalItem::Reader(reader) => {
+    loop {
+        for producer in &mut producers {
+            match producer {
+                Producer::Constant(value) => buffer.push_str(value),
+                Producer::Child(reader) => {
                     if let Some(line) = reader.read_line()? {
                         buffer.push_str(line);
                     } else {
-                        break 'outer; // Quit as soon as one of child processes ends.
+                        return Ok(()); // Quit as soon as one of child processes ends.
                     }
                 }
             }
@@ -288,7 +313,9 @@ fn eval_pattern(context: &Context, pattern: &Pattern, shell: Shell) -> Result<()
         writer.write_line(&buffer)?;
         buffer.clear();
     }
+}
 
+fn wait_children(mut children: Vec<Spawned<Child>>) -> Result<()> {
     let mut all_finished = true;
 
     // Make sure all child processes are terminated.
@@ -299,141 +326,130 @@ fn eval_pattern(context: &Context, pattern: &Pattern, shell: Shell) -> Result<()
         }
     }
 
-    if !all_finished {
-        // Give the remaining child processes some extra time to finish.
-        // Needed especialy in case program exists with error on Windows.
-        thread::sleep(Duration::from_millis(100));
+    if all_finished {
+        return Ok(());
+    }
 
-        // Just kill the ones which did not terminate on their own.
-        for child in &mut children {
-            if !child.try_wait()? {
-                child.kill()?;
-            }
+    // Give the remaining child processes some extra time to finish.
+    // Needed especialy in case program exists with error on Windows.
+    thread::sleep(Duration::from_millis(100));
+
+    // Just kill the ones which did not terminate on their own.
+    for child in &mut children {
+        if !child.try_wait()? {
+            child.kill()?;
         }
     }
 
-    // Try to wait for the "reader" thread to finish (non-blockingly).
-    if thread.is_finished() {
-        thread.join().map_err(resume_unwind)??;
-    }
-
-    // At this moment, the "reader" thread is blocked on read from stdin.
-    // There is no way how to interrupt it, so we just let the thread die alongside the main process.
-    // Reimplementing this with async Rust is probably not worth the effort, because:
-    // 1. It only happens during interactive usage when stdin is TTY.
-    // 2. And all process pipelines must contain at least one process which does not read from stdin.
     Ok(())
 }
 
-enum EvalItem {
-    Constant(String),
-    Reader(Spawned<LineReader<ChildStdout>>),
+fn build_pipeline(
+    context: &Context,
+    stdbuf: &mut StdBuf,
+    shell: &Shell,
+    expr: &Expression,
+) -> Result<Pipeline> {
+    let raw_expr = format!("{YELLOW}{}{RESET}", expr.raw_value);
+
+    match build_pipeline_internal(context, stdbuf, shell, expr) {
+        Ok(pipeline) => Ok(pipeline.context(format!("expression: {raw_expr}"))),
+        Err(err) => Err(err.context(format!("failed to initialize expression {raw_expr}"))),
+    }
 }
 
-struct CommandBuilder<'a> {
-    context: &'a Context,
-    shell: Shell,
-    stdbuf: StdBuf,
+fn build_pipeline_internal(
+    context: &Context,
+    stdbuf: &mut StdBuf,
+    shell: &Shell,
+    expr: &Expression,
+) -> Result<Pipeline> {
+    let mut pipeline = Pipeline::new(expr.stdin_mode);
+
+    match &expr.value {
+        ExpressionValue::RawShell(command) => {
+            let command = shell.build_command(command);
+            pipeline = pipeline.command(command, expr.stdin_mode)?;
+        }
+        ExpressionValue::Pipeline(commands) => {
+            for command in commands {
+                let (command, stdin_mode) = build_command(context, stdbuf, command)?;
+                pipeline = pipeline.command(command, stdin_mode)?;
+            }
+            if pipeline.is_empty() {
+                let command = build_default_command(context)?;
+                pipeline = pipeline.command(command, StdinMode::Connected)?;
+            }
+        }
+    };
+
+    Ok(pipeline)
 }
 
-impl<'a> CommandBuilder<'a> {
-    fn new(context: &'a Context, shell: Shell) -> Self {
-        Self {
-            context,
-            shell,
-            stdbuf: StdBuf::default(),
+fn build_command(
+    context: &Context,
+    stdbuf: &mut StdBuf,
+    params: &pattern::Command,
+) -> Result<(Command, StdinMode)> {
+    let pattern::Command {
+        name,
+        args,
+        external,
+    } = params;
+
+    if !external {
+        if let Some(meta) = get_meta(name) {
+            let command = build_internal_command(context, Some(name), args)?;
+            return Ok((command, group_stdin_mode(meta.group)));
         }
-    }
 
-    fn build(&mut self, expr: &Expression) -> Result<Pipeline> {
-        let raw_expr = format!("{YELLOW}{}{RESET}", expr.raw_value);
-
-        match self.build_pipeline(expr) {
-            Ok(pipeline) => Ok(pipeline.context(format!("expression: {raw_expr}"))),
-            Err(err) => Err(err.context(format!("failed to initialize expression {raw_expr}"))),
-        }
-    }
-
-    fn build_pipeline(&mut self, expr: &Expression) -> Result<Pipeline> {
-        let mut pipeline = pipeline::Builder::new(expr.stdin_mode);
-
-        match &expr.value {
-            ExpressionValue::RawShell(command) => {
-                let command = self.shell.build_command(command);
-                pipeline = pipeline.command(command, expr.stdin_mode)?;
-            }
-            ExpressionValue::Pipeline(commands) => {
-                for command in commands {
-                    let (command, stdin_mode) = self.build_command(command)?;
-                    pipeline = pipeline.command(command, stdin_mode)?;
-                }
-                if pipeline.is_empty() {
-                    let command = self.default_internal_command()?;
-                    pipeline = pipeline.command(command, StdinMode::Connected)?;
+        if name == crate_name!() {
+            if let Some((name, args)) = args.split_first() {
+                if let Some(meta) = get_meta(name) {
+                    let command = build_internal_command(context, Some(name), args)?;
+                    return Ok((command, group_stdin_mode(meta.group)));
                 }
             }
-        };
 
-        Ok(pipeline.build())
-    }
-
-    fn build_command(&mut self, params: &pattern::Command) -> Result<(Command, StdinMode)> {
-        let pattern::Command {
-            name,
-            args,
-            external,
-        } = params;
-
-        if !external {
-            if let Some(meta) = get_meta(name) {
-                let command = self.build_internal_command(Some(name), args)?;
-                return Ok((command, group_stdin_mode(meta.group)));
-            }
-
-            if name == crate_name!() {
-                if let Some((name, args)) = args.split_first() {
-                    if let Some(meta) = get_meta(name) {
-                        let command = self.build_internal_command(Some(name), args)?;
-                        return Ok((command, group_stdin_mode(meta.group)));
-                    }
-                }
-
-                let command = self.build_internal_command(None, args)?;
-                return Ok((command, StdinMode::Connected));
-            }
+            let command = build_internal_command(context, None, args)?;
+            return Ok((command, StdinMode::Connected));
         }
-
-        let mut command = Command::new(name);
-        command.args(args);
-
-        if self.context.buf_mode().is_line() {
-            command.envs(self.stdbuf.line_buf_envs()); // libc based programs
-            command.env("PYTHONUNBUFFERED", "1"); // Python programs
-        }
-
-        Ok((command, StdinMode::Connected))
     }
 
-    fn build_internal_command(&self, name: Option<&str>, args: &[String]) -> Result<Command> {
-        let program = current_exe().context("could not detect current executable")?;
-        let mut command = Command::new(program);
+    let mut command = Command::new(name);
+    command.args(args);
 
-        command.env(ENV_NULL, self.context.separator().is_null().to_string());
-        command.env(ENV_BUF_MODE, self.context.buf_mode().to_string());
-        command.env(ENV_BUF_SIZE, self.context.buf_size().to_string());
-        command.env(ENV_SPAWNED_BY, get_spawned_by(META.name));
-
-        if let Some(name) = name {
-            command.arg(name);
-        }
-
-        command.args(args);
-        Ok(command)
+    if context.buf_mode().is_line() {
+        command.envs(stdbuf.line_buf_envs()); // libc based programs
+        command.env("PYTHONUNBUFFERED", "1"); // Python programs
     }
 
-    fn default_internal_command(&self) -> Result<Command> {
-        self.build_internal_command(Some(cat::META.name), &[])
+    Ok((command, StdinMode::Connected))
+}
+
+fn build_internal_command(
+    context: &Context,
+    name: Option<&str>,
+    args: &[String],
+) -> Result<Command> {
+    let program = current_exe().context("could not detect current executable")?;
+    let mut command = Command::new(program);
+
+    command.env(ENV_NULL, context.separator().is_null().to_string());
+    command.env(ENV_BUF_MODE, context.buf_mode().to_string());
+    command.env(ENV_BUF_SIZE, context.buf_size().to_string());
+    command.env(ENV_SPAWNED_BY, get_spawned_by(META.name));
+
+    if let Some(name) = name {
+        command.arg(name);
     }
+
+    command.args(args);
+    Ok(command)
+}
+
+fn build_default_command(context: &Context) -> Result<Command> {
+    build_internal_command(context, Some(cat::META.name), &[])
 }
 
 fn group_stdin_mode(group: Group) -> StdinMode {
