@@ -1,5 +1,5 @@
 <!-- Created with term-transcript v0.3.0 (https://github.com/slowli/term-transcript) -->
-<svg viewBox="0 0 720 156" width="720" height="156" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 720 174" width="720" height="174" xmlns="http://www.w3.org/2000/svg">
   <switch>
     <g requiredExtensions="http://www.w3.org/1999/xhtml">
       <style>
@@ -63,13 +63,15 @@
         .fg15 { color: #ffffff; } .bg15 { background: #ffffff; }
       </style>
       <rect width="100%" height="100%" y="0" rx="4.5" style="fill: #000000;" />
-      <svg x="0" y="10" width="720" height="136" viewBox="0 0 720 136">
-        <foreignObject width="720" height="136">
+      <svg x="0" y="10" width="720" height="154" viewBox="0 0 720 154">
+        <foreignObject width="720" height="154">
           <div xmlns="http://www.w3.org/1999/xhtml" class="container">
             <div class="input input-failure" data-exit-status="1" title="This command exited with non-zero code"><pre><span class="prompt">$</span> rew x &quot;{cat --unknown}&quot;</pre></div>
             <div class="output"><pre><span class="bold">rew cat</span> (spawned by '<span class="bold">rew x</span>'): <span class="bold fg1">invalid usage:</span> unexpected argument found
-<span class="bold">rew x</span>: <span class="bold fg1">error:</span> failed execution of expression <span class="fg3">{cat --unknown}</span>
-<span class="bold">rew x</span>: └─&gt; failed execution of command <span class="fg3">REW_BUF_MODE="full" REW_BUF_SIZE="32768" <b class="hard-br"><br/></b>REW_NULL="false" _REW_SPAWNED_BY="rew x" "rew" "cat" "--u<b class="hard-br"><br/></b>nknown"</span>
+<span class="bold">rew x</span>: <span class="bold fg1">error:</span> child proces execution failed
+<span class="bold">rew x</span>: └─&gt; expression: <span class="fg3">{cat --unknown}</span>
+<span class="bold">rew x</span>: └─&gt; environment: <span class="fg3">REW_BUF_MODE="full" REW_BUF_SIZE="32768" REW_NULL="false<b class="hard-br"><br/></b>" _REW_SPAWNED_BY="rew x" </span>
+<span class="bold">rew x</span>: └─&gt; command: <span class="fg3">"rew" "cat" "--unknown"</span>
 <span class="bold">rew x</span>: └─&gt; child process exited with code <span class="fg1">2</span></pre></div>
           </div>
         </foreignObject>

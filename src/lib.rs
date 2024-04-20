@@ -19,6 +19,8 @@ pub mod pager;
 #[doc(hidden)]
 pub mod pattern;
 #[doc(hidden)]
+pub mod process;
+#[doc(hidden)]
 pub mod range;
 #[doc(hidden)]
 pub mod shell;

@@ -1,13 +1,10 @@
 use crate::colors::Colorizer;
 use crate::colors::GREEN;
-use crate::colors::RED;
 use crate::colors::RESET;
 use crate::colors::YELLOW;
 use crate::pager;
 use anstream::adapter::strip_str;
 use anstream::stdout;
-use anyhow::format_err;
-use anyhow::Context;
 use anyhow::Result;
 use clap::crate_name;
 use clap::Arg;
@@ -78,21 +75,22 @@ pub fn is_arg_set(matches: &ArgMatches) -> bool {
 }
 
 pub fn print(command: &'static str, examples: &'static [Example]) -> Result<()> {
-    if let Some(mut pager) = pager::open().context("could not start pager process")? {
-        let mut stdin = pager.stdin.take().expect("could not get pager stdin");
+    if let Some(mut pager) = pager::open()? {
+        let mut stdin = pager.take_stdin().expect("could not get pager stdin");
 
         let thread = thread::spawn(move || {
-            write(&mut stdin, command, examples).context("could not write to pager stdin")
+            write(&mut stdin.inner, command, examples).map_err(|err| {
+                stdin
+                    .context
+                    .apply(err)
+                    .context("failed to write to child process stdin")
+            })
         });
 
-        let status = pager.wait().context("could not wait for pager to finish")?;
-        if !status.success() {
-            let code = status.code().unwrap_or_default();
-            let err = format_err!("pager exited with code {RED}{code}{RESET}");
-            return Err(err);
-        }
+        pager.wait()?;
+        thread.join().map_err(resume_unwind)??;
 
-        thread.join().map_err(resume_unwind)?.map(Into::into)
+        Ok(())
     } else {
         write(&mut stdout().lock(), command, examples)
     }

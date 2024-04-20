@@ -4,7 +4,6 @@ use crate::args::ENV_BUF_MODE;
 use crate::args::ENV_BUF_SIZE;
 use crate::args::ENV_NULL;
 use crate::args::ENV_SPAWNED_BY;
-use crate::colors::RED;
 use crate::colors::RESET;
 use crate::colors::YELLOW;
 use crate::command::Context;
@@ -22,26 +21,22 @@ use crate::pattern::Item;
 use crate::pattern::Pattern;
 use crate::pattern::SimpleItem;
 use crate::pattern::SimplePattern;
+use crate::process::CommandEx;
+use crate::process::Pipeline;
+use crate::process::Spawned;
 use crate::shell::Shell;
 use crate::stdbuf::StdBuf;
-use anyhow::Context as AnyhowContext;
-use anyhow::Error;
+use anyhow::Context as _;
 use anyhow::Result;
 use bstr::ByteVec;
 use clap::crate_name;
 use clap::ArgAction;
 use std::env;
 use std::env::current_exe;
-use std::io;
-use std::io::Write;
 use std::panic::resume_unwind;
-use std::path::Path;
-use std::process::Child;
-use std::process::ChildStdin;
 use std::process::ChildStdout;
 use std::process::Command;
 use std::process::Stdio;
-use std::result;
 use std::thread;
 use std::thread::JoinHandle;
 use std::time::Duration;
@@ -233,9 +228,7 @@ fn eval_pattern(context: &Context, pattern: &Pattern, shell: Option<&str>) -> Re
                 }
 
                 items.push(EvalItem::Reader(
-                    pipeline
-                        .stdout
-                        .map(|stdout| context.line_reader_from(stdout)),
+                    pipeline.stdout.map(|inner| context.line_reader_from(inner)),
                 ));
 
                 if pipeline.stdin.is_some() {
@@ -332,191 +325,7 @@ fn eval_pattern(context: &Context, pattern: &Pattern, shell: Option<&str>) -> Re
 
 enum EvalItem {
     Constant(String),
-    Reader(Eval<LineReader<ChildStdout>>),
-}
-
-struct Eval<T> {
-    inner: T,
-    context: EvalContext,
-}
-
-impl<T> Eval<T> {
-    fn map<R>(self, map: impl FnOnce(T) -> R) -> Eval<R> {
-        Eval {
-            inner: map(self.inner),
-            context: self.context,
-        }
-    }
-
-    fn clone_as<R>(&self, inner: R) -> Eval<R> {
-        Eval {
-            inner,
-            context: self.context.clone(),
-        }
-    }
-}
-
-#[derive(Clone)]
-struct EvalContext {
-    raw_command: Option<String>,
-    raw_expr: Option<String>,
-}
-
-impl EvalContext {
-    fn from_command(command: &Command) -> Self {
-        Self {
-            raw_command: Some(format_command(command).unwrap_or_else(|_| format!("{command:?}"))),
-            raw_expr: None,
-        }
-    }
-
-    fn from_expr(expr: &Expression) -> Self {
-        Self {
-            raw_command: None,
-            raw_expr: Some(expr.raw_value.clone()),
-        }
-    }
-
-    fn merge(&mut self, other: &EvalContext) {
-        if other.raw_command.is_some() {
-            self.raw_command = other.raw_command.clone();
-        }
-        if other.raw_expr.is_some() {
-            self.raw_expr = other.raw_expr.clone();
-        }
-    }
-
-    fn apply(&self, err: impl Into<anyhow::Error>, message: &str) -> anyhow::Error {
-        let mut err = err.into();
-
-        if let Some(raw_command) = &self.raw_command {
-            err = err.context(format!("{message} command {YELLOW}{raw_command}{RESET}"));
-        }
-        if let Some(raw_expr) = &self.raw_expr {
-            err = err.context(format!("{message} expression {YELLOW}{raw_expr}{RESET}"));
-        }
-
-        err
-    }
-}
-
-fn format_command(command: &Command) -> Result<String> {
-    use std::fmt::Write;
-    let mut output = String::new();
-
-    for (key, val) in command.get_envs() {
-        let key = key.to_string_lossy();
-        let val = val.unwrap_or_default();
-        write!(&mut output, "{key}={val:?} ",)?;
-    }
-
-    let program = if cfg!(debug_assertions) && env::var_os("NEXTEST").is_some() {
-        // We want to obfuscate program path to make "transcript" tests reproducible.
-        Path::new(command.get_program())
-            .file_stem()
-            .unwrap_or_default()
-    } else {
-        command.get_program()
-    };
-
-    write!(&mut output, "{program:?}")?;
-
-    for arg in command.get_args() {
-        write!(&mut output, " {arg:?}")?;
-    }
-
-    Ok(output)
-}
-
-trait WithEvalContext<T> {
-    fn with_eval_context(self, context: &EvalContext, message: &str) -> Result<T>;
-}
-
-impl<T, E: Into<anyhow::Error>> WithEvalContext<T> for result::Result<T, E> {
-    fn with_eval_context(self, context: &EvalContext, message: &str) -> Result<T> {
-        self.map_err(|err| context.apply(err, message))
-    }
-}
-
-trait SpawnWithContext {
-    fn spawn_with_context(&mut self) -> Result<Eval<Child>>;
-}
-
-impl SpawnWithContext for Command {
-    fn spawn_with_context(&mut self) -> Result<Eval<Child>> {
-        let context = EvalContext::from_command(self);
-        let inner = self
-            .spawn()
-            .with_eval_context(&context, "could not spawn process for")?;
-        Ok(Eval { inner, context })
-    }
-}
-
-struct EvalPipeline {
-    stdin: Option<Eval<ChildStdin>>,
-    stdout: Eval<ChildStdout>,
-    children: Vec<Eval<Child>>,
-}
-
-impl EvalPipeline {
-    fn merge_context(&mut self, context: &EvalContext) {
-        if let Some(stdin) = &mut self.stdin {
-            stdin.context.merge(context);
-        }
-
-        for child in &mut self.children {
-            child.context.merge(context);
-        }
-
-        self.stdout.context.merge(context);
-    }
-}
-
-impl Eval<ChildStdin> {
-    fn write_all(&mut self, buf: &[u8]) -> Result<bool> {
-        match self.inner.write_all(buf) {
-            Ok(()) => Ok(true),
-            Err(err) if err.kind() == io::ErrorKind::BrokenPipe => Ok(false),
-            Err(err) => Err(self.context.apply(err, "could not write to")),
-        }
-    }
-}
-
-impl Eval<LineReader<ChildStdout>> {
-    fn read_line(&mut self) -> Result<Option<&[u8]>> {
-        self.inner
-            .read_line()
-            .with_eval_context(&self.context, "could not read from")
-    }
-}
-
-impl Eval<Child> {
-    fn take_stdin(&mut self) -> Option<Eval<ChildStdin>> {
-        self.inner.stdin.take().map(|stdin| self.clone_as(stdin))
-    }
-
-    fn take_stdout(&mut self) -> Option<Eval<ChildStdout>> {
-        self.inner.stdout.take().map(|stdout| self.clone_as(stdout))
-    }
-
-    fn try_wait(&mut self) -> Result<bool> {
-        let result = match self.inner.try_wait() {
-            Ok(None) => Ok(false),
-            Ok(Some(status)) if status.success() => Ok(true),
-            Ok(Some(status)) => Err(Error::msg(format!(
-                "child process exited with code {RED}{}{RESET}",
-                status.code().unwrap_or_default(),
-            ))),
-            Err(err) => Err(err.into()),
-        };
-        result.with_eval_context(&self.context, "failed execution of")
-    }
-
-    fn kill(&mut self) -> Result<()> {
-        self.inner
-            .kill()
-            .with_eval_context(&self.context, "could not kill")
-    }
+    Reader(Spawned<LineReader<ChildStdout>>),
 }
 
 struct CommandBuilder<'a> {
@@ -534,23 +343,21 @@ impl<'a> CommandBuilder<'a> {
         }
     }
 
-    fn build_expression(&mut self, expr: &Expression) -> Result<EvalPipeline> {
-        let context = EvalContext::from_expr(expr);
+    fn build_expression(&mut self, expr: &Expression) -> Result<Pipeline> {
+        let raw_expr = format!("{YELLOW}{}{RESET}", expr.raw_value);
 
         let result = match &expr.value {
             ExpressionValue::RawShell(command) => self.build_raw_shell(command, expr.no_stdin),
             ExpressionValue::Pipeline(commands) => self.build_pipeline(commands, expr.no_stdin),
         };
 
-        result
-            .with_eval_context(&context, "could not initialize")
-            .map(|mut pipeline| {
-                pipeline.merge_context(&context);
-                pipeline
-            })
+        match result {
+            Ok(pipeline) => Ok(pipeline.context(format!("expression: {raw_expr}"))),
+            Err(err) => Err(err.context(format!("failed to initialize expression {raw_expr}"))),
+        }
     }
 
-    fn build_raw_shell(&self, shell_command: &str, no_stdin: bool) -> Result<EvalPipeline> {
+    fn build_raw_shell(&self, shell_command: &str, no_stdin: bool) -> Result<Pipeline> {
         let mut command = self.shell.build_command(shell_command);
         command.stdout(Stdio::piped());
 
@@ -567,7 +374,7 @@ impl<'a> CommandBuilder<'a> {
             .take_stdout()
             .expect("raw shell child process should have stdout");
 
-        Ok(EvalPipeline {
+        Ok(Pipeline {
             stdin,
             stdout,
             children: vec![child],
@@ -578,10 +385,10 @@ impl<'a> CommandBuilder<'a> {
         &mut self,
         commands: &[pattern::Command],
         mut no_stdin: bool,
-    ) -> Result<EvalPipeline> {
+    ) -> Result<Pipeline> {
         let mut children = Vec::new();
         let mut stdin = None;
-        let mut stdout: Option<Eval<ChildStdout>> = None;
+        let mut stdout: Option<Spawned<ChildStdout>> = None;
 
         for params in commands {
             let (mut command, group) = self.build_command(params)?;
@@ -626,7 +433,7 @@ impl<'a> CommandBuilder<'a> {
             .take()
             .expect("pipeline child process should have stdout");
 
-        Ok(EvalPipeline {
+        Ok(Pipeline {
             stdin,
             stdout,
             children,

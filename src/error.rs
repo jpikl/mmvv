@@ -7,9 +7,30 @@ use crate::colors::RESET;
 use anstream::eprint;
 use anstream::eprintln;
 use anstream::stdout;
-use anyhow::Context;
+use anyhow::Context as AnyhowContext;
 use clap::Command;
 use std::env;
+
+#[derive(Clone)]
+pub struct Context(Vec<String>);
+
+impl Context {
+    pub fn new(value: impl Into<String>) -> Self {
+        Self(vec![value.into()])
+    }
+
+    pub fn add(&mut self, value: impl Into<String>) {
+        self.0.push(value.into());
+    }
+
+    pub fn apply<E: Into<anyhow::Error>>(&self, error: E) -> anyhow::Error {
+        let mut error = error.into();
+        for context in &self.0 {
+            error = error.context(context.clone());
+        }
+        error
+    }
+}
 
 pub struct Reporter {
     app: Command,
