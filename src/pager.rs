@@ -1,4 +1,4 @@
-use crate::process::SpawnWithContext;
+use crate::spawn::SpawnWithContext;
 use anstream::stream::IsTerminal;
 use anyhow::Result;
 use std::io::stdout;

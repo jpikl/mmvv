@@ -6,6 +6,7 @@ use crate::io::CharChunkReader;
 use crate::io::LineReader;
 use crate::io::Separator;
 use crate::io::Writer;
+use crate::process::StdinMode;
 use anyhow::Result;
 use clap::ArgMatches;
 use clap::Command;
@@ -105,6 +106,13 @@ impl Group {
             Self::Paths => Some("Just like mapper commands but expect input lines to be filesystem paths."),
             Self::Filters => Some("Output only certain input lines based on some criteria."),
             Self::Generators => Some("Generate lines, ignore standard input."),
+        }
+    }
+
+    pub fn stdin_mode(&self) -> StdinMode {
+        match self {
+            Self::Generators => StdinMode::Disconnected,
+            _ => StdinMode::Connected,
         }
     }
 

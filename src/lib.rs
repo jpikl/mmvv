@@ -19,12 +19,12 @@ pub mod pager;
 #[doc(hidden)]
 pub mod pattern;
 #[doc(hidden)]
-pub mod pipeline;
-#[doc(hidden)]
 pub mod process;
 #[doc(hidden)]
 pub mod range;
 #[doc(hidden)]
 pub mod shell;
+#[doc(hidden)]
+pub mod spawn;
 #[doc(hidden)]
 pub mod stdbuf;

@@ -21,10 +21,10 @@ use crate::pattern::Item;
 use crate::pattern::Pattern;
 use crate::pattern::SimpleItem;
 use crate::pattern::SimplePattern;
-use crate::pipeline::Pipeline;
-use crate::process::Spawned;
+use crate::process::Pipeline;
 use crate::process::StdinMode;
 use crate::shell::Shell;
+use crate::spawn::Spawned;
 use crate::stdbuf::StdBuf;
 use anyhow::Context as _;
 use anyhow::Result;
@@ -227,9 +227,8 @@ fn eval_pattern(context: &Context, pattern: &Pattern, shell: &Shell) -> Result<(
                 }
 
                 if let Some(stdout) = pipeline.stdout {
-                    producers.push(Producer::Child(
-                        stdout.move_context(|inner| context.line_reader_from(inner)),
-                    ));
+                    let reader = stdout.map(|inner| context.line_reader_from(inner));
+                    producers.push(Producer::Child(reader));
                 }
 
                 if pipeline.stdin.is_some() {
@@ -400,14 +399,14 @@ fn build_command(
     if !external {
         if let Some(meta) = get_meta(name) {
             let command = build_internal_command(context, Some(name), args)?;
-            return Ok((command, group_stdin_mode(meta.group)));
+            return Ok((command, meta.group.stdin_mode()));
         }
 
         if name == crate_name!() {
             if let Some((name, args)) = args.split_first() {
                 if let Some(meta) = get_meta(name) {
                     let command = build_internal_command(context, Some(name), args)?;
-                    return Ok((command, group_stdin_mode(meta.group)));
+                    return Ok((command, meta.group.stdin_mode()));
                 }
             }
 
@@ -450,11 +449,4 @@ fn build_internal_command(
 
 fn build_default_command(context: &Context) -> Result<Command> {
     build_internal_command(context, Some(cat::META.name), &[])
-}
-
-fn group_stdin_mode(group: Group) -> StdinMode {
-    match group {
-        Group::Generators => StdinMode::Disconnected,
-        _ => StdinMode::Connected,
-    }
 }
