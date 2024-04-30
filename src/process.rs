@@ -1,6 +1,7 @@
 use crate::command::Meta;
 use crate::commands::get_meta;
 use crate::env::Env;
+use crate::spawn::ContextItem;
 use crate::spawn::SpawnWithContext;
 use crate::spawn::Spawned;
 use anyhow::Context;
@@ -166,22 +167,17 @@ impl Pipeline {
         Ok(self)
     }
 
-    #[must_use]
-    pub fn context(mut self, context: impl Into<String>) -> Self {
-        let context = context.into();
-
+    pub fn add_context(&mut self, item: ContextItem) {
         for child in &mut self.children {
-            child.context.add(context.clone());
+            child.context.add_item(item.clone());
         }
 
         if let Some(stdin) = &mut self.stdin {
-            stdin.context.add(context.clone());
+            stdin.context.add_item(item.clone());
         }
 
         if let Some(stdout) = &mut self.stdout {
-            stdout.context.add(context);
+            stdout.context.add_item(item);
         }
-
-        self
     }
 }

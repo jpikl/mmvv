@@ -14,23 +14,26 @@ use std::process::ChildStdout;
 use std::process::Command;
 use std::process::ExitStatus;
 
-// TODO: key/value items Context(Vec<(&'static str, String)>)
 #[derive(Clone)]
-pub struct Context(Vec<String>);
+pub struct ContextItem {
+    pub name: &'static str,
+    pub value: String,
+}
+
+#[derive(Clone, Default)]
+pub struct Context {
+    items: Vec<ContextItem>,
+}
 
 impl Context {
-    pub fn new(value: impl Into<String>) -> Self {
-        Self(vec![value.into()])
+    pub fn add_item(&mut self, item: ContextItem) {
+        self.items.push(item);
     }
 
-    pub fn add(&mut self, value: impl Into<String>) {
-        self.0.push(value.into());
-    }
-
-    pub fn apply<E: Into<anyhow::Error>>(&self, error: E) -> anyhow::Error {
+    pub fn apply_to_err<E: Into<anyhow::Error>>(&self, error: E) -> anyhow::Error {
         let mut error = error.into();
-        for context in &self.0 {
-            error = error.context(context.clone());
+        for item in &self.items {
+            error = error.context(format!("{}: {YELLOW}{}{RESET}", item.name, item.value));
         }
         error
     }
@@ -62,7 +65,7 @@ impl Spawned<ChildStdin> {
             Err(err) if err.kind() == io::ErrorKind::BrokenPipe => Ok(false),
             Err(err) => Err(self
                 .context
-                .apply(err)
+                .apply_to_err(err)
                 .context("failed to write to child process stdin")),
         }
     }
@@ -72,7 +75,7 @@ impl Spawned<LineReader<ChildStdout>> {
     pub fn read_line(&mut self) -> Result<Option<&[u8]>> {
         self.inner.read_line().map_err(|err| {
             self.context
-                .apply(err)
+                .apply_to_err(err)
                 .context("failed to read from child process stdout")
         })
     }
@@ -112,14 +115,14 @@ impl Spawned<Child> {
 
     fn wait_context(&self, error: impl Into<Error>) -> Error {
         self.context
-            .apply(error)
+            .apply_to_err(error)
             .context("child proces execution failed")
     }
 
     pub fn kill(&mut self) -> Result<()> {
         self.inner.kill().map_err(|err| {
             self.context
-                .apply(err)
+                .apply_to_err(err)
                 .context("failed to kill child process")
         })
     }
@@ -144,31 +147,36 @@ impl SpawnWithContext for Command {
             Ok(child) => Ok(Spawned::new(child, self.context())),
             Err(err) => Err(self
                 .context()
-                .apply(err)
+                .apply_to_err(err)
                 .context("failed to spawn child process")),
         }
     }
 
     fn context(&self) -> Context {
-        if let Ok(command) = format_command(self) {
-            let mut context = Context::new(command);
+        let mut context = Context::default();
+
+        if let Ok(item) = command_context(self) {
+            context.add_item(item);
+
             if self.get_envs().count() > 0 {
-                if let Ok(env) = format_env(self) {
-                    context.add(env);
+                if let Ok(item) = env_context(self) {
+                    context.add_item(item);
                 }
             }
-            context
         } else {
-            Context::new(format!("command: {YELLOW}{self:?}{RESET}"))
+            context.add_item(ContextItem {
+                name: "command",
+                value: format!("{self:?}"),
+            });
         }
+
+        context
     }
 }
 
-fn format_command(command: &Command) -> Result<String> {
+fn command_context(command: &Command) -> Result<ContextItem> {
     use std::fmt::Write;
-    let mut output = String::new();
-
-    write!(&mut output, "command: {YELLOW}")?;
+    let mut writer = String::new();
 
     let program = if cfg!(debug_assertions) && env::var_os("NEXTEST").is_some() {
         // We want to obfuscate program path to make "transcript" tests reproducible.
@@ -179,28 +187,30 @@ fn format_command(command: &Command) -> Result<String> {
         command.get_program()
     };
 
-    write!(&mut output, "{program:?}")?;
+    write!(&mut writer, "{program:?}")?;
 
     for arg in command.get_args() {
-        write!(&mut output, " {arg:?}")?;
+        write!(&mut writer, " {arg:?}")?;
     }
 
-    write!(&mut output, "{RESET}")?;
-    Ok(output)
+    Ok(ContextItem {
+        name: "command",
+        value: writer,
+    })
 }
 
-fn format_env(command: &Command) -> Result<String> {
+fn env_context(command: &Command) -> Result<ContextItem> {
     use std::fmt::Write;
-    let mut output = String::new();
-
-    write!(&mut output, "environment: {YELLOW}")?;
+    let mut writer = String::new();
 
     for (key, val) in command.get_envs() {
         let key = key.to_string_lossy();
         let val = val.unwrap_or_default();
-        write!(&mut output, "{key}={val:?} ",)?;
+        write!(&mut writer, "{key}={val:?} ",)?;
     }
 
-    write!(&mut output, "{RESET}")?;
-    Ok(output)
+    Ok(ContextItem {
+        name: "environment",
+        value: writer,
+    })
 }

@@ -49,7 +49,7 @@ impl Pager {
             callback(&mut stdin.inner).map_err(|err| {
                 stdin
                     .context
-                    .apply(err)
+                    .apply_to_err(err)
                     .context("failed to write to child process stdin")
             })
         });

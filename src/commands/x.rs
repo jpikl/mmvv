@@ -18,6 +18,7 @@ use crate::pattern::SimplePattern;
 use crate::process::Command;
 use crate::process::Pipeline;
 use crate::shell::Shell;
+use crate::spawn::ContextItem;
 use crate::spawn::Spawned;
 use anyhow::Result;
 use bstr::ByteVec;
@@ -201,28 +202,40 @@ fn eval_simple_pattern(context: &Context, pattern: &SimplePattern) -> Result<()>
 fn eval_pattern(context: &Context, pattern: &Pattern, shell: &Shell) -> Result<()> {
     let mut env = context.env();
     let mut children = Vec::new();
-    let mut consumers = Vec::new();
     let mut producers = Vec::new();
+    let mut consumers = Vec::new();
 
     for item in pattern.items() {
         match &item {
             Item::Constant(value) => producers.push(Producer::Constant(value.clone())),
-            Item::Expression(ref expr) => {
-                let pipeline = build_pipeline(&mut env, shell, expr)?;
+            Item::Expression(ref expr) => match build_pipeline(&mut env, shell, expr) {
+                Ok(mut pipeline) => {
+                    pipeline.add_context(ContextItem {
+                        name: "expression",
+                        value: expr.raw_value.to_string(),
+                    });
 
-                for child in pipeline.children {
-                    children.push(child);
-                }
+                    for child in pipeline.children {
+                        children.push(child);
+                    }
 
-                if let Some(stdout) = pipeline.stdout {
-                    let reader = stdout.map(|inner| context.line_reader_from(inner));
-                    producers.push(Producer::Child(reader));
-                }
+                    if let Some(stdout) = pipeline.stdout {
+                        producers.push(Producer::Child(
+                            stdout.map(|inner| context.line_reader_from(inner)),
+                        ));
+                    }
 
-                if pipeline.stdin.is_some() {
-                    consumers.push(pipeline.stdin);
+                    if pipeline.stdin.is_some() {
+                        consumers.push(pipeline.stdin);
+                    }
                 }
-            }
+                Err(err) => {
+                    return Err(err.context(format!(
+                        "failed to initialize expression {YELLOW}{}{RESET}",
+                        expr.raw_value
+                    )));
+                }
+            },
         }
     }
 
@@ -249,15 +262,6 @@ fn eval_pattern(context: &Context, pattern: &Pattern, shell: &Shell) -> Result<(
 }
 
 fn build_pipeline(env: &mut Env, shell: &Shell, expr: &Expression) -> Result<Pipeline> {
-    let raw_expr = format!("{YELLOW}{}{RESET}", expr.raw_value);
-
-    match build_pipeline_internal(env, shell, expr) {
-        Ok(pipeline) => Ok(pipeline.context(format!("expression: {raw_expr}"))),
-        Err(err) => Err(err.context(format!("failed to initialize expression {raw_expr}"))),
-    }
-}
-
-fn build_pipeline_internal(env: &mut Env, shell: &Shell, expr: &Expression) -> Result<Pipeline> {
     let mut pipeline = Pipeline::new(expr.stdin_mode);
 
     match &expr.value {
