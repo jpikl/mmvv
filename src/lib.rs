@@ -9,6 +9,8 @@ pub mod command;
 #[doc(hidden)]
 pub mod commands;
 #[doc(hidden)]
+pub mod env;
+#[doc(hidden)]
 pub mod error;
 #[doc(hidden)]
 pub mod examples;

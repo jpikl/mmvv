@@ -1,5 +1,6 @@
 use crate::args::BufMode;
 use crate::args::GlobalArgs;
+use crate::env::Env;
 use crate::examples::Example;
 use crate::io::ByteChunkReader;
 use crate::io::CharChunkReader;
@@ -55,11 +56,11 @@ macro_rules! command_meta {
                 use clap::FromArgMatches;
 
                 if $crate::examples::is_arg_set(&matches) {
-                    return $crate::examples::print(&meta.name, meta.examples);
+                    return $crate::examples::print(meta.name, meta.examples);
                 }
 
                 let global_args = $crate::args::GlobalArgs::from_arg_matches(matches)?;
-                let context = $crate::command::Context::from(global_args);
+                let context = $crate::command::Context::new(meta.name, global_args);
                 let args = $args::from_arg_matches(matches)?;
 
                 $run(&context, &args)
@@ -129,15 +130,16 @@ impl Group {
 }
 
 #[derive(Clone)]
-pub struct Context(GlobalArgs);
-
-impl From<GlobalArgs> for Context {
-    fn from(args: GlobalArgs) -> Self {
-        Self(args)
-    }
+pub struct Context {
+    command: &'static str,
+    args: GlobalArgs,
 }
 
 impl Context {
+    pub fn new(command: &'static str, args: GlobalArgs) -> Self {
+        Self { command, args }
+    }
+
     #[allow(clippy::unused_self)]
     pub fn raw_reader(&self) -> StdinLock<'_> {
         stdin().lock()
@@ -182,18 +184,22 @@ impl Context {
     }
 
     pub fn buf_mode(&self) -> BufMode {
-        self.0.buf_mode
+        self.args.buf_mode
     }
 
     pub fn buf_size(&self) -> usize {
-        self.0.buf_size
+        self.args.buf_size
     }
 
     pub fn separator(&self) -> Separator {
-        if self.0.null {
+        if self.args.null {
             Separator::Null
         } else {
             Separator::Newline
         }
+    }
+
+    pub fn env(&self) -> Env {
+        Env::new(self.command, self.args.clone())
     }
 }

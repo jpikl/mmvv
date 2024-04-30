@@ -5,15 +5,14 @@ use std::process::Stdio;
 
 #[derive(Default)]
 pub struct StdBuf {
-    line_buf_envs: Option<Vec<(String, String)>>,
+    line_buf_env: Option<Vec<(String, String)>>,
 }
 
 impl StdBuf {
-    pub fn line_buf_envs(&mut self) -> impl Iterator<Item = (&str, &str)> {
-        self.line_buf_envs
-            .get_or_insert_with(|| Self::detect_envs(&["-oL"]).unwrap_or_default())
-            .iter()
-            .map(|(key, val)| (key.as_ref(), val.as_ref()))
+    pub fn line_buf_env(&mut self) -> Vec<(String, String)> {
+        self.line_buf_env
+            .get_or_insert_with(|| Self::detect_env(&["-oL"]).unwrap_or_default())
+            .clone()
     }
 
     // This is probably the least invasive way how to force output line buffering on external commands (which use libc).
@@ -26,7 +25,7 @@ impl StdBuf {
     // b) Re-run rew itself under `stdbuf`. This causes issues on Windows where some commands are not able
     //    to find the libstdbuf shared library because they receive it as `C:/path/to/libstdbuf.dll`
     //    instead of `/path/to/libstdbuf.dll`.
-    fn detect_envs(args: &[&str]) -> Result<Vec<(String, String)>> {
+    fn detect_env(args: &[&str]) -> Result<Vec<(String, String)>> {
         // If `stdbuf` is not found, the caller will silently ignore the error.
         // If `env` is not found, the error will be print to the stderr (by `stdbuf`).
         // The second scenario is very unlikely because `stdbuf` and `env` are usually installed together.

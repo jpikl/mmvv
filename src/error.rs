@@ -1,9 +1,9 @@
-use crate::args::get_bin_name;
-use crate::args::ENV_SPAWNED_BY;
 use crate::colors::Colorizer;
 use crate::colors::BOLD;
 use crate::colors::BOLD_RED;
 use crate::colors::RESET;
+use crate::env::get_bin_name;
+use crate::env::ENV_SPAWNED_BY;
 use anstream::eprint;
 use anstream::eprintln;
 use anstream::stdout;

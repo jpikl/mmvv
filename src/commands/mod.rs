@@ -15,7 +15,7 @@ mod trim;
 mod upper;
 mod x;
 
-pub const METAS: &[&Meta] = &[
+pub const COMMANDS: &[&Meta] = &[
     &ascii::META,
     &cat::META,
     &first::META,
@@ -33,5 +33,5 @@ pub const METAS: &[&Meta] = &[
 ];
 
 pub fn get_meta(name: &str) -> Option<&'static Meta> {
-    METAS.iter().find(|meta| meta.name == name).copied()
+    COMMANDS.iter().find(|meta| meta.name == name).copied()
 }

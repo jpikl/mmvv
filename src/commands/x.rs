@@ -1,9 +1,3 @@
-use super::get_meta;
-use crate::args::get_spawned_by;
-use crate::args::ENV_BUF_MODE;
-use crate::args::ENV_BUF_SIZE;
-use crate::args::ENV_NULL;
-use crate::args::ENV_SPAWNED_BY;
 use crate::colors::RESET;
 use crate::colors::YELLOW;
 use crate::command::Context;
@@ -12,32 +6,26 @@ use crate::command::Meta;
 use crate::command_examples;
 use crate::command_meta;
 use crate::commands::cat;
+use crate::env::Env;
 use crate::examples::Example;
 use crate::io::LineReader;
-use crate::pattern;
 use crate::pattern::Expression;
 use crate::pattern::ExpressionValue;
 use crate::pattern::Item;
 use crate::pattern::Pattern;
 use crate::pattern::SimpleItem;
 use crate::pattern::SimplePattern;
+use crate::process::Command;
 use crate::process::Pipeline;
-use crate::process::StdinMode;
 use crate::shell::Shell;
 use crate::spawn::Spawned;
-use crate::stdbuf::StdBuf;
-use anyhow::Context as _;
 use anyhow::Result;
 use bstr::ByteVec;
-use clap::crate_name;
 use clap::ArgAction;
-use std::env;
-use std::env::current_exe;
 use std::panic::resume_unwind;
 use std::process::Child;
 use std::process::ChildStdin;
 use std::process::ChildStdout;
-use std::process::Command;
 use std::thread;
 use std::time::Duration;
 
@@ -211,7 +199,7 @@ fn eval_simple_pattern(context: &Context, pattern: &SimplePattern) -> Result<()>
 }
 
 fn eval_pattern(context: &Context, pattern: &Pattern, shell: &Shell) -> Result<()> {
-    let mut stdbuf = StdBuf::default();
+    let mut env = context.env();
     let mut children = Vec::new();
     let mut consumers = Vec::new();
     let mut producers = Vec::new();
@@ -220,7 +208,7 @@ fn eval_pattern(context: &Context, pattern: &Pattern, shell: &Shell) -> Result<(
         match &item {
             Item::Constant(value) => producers.push(Producer::Constant(value.clone())),
             Item::Expression(ref expr) => {
-                let pipeline = build_pipeline(context, &mut stdbuf, shell, expr)?;
+                let pipeline = build_pipeline(&mut env, shell, expr)?;
 
                 for child in pipeline.children {
                     children.push(child);
@@ -260,9 +248,37 @@ fn eval_pattern(context: &Context, pattern: &Pattern, shell: &Shell) -> Result<(
     }
 }
 
-enum Producer {
-    Constant(String),
-    Child(Spawned<LineReader<ChildStdout>>),
+fn build_pipeline(env: &mut Env, shell: &Shell, expr: &Expression) -> Result<Pipeline> {
+    let raw_expr = format!("{YELLOW}{}{RESET}", expr.raw_value);
+
+    match build_pipeline_internal(env, shell, expr) {
+        Ok(pipeline) => Ok(pipeline.context(format!("expression: {raw_expr}"))),
+        Err(err) => Err(err.context(format!("failed to initialize expression {raw_expr}"))),
+    }
+}
+
+fn build_pipeline_internal(env: &mut Env, shell: &Shell, expr: &Expression) -> Result<Pipeline> {
+    let mut pipeline = Pipeline::new(expr.stdin_mode);
+
+    match &expr.value {
+        ExpressionValue::RawShell(command) => {
+            let mut command = shell.build_command(command);
+            command.envs(env.external());
+            pipeline = pipeline.add_command(command, expr.stdin_mode)?;
+        }
+        ExpressionValue::Pipeline(commands) => {
+            for command in commands {
+                let command = Command::detect(&command.name, &command.args, command.external);
+                pipeline = pipeline.add_command(command.build(env)?, command.stdin_mode())?;
+            }
+            if pipeline.is_empty() {
+                let command = Command::internal(&cat::META);
+                pipeline = pipeline.add_command(command.build(env)?, command.stdin_mode())?;
+            }
+        }
+    };
+
+    Ok(pipeline)
 }
 
 fn forward_input(context: &Context, mut stdins: Vec<Option<Spawned<ChildStdin>>>) -> Result<()> {
@@ -289,6 +305,11 @@ fn forward_input(context: &Context, mut stdins: Vec<Option<Spawned<ChildStdin>>>
     }
 
     Ok(())
+}
+
+enum Producer {
+    Constant(String),
+    Child(Spawned<LineReader<ChildStdout>>),
 }
 
 fn collect_output(context: &Context, mut producers: Vec<Producer>) -> Result<()> {
@@ -341,112 +362,4 @@ fn wait_children(mut children: Vec<Spawned<Child>>) -> Result<()> {
     }
 
     Ok(())
-}
-
-fn build_pipeline(
-    context: &Context,
-    stdbuf: &mut StdBuf,
-    shell: &Shell,
-    expr: &Expression,
-) -> Result<Pipeline> {
-    let raw_expr = format!("{YELLOW}{}{RESET}", expr.raw_value);
-
-    match build_pipeline_internal(context, stdbuf, shell, expr) {
-        Ok(pipeline) => Ok(pipeline.context(format!("expression: {raw_expr}"))),
-        Err(err) => Err(err.context(format!("failed to initialize expression {raw_expr}"))),
-    }
-}
-
-fn build_pipeline_internal(
-    context: &Context,
-    stdbuf: &mut StdBuf,
-    shell: &Shell,
-    expr: &Expression,
-) -> Result<Pipeline> {
-    let mut pipeline = Pipeline::new(expr.stdin_mode);
-
-    match &expr.value {
-        ExpressionValue::RawShell(command) => {
-            let command = shell.build_command(command);
-            pipeline = pipeline.command(command, expr.stdin_mode)?;
-        }
-        ExpressionValue::Pipeline(commands) => {
-            for command in commands {
-                let (command, stdin_mode) = build_command(context, stdbuf, command)?;
-                pipeline = pipeline.command(command, stdin_mode)?;
-            }
-            if pipeline.is_empty() {
-                let command = build_default_command(context)?;
-                pipeline = pipeline.command(command, StdinMode::Connected)?;
-            }
-        }
-    };
-
-    Ok(pipeline)
-}
-
-fn build_command(
-    context: &Context,
-    stdbuf: &mut StdBuf,
-    params: &pattern::Command,
-) -> Result<(Command, StdinMode)> {
-    let pattern::Command {
-        name,
-        args,
-        external,
-    } = params;
-
-    if !external {
-        if let Some(meta) = get_meta(name) {
-            let command = build_internal_command(context, Some(name), args)?;
-            return Ok((command, meta.group.stdin_mode()));
-        }
-
-        if name == crate_name!() {
-            if let Some((name, args)) = args.split_first() {
-                if let Some(meta) = get_meta(name) {
-                    let command = build_internal_command(context, Some(name), args)?;
-                    return Ok((command, meta.group.stdin_mode()));
-                }
-            }
-
-            let command = build_internal_command(context, None, args)?;
-            return Ok((command, StdinMode::Connected));
-        }
-    }
-
-    let mut command = Command::new(name);
-    command.args(args);
-
-    if context.buf_mode().is_line() {
-        command.envs(stdbuf.line_buf_envs()); // libc based programs
-        command.env("PYTHONUNBUFFERED", "1"); // Python programs
-    }
-
-    Ok((command, StdinMode::Connected))
-}
-
-fn build_internal_command(
-    context: &Context,
-    name: Option<&str>,
-    args: &[String],
-) -> Result<Command> {
-    let program = current_exe().context("could not detect current executable")?;
-    let mut command = Command::new(program);
-
-    command.env(ENV_NULL, context.separator().is_null().to_string());
-    command.env(ENV_BUF_MODE, context.buf_mode().to_string());
-    command.env(ENV_BUF_SIZE, context.buf_size().to_string());
-    command.env(ENV_SPAWNED_BY, get_spawned_by(META.name));
-
-    if let Some(name) = name {
-        command.arg(name);
-    }
-
-    command.args(args);
-    Ok(command)
-}
-
-fn build_default_command(context: &Context) -> Result<Command> {
-    build_internal_command(context, Some(cat::META.name), &[])
 }
