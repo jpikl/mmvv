@@ -104,7 +104,7 @@ impl Env {
         ]
     }
 
-    pub fn external(&mut self) -> Vec<(String, String)> {
+    pub fn external(&self) -> Vec<(String, String)> {
         let mut env = Vec::new();
 
         if self.args.buf_mode.is_line() {

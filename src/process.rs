@@ -90,7 +90,7 @@ impl Command {
         }
     }
 
-    pub fn build(&self, env: &mut Env) -> Result<process::Command> {
+    pub fn build(&self, env: &Env) -> Result<process::Command> {
         match self {
             Command::Internal { meta, args } => {
                 let mut command = internal_command()?;

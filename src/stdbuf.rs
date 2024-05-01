@@ -1,17 +1,18 @@
 use anyhow::Result;
 use bstr::ByteSlice;
+use std::cell::OnceCell;
 use std::process::Command;
 use std::process::Stdio;
 
 #[derive(Default)]
 pub struct StdBuf {
-    line_buf_env: Option<Vec<(String, String)>>,
+    line_buf_env: OnceCell<Vec<(String, String)>>,
 }
 
 impl StdBuf {
-    pub fn line_buf_env(&mut self) -> Vec<(String, String)> {
+    pub fn line_buf_env(&self) -> Vec<(String, String)> {
         self.line_buf_env
-            .get_or_insert_with(|| Self::detect_env(&["-oL"]).unwrap_or_default())
+            .get_or_init(|| Self::detect_env(&["-oL"]).unwrap_or_default())
             .clone()
     }
 

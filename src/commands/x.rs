@@ -201,7 +201,7 @@ fn eval_simple_pattern(context: &Context, pattern: &SimplePattern) -> Result<()>
 }
 
 fn eval_pattern(context: &Context, pattern: &Pattern, shell: &Shell) -> Result<()> {
-    let mut env = context.env();
+    let env = context.env();
     let mut children = Vec::new();
     let mut producers = Vec::new();
     let mut consumers = Vec::new();
@@ -209,7 +209,7 @@ fn eval_pattern(context: &Context, pattern: &Pattern, shell: &Shell) -> Result<(
     for item in pattern.items() {
         match &item {
             Item::Constant(value) => producers.push(Producer::Constant(value.clone())),
-            Item::Expression(ref expr) => match build_pipeline(&mut env, shell, expr) {
+            Item::Expression(ref expr) => match build_pipeline(&env, shell, expr) {
                 Ok(mut pipeline) => {
                     pipeline.add_context(ContextItem {
                         name: "expression",
@@ -262,7 +262,7 @@ fn eval_pattern(context: &Context, pattern: &Pattern, shell: &Shell) -> Result<(
     }
 }
 
-fn build_pipeline(env: &mut Env, shell: &Shell, expr: &Expression) -> Result<Pipeline> {
+fn build_pipeline(env: &Env, shell: &Shell, expr: &Expression) -> Result<Pipeline> {
     let stdin_mode = if expr.no_stdin {
         StdinMode::Disconnected
     } else {
