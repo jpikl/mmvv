@@ -1,5 +1,5 @@
-use crate::args::BufMode;
-use crate::args::GlobalArgs;
+use crate::env::Args;
+use crate::env::BufMode;
 use crate::env::Env;
 use crate::examples::Example;
 use crate::io::ByteChunkReader;
@@ -7,7 +7,6 @@ use crate::io::CharChunkReader;
 use crate::io::LineReader;
 use crate::io::Separator;
 use crate::io::Writer;
-use crate::process::StdinMode;
 use anyhow::Result;
 use clap::ArgMatches;
 use clap::Command;
@@ -59,7 +58,7 @@ macro_rules! command_meta {
                     return $crate::examples::print(meta.name, meta.examples);
                 }
 
-                let global_args = $crate::args::GlobalArgs::from_arg_matches(matches)?;
+                let global_args = $crate::env::Args::from_arg_matches(matches)?;
                 let context = $crate::command::Context::new(meta.name, global_args);
                 let args = $args::from_arg_matches(matches)?;
 
@@ -110,13 +109,6 @@ impl Group {
         }
     }
 
-    pub fn stdin_mode(&self) -> StdinMode {
-        match self {
-            Self::Generators => StdinMode::Disconnected,
-            _ => StdinMode::Connected,
-        }
-    }
-
     pub fn values() -> Vec<Group> {
         vec![
             Self::General,
@@ -132,11 +124,11 @@ impl Group {
 #[derive(Clone)]
 pub struct Context {
     command: &'static str,
-    args: GlobalArgs,
+    args: Args,
 }
 
 impl Context {
-    pub fn new(command: &'static str, args: GlobalArgs) -> Self {
+    pub fn new(command: &'static str, args: Args) -> Self {
         Self { command, args }
     }
 

@@ -1,3 +1,4 @@
+use crate::command::Group;
 use crate::command::Meta;
 use crate::commands::get_meta;
 use crate::env::Env;
@@ -80,7 +81,10 @@ impl Command {
 
     pub fn stdin_mode(&self) -> StdinMode {
         match self {
-            Self::Internal { meta, .. } => meta.group.stdin_mode(),
+            Self::Internal { meta, .. } => match meta.group {
+                Group::Generators => StdinMode::Disconnected,
+                _ => StdinMode::Connected,
+            },
             Self::UnknownInternal { .. } => StdinMode::Disconnected,
             Self::External { .. } => StdinMode::Connected,
         }

@@ -53,7 +53,7 @@ impl<T> Spawned<T> {
         Spawned::new(mapper(self.inner), self.context.clone())
     }
 
-    pub fn clone_context<V>(&self, inner: V) -> Spawned<V> {
+    pub fn split<V>(&self, inner: V) -> Spawned<V> {
         Spawned::new(inner, self.context.clone())
     }
 }
@@ -83,17 +83,11 @@ impl Spawned<LineReader<ChildStdout>> {
 
 impl Spawned<Child> {
     pub fn take_stdin(&mut self) -> Option<Spawned<ChildStdin>> {
-        self.inner
-            .stdin
-            .take()
-            .map(|stdin| self.clone_context(stdin))
+        self.inner.stdin.take().map(|stdin| self.split(stdin))
     }
 
     pub fn take_stdout(&mut self) -> Option<Spawned<ChildStdout>> {
-        self.inner
-            .stdout
-            .take()
-            .map(|stdout| self.clone_context(stdout))
+        self.inner.stdout.take().map(|stdout| self.split(stdout))
     }
 
     pub fn wait(&mut self) -> Result<()> {

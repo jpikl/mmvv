@@ -1,7 +1,16 @@
-use crate::args::GlobalArgs;
 use crate::stdbuf::StdBuf;
 use clap::crate_name;
+use clap::ValueEnum;
+use derive_more::Display;
+use derive_more::IsVariant;
 use std::env;
+use std::io::stdout;
+use std::io::IsTerminal;
+
+// Optimal value for max IO throughput, according to https://www.evanjones.ca/read-write-buffer-size.html
+// Also confirmed by some custom benchmarks.
+// Also used internally by the `linereader` library https://github.com/Freaky/rust-linereader.
+const DEFAULT_BUF_SIZE: usize = 32 * 1024;
 
 // Publicly known env variables:
 pub const ENV_NULL: &str = "REW_NULL";
@@ -14,14 +23,71 @@ pub const ENV_BUF_SIZE: &str = "REW_BUF_SIZE";
 // it recieves the parent's name through this environment variable.
 pub const ENV_SPAWNED_BY: &str = "_REW_SPAWNED_BY";
 
+#[derive(Clone, Copy, ValueEnum, Display, Debug, IsVariant, PartialEq, Eq)]
+pub enum BufMode {
+    /// Writes to stdout after a line was processed or when the output buffer is full.
+    /// Enabled by default when stdout is TTY (for interactive usage).
+    #[display("line")]
+    Line,
+    /// Writes to stdout only when the output buffer is full.
+    /// Enabled by default when stdout is not TTY (for maximal throughput).
+    #[display("full")]
+    Full,
+}
+
+impl Default for BufMode {
+    fn default() -> Self {
+        if stdout().is_terminal() {
+            Self::Line
+        } else {
+            Self::Full
+        }
+    }
+}
+
+#[derive(clap::Args, Default, Debug, Clone, Eq, PartialEq)]
+pub struct Args {
+    /// Line delimiter is NUL, not newline.
+    #[arg(global = true, short = '0', long, env = ENV_NULL)]
+    pub null: bool,
+
+    /// Output buffering mode.
+    #[arg(
+        global = true,
+        long,
+        value_name = "MODE",
+        env = ENV_BUF_MODE,
+        default_value_t = BufMode::default(),
+        hide_default_value = true,
+    )]
+    pub buf_mode: BufMode,
+
+    /// Size of a buffer used for IO operations.
+    ///
+    /// Smaller values will reduce memory consumption but could negatively affect througput.
+    ///
+    /// Larger values will increase memory consumption but may improve troughput in some cases.
+    ///
+    /// Certain commands (which can only operate with whole lines) won't be able to fetch
+    /// a line bigger than this limit and will abort their execution instead.
+    #[arg(
+        global = true,
+        long,
+        value_name = "BYTES",
+        env = ENV_BUF_SIZE,
+        default_value_t = DEFAULT_BUF_SIZE,
+    )]
+    pub buf_size: usize,
+}
+
 pub struct Env {
     pub command: &'static str,
-    pub args: GlobalArgs,
+    pub args: Args,
     pub stdbuf: StdBuf,
 }
 
 impl Env {
-    pub fn new(command: &'static str, args: GlobalArgs) -> Self {
+    pub fn new(command: &'static str, args: Args) -> Self {
         Self {
             command,
             args,

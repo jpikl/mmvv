@@ -1,8 +1,6 @@
 #[doc(hidden)]
 pub mod app;
 #[doc(hidden)]
-pub mod args;
-#[doc(hidden)]
 pub mod colors;
 #[doc(hidden)]
 pub mod command;

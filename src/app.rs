@@ -1,14 +1,13 @@
-use crate::args::GlobalArgs;
 use crate::colors::BOLD;
 use crate::colors::RESET;
 use crate::command;
+use crate::env;
 use clap::command;
 use clap::crate_description;
 use clap::crate_name;
 use clap::crate_version;
 use clap::Args;
 use clap::Command;
-use std::env;
 
 const REFERENCE_URL: &str = "https://jpikl.github.io/rew/reference";
 
@@ -24,7 +23,7 @@ pub fn build(metas: &[&'static command::Meta]) -> Command {
         app = app.subcommand(command);
     }
 
-    GlobalArgs::augment_args(app.next_help_heading("Global options"))
+    env::Args::augment_args(app.next_help_heading("Global options"))
 }
 
 fn get_version() -> String {

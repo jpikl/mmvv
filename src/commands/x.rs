@@ -17,6 +17,7 @@ use crate::pattern::SimpleItem;
 use crate::pattern::SimplePattern;
 use crate::process::Command;
 use crate::process::Pipeline;
+use crate::process::StdinMode;
 use crate::shell::Shell;
 use crate::spawn::ContextItem;
 use crate::spawn::Spawned;
@@ -262,13 +263,19 @@ fn eval_pattern(context: &Context, pattern: &Pattern, shell: &Shell) -> Result<(
 }
 
 fn build_pipeline(env: &mut Env, shell: &Shell, expr: &Expression) -> Result<Pipeline> {
-    let mut pipeline = Pipeline::new(expr.stdin_mode);
+    let stdin_mode = if expr.no_stdin {
+        StdinMode::Disconnected
+    } else {
+        StdinMode::Connected
+    };
+
+    let mut pipeline = Pipeline::new(stdin_mode);
 
     match &expr.value {
         ExpressionValue::RawShell(command) => {
             let mut command = shell.build_command(command);
             command.envs(env.external());
-            pipeline = pipeline.add_command(command, expr.stdin_mode)?;
+            pipeline = pipeline.add_command(command, stdin_mode)?;
         }
         ExpressionValue::Pipeline(commands) => {
             for command in commands {
