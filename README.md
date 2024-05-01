@@ -17,7 +17,7 @@ It includes tools for a wide range of tasks, such as:
 
 - Text filtering, transformation and generation.
 - File system paths manipulation.
-- Parallel shell pipeline composition.
+- Parallel process pipeline composition.
 - Shell metaprogramming (code generation).
 
 All tools are distributed as a single binary (similar to [BusyBox](https://www.busybox.net)).
