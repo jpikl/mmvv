@@ -1,6 +1,6 @@
 use crate::colors::BOLD;
 use crate::colors::RESET;
-use crate::commands::METAS;
+use crate::commands;
 use crate::env;
 use clap::command;
 use clap::crate_description;
@@ -18,7 +18,7 @@ pub fn build() -> Command {
         .after_help(get_after_help(None))
         .subcommand_required(true);
 
-    for meta in METAS {
+    for meta in commands::METAS {
         let command = meta.build().after_help(get_after_help(Some(meta.name)));
         app = app.subcommand(command);
     }

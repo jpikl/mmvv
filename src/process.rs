@@ -1,6 +1,6 @@
 use crate::command::Group;
 use crate::command::Meta;
-use crate::commands::get_meta;
+use crate::commands;
 use crate::env::Env;
 use crate::spawn::ContextItem;
 use crate::spawn::SpawnWithContext;
@@ -43,14 +43,14 @@ impl Command {
 
         if name == crate_name!() {
             if let Some((name, args)) = args.split_first() {
-                if let Some(meta) = get_meta(name) {
+                if let Some(meta) = commands::get_meta(name) {
                     return Self::internal(meta, args);
                 }
             }
             return Self::unknown_internal(args);
         }
 
-        if let Some(meta) = get_meta(name) {
+        if let Some(meta) = commands::get_meta(name) {
             return Self::internal(meta, args);
         }
 

@@ -8,7 +8,7 @@ use clap::Arg;
 use clap::Command;
 use rew::command::Group;
 use rew::command::Meta;
-use rew::commands::get_meta;
+use rew::commands;
 use rew::examples::Example;
 use std::borrow::Cow;
 use std::iter::Peekable;
@@ -32,7 +32,7 @@ impl<'a> Adapter<'a> {
 
     fn meta(&self) -> Option<&'static Meta> {
         if self.parents.len() == 1 {
-            get_meta(self.name()) // Only the main commands have metadata
+            commands::get_meta(self.name()) // Only the main commands have metadata
         } else {
             None
         }

@@ -1,5 +1,5 @@
 use rew::app;
-use rew::commands::get_meta;
+use rew::commands;
 use rew::error::Reporter;
 use std::io;
 use std::process::ExitCode;
@@ -22,7 +22,7 @@ fn main() -> ExitCode {
     };
 
     let (cmd_name, cmd_matches) = matches.subcommand().expect("command not matched");
-    let cmd = get_meta(cmd_name).expect("command not found");
+    let cmd = commands::get_meta(cmd_name).expect("command not found");
 
     match cmd.run(cmd_matches) {
         Ok(()) => ExitCode::from(0),
