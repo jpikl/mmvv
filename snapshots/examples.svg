@@ -161,7 +161,7 @@ A specific shell for <span class="fg3">{# ...}</span> can be set using the <span
 The <span class="fg3">:</span> marker is a hint that an expression does not consume stdin. Without it, 
 the overall execution might get stuck forever due to blocked IO calls. 
  
-Only external commands need <span class="fg3">:</span> to be explicitely specified. For built-in 
+Only external commands need <span class="fg3">:</span> to be explicitly specified. For built-in 
 commands, <span class="fg3">:</span> is detected automatically. 
 
  <span class="fg2">╭─────────────────────────────────────────────────────────────╮</span>

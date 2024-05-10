@@ -36,46 +36,42 @@ pub enum Command {
 }
 
 impl Command {
-    pub fn internal(meta: &'static Meta) -> Self {
-        Self::Internal {
-            meta,
-            args: Vec::new(),
-        }
-    }
-
     pub fn detect(name: &str, args: &[String], external: bool) -> Self {
         if external {
-            return Self::External {
-                name: name.to_string(),
-                args: args.to_vec(),
-            };
+            return Self::external(name, args);
         }
 
         if name == crate_name!() {
             if let Some((name, args)) = args.split_first() {
                 if let Some(meta) = get_meta(name) {
-                    return Self::Internal {
-                        meta,
-                        args: args.to_vec(),
-                    };
+                    return Self::internal(meta, args);
                 }
             }
-
-            return Self::UnknownInternal {
-                args: args.to_vec(),
-            };
+            return Self::unknown_internal(args);
         }
 
         if let Some(meta) = get_meta(name) {
-            return Self::Internal {
-                meta,
-                args: args.to_vec(),
-            };
+            return Self::internal(meta, args);
         }
 
+        Self::external(name, args)
+    }
+
+    pub fn internal(meta: &'static Meta, args: impl Into<Vec<String>>) -> Self {
+        Self::Internal {
+            meta,
+            args: args.into(),
+        }
+    }
+
+    pub fn unknown_internal(args: impl Into<Vec<String>>) -> Self {
+        Self::UnknownInternal { args: args.into() }
+    }
+
+    pub fn external(name: impl Into<String>, args: impl Into<Vec<String>>) -> Self {
         Self::External {
-            name: name.to_string(),
-            args: args.to_vec(),
+            name: name.into(),
+            args: args.into(),
         }
     }
 
@@ -93,14 +89,14 @@ impl Command {
     pub fn build(&self, env: &Env) -> Result<process::Command> {
         match self {
             Command::Internal { meta, args } => {
-                let mut command = internal_command()?;
+                let mut command = new_internal_command()?;
                 command.arg(meta.name);
                 command.args(args);
                 command.envs(env.internal());
                 Ok(command)
             }
             Command::UnknownInternal { args } => {
-                let mut command = internal_command()?;
+                let mut command = new_internal_command()?;
                 command.args(args);
                 command.envs(env.internal());
                 Ok(command)
@@ -115,7 +111,7 @@ impl Command {
     }
 }
 
-fn internal_command() -> Result<process::Command> {
+fn new_internal_command() -> Result<process::Command> {
     let program = current_exe().context("could not detect current executable")?;
     Ok(process::Command::new(program))
 }

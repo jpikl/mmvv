@@ -8,7 +8,6 @@ use command::Adapter;
 use docs::generate_reference;
 use docs::generate_summary;
 use rew::app;
-use rew::commands::COMMANDS;
 use std::env;
 use std::fs::create_dir_all;
 use std::path::Path;
@@ -39,7 +38,7 @@ fn main() -> anyhow::Result<()> {
 
     let cli = Cli::parse();
 
-    let mut app = app::build(COMMANDS);
+    let mut app = app::build();
     app.build();
 
     match cli.task {

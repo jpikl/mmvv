@@ -107,9 +107,9 @@
       <span class="bold">--buf-size</span> &lt;BYTES&gt;
           Size of a buffer used for IO operations.
           
-          Smaller values will reduce memory consumption but could negatively aff<b class="hard-br"><br/></b>ect througput.
+          Smaller values will reduce memory consumption but could negatively aff<b class="hard-br"><br/></b>ect throughput.
           
-          Larger values will increase memory consumption but may improve troughp<b class="hard-br"><br/></b>ut in some cases.
+          Larger values will increase memory consumption but may improve through<b class="hard-br"><br/></b>put in some cases.
           
           Certain commands (which can only operate with whole lines) won't be ab<b class="hard-br"><br/></b>le to fetch a line
           bigger than this limit and will abort their execution instead.

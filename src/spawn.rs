@@ -110,7 +110,7 @@ impl Spawned<Child> {
     fn wait_context(&self, error: impl Into<Error>) -> Error {
         self.context
             .apply_to_err(error)
-            .context("child proces execution failed")
+            .context("child process execution failed")
     }
 
     pub fn kill(&mut self) -> Result<()> {

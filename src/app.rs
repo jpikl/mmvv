@@ -1,6 +1,6 @@
 use crate::colors::BOLD;
 use crate::colors::RESET;
-use crate::command;
+use crate::commands::METAS;
 use crate::env;
 use clap::command;
 use clap::crate_description;
@@ -11,14 +11,14 @@ use clap::Command;
 
 const REFERENCE_URL: &str = "https://jpikl.github.io/rew/reference";
 
-pub fn build(metas: &[&'static command::Meta]) -> Command {
+pub fn build() -> Command {
     let mut app = command!()
         .version(get_version())
         .about(crate_description!().replace(". ", ".\n"))
         .after_help(get_after_help(None))
         .subcommand_required(true);
 
-    for meta in metas {
+    for meta in METAS {
         let command = meta.build().after_help(get_after_help(Some(meta.name)));
         app = app.subcommand(command);
     }

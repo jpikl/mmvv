@@ -4,7 +4,7 @@ use std::env;
 
 #[test]
 fn examples() {
-    for meta in rew::commands::COMMANDS {
+    for meta in rew::commands::METAS {
         for example in meta.examples {
             // Such examples require coreutils with NUL separator support
             // which are not available on MacOS by default.

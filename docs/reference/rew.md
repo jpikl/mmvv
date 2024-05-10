@@ -119,9 +119,9 @@ Can be also set using `REW_BUF_MODE` environment variable.
 
 Size of a buffer used for IO operations.
 
-Smaller values will reduce memory consumption but could negatively affect througput.
+Smaller values will reduce memory consumption but could negatively affect throughput.
 
-Larger values will increase memory consumption but may improve troughput in some cases.
+Larger values will increase memory consumption but may improve throughput in some cases.
 
 Certain commands (which can only operate with whole lines) won't be able to fetch a line bigger than this limit and will abort their execution instead.
 

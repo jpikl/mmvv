@@ -18,7 +18,7 @@ impl StdBuf {
 
     // This is probably the least invasive way how to force output line buffering on external commands (which use libc).
     // 1. Run `stdbuf [args] env` and extract relevant environment variables from its output.
-    // 2. Run the external command with those same enviroment variables (as `stdbuf` would do).
+    // 2. Run the external command with those same environment variables (as `stdbuf` would do).
     //
     // Alternatively we could:
     // a) Run external commands directly under `stdbuf`. This produces rather confusing error messages

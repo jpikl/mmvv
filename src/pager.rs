@@ -50,7 +50,7 @@ impl Pager {
                 stdin
                     .context
                     .apply_to_err(err)
-                    .context("failed to write to child process stdin")
+                    .context("failed to write to pager process stdin")
             })
         });
 

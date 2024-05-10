@@ -1,12 +1,11 @@
 use rew::app;
 use rew::commands::get_meta;
-use rew::commands::COMMANDS;
 use rew::error::Reporter;
 use std::io;
 use std::process::ExitCode;
 
 fn main() -> ExitCode {
-    let app = app::build(COMMANDS);
+    let app = app::build();
     let reporter = Reporter::new(&app);
 
     let matches = match app.try_get_matches() {

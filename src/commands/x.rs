@@ -94,7 +94,7 @@ const EXAMPLES: &[Example] = command_examples! [
     },
    "The `:` marker is a hint that an expression does not consume stdin. \
     Without it, the overall execution might get stuck forever due to blocked IO calls.\n\n\
-    Only external commands need `:` to be explicitely specified. \
+    Only external commands need `:` to be explicitly specified. \
     For built-in commands, `:` is detected automatically.": {
         args: &["{seq 1..3} {: !seq 1 3} {:# echo 1; echo 2; echo 3}"],
         input: &[],
@@ -240,7 +240,7 @@ fn eval_pattern(context: &Context, pattern: &Pattern, shell: &Shell) -> Result<(
         }
     }
 
-    // Helper thead forwards main process stdin to every child process.
+    // Helper thread forwards main process stdin to every child process.
     let thread_context = context.clone();
     let thread = thread::spawn(move || forward_input(&thread_context, consumers));
 
@@ -249,8 +249,8 @@ fn eval_pattern(context: &Context, pattern: &Pattern, shell: &Shell) -> Result<(
     wait_children(children)?;
 
     if thread.is_finished() {
-        // Join the thread only if it actually endeded.
-        // Otherwise, this would be stucked forewer!
+        // Join the thread only if it actually ended.
+        // Otherwise, this would be stuck forever!
         thread.join().map_err(resume_unwind)?
     } else {
         // The helper thread is blocked on read from stdin.
@@ -283,7 +283,7 @@ fn build_pipeline(env: &Env, shell: &Shell, expr: &Expression) -> Result<Pipelin
                 pipeline = pipeline.add_command(command.build(env)?, command.stdin_mode())?;
             }
             if pipeline.is_empty() {
-                let command = Command::internal(&cat::META);
+                let command = Command::internal(&cat::META, &[]);
                 pipeline = pipeline.add_command(command.build(env)?, command.stdin_mode())?;
             }
         }
@@ -294,7 +294,7 @@ fn build_pipeline(env: &Env, shell: &Shell, expr: &Expression) -> Result<Pipelin
 
 fn forward_input(context: &Context, mut stdins: Vec<Option<Spawned<ChildStdin>>>) -> Result<()> {
     if stdins.iter().all(Option::is_none) {
-        return Ok(()); // None of the child proceses use stdin.
+        return Ok(()); // None of the child processes use stdin.
     }
 
     let mut reader = context.byte_chunk_reader();
@@ -362,7 +362,7 @@ fn wait_children(mut children: Vec<Spawned<Child>>) -> Result<()> {
     }
 
     // Give the remaining child processes some extra time to finish.
-    // Needed especialy in case program exists with error on Windows.
+    // Needed especially in case program exists with error on Windows.
     thread::sleep(Duration::from_millis(100));
 
     // Just kill the ones which did not terminate on their own.

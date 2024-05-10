@@ -20,7 +20,7 @@ pub const ENV_BUF_SIZE: &str = "REW_BUF_SIZE";
 // Internal env variables:
 //
 // When `rew` is spawned as a child of some parent `rew` process,
-// it recieves the parent's name through this environment variable.
+// it receives the parent's name through this environment variable.
 pub const ENV_SPAWNED_BY: &str = "_REW_SPAWNED_BY";
 
 #[derive(Clone, Copy, ValueEnum, Display, Debug, IsVariant, PartialEq, Eq)]
@@ -64,9 +64,9 @@ pub struct Args {
 
     /// Size of a buffer used for IO operations.
     ///
-    /// Smaller values will reduce memory consumption but could negatively affect througput.
+    /// Smaller values will reduce memory consumption but could negatively affect throughput.
     ///
-    /// Larger values will increase memory consumption but may improve troughput in some cases.
+    /// Larger values will increase memory consumption but may improve throughput in some cases.
     ///
     /// Certain commands (which can only operate with whole lines) won't be able to fetch
     /// a line bigger than this limit and will abort their execution instead.
