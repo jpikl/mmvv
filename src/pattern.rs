@@ -54,7 +54,7 @@ pub enum ErrorKind {
     #[display("'{_0}{_1}' is not a valid escape sequence in this context")]
     InvalidEscapeSequence(char, char),
     #[display("unterminated escape sequence '{_0}'")]
-    UnternimatedEscapeSequence(char),
+    UnterminatedEscapeSequence(char),
 }
 
 impl Display for Error {
@@ -431,7 +431,7 @@ impl Parser<'_> {
             Some(char) if char == self.escape => Ok(self.consume(char)),
             Some(char) if is_escapable(char) => Ok(self.consume(char)),
             Some(char) => Err(self.err(ErrorKind::InvalidEscapeSequence(self.escape, char))),
-            _ => Err(self.err(ErrorKind::UnternimatedEscapeSequence(self.escape))),
+            _ => Err(self.err(ErrorKind::UnterminatedEscapeSequence(self.escape))),
         }
     }
 
@@ -617,7 +617,7 @@ mod tests {
     #[case("{#}",  2, ErrorKind::EmptyShellCommand)]
     #[case("{# }", 3, ErrorKind::EmptyShellCommand)]
     // Escaping - General
-    #[case("%", 1, ErrorKind::UnternimatedEscapeSequence('%'))]
+    #[case("%", 1, ErrorKind::UnterminatedEscapeSequence('%'))]
     // Escaping - Constants
     #[case("%'",  1, ErrorKind::InvalidEscapeSequence('%', '\''))]
     #[case("%\"", 1, ErrorKind::InvalidEscapeSequence('%', '"'))]

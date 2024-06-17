@@ -63,12 +63,12 @@ const EXAMPLES: &[Example] = command_examples! [
         output: &["Hello FRST", "Hello SCND", "Hello THRD"],
     },
     "Multiple expressions are run in parallel and their output is combined. \
-     The excution runs until one of the expressions no longer produces any output.": {
+     The execution runs until one of the expressions no longer produces any output.": {
         args: &["{seq}. {tr -d aeiou | upper}"],
         input: &["first", "second", "third"],
         output: &["1. FRST", "2. SCND", "3. THRD"],
     },
-    "Arguments containing whitepaces must be wrapped in single `''` or double quotes `\"\"`.\n\n\
+    "Arguments containing whitespaces must be wrapped in single `''` or double quotes `\"\"`.\n\n\
      Here, we replace `aeiou` characters with space `' '`.": {
         args: &["Hello {tr aeiou ' ' | upper}"],
         input: &["first", "second", "third"],

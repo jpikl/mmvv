@@ -175,7 +175,7 @@ rew x 'Hello {tr -d aeiou | upper}'
 </div>
 </div>
 
-Multiple expressions are run in parallel and their output is combined. The excution runs until one of the expressions no longer produces any output.
+Multiple expressions are run in parallel and their output is combined. The execution runs until one of the expressions no longer produces any output.
 
 ```sh
 rew x '{seq}. {tr -d aeiou | upper}'
@@ -200,7 +200,7 @@ rew x '{seq}. {tr -d aeiou | upper}'
 </div>
 </div>
 
-Arguments containing whitepaces must be wrapped in single `''` or double quotes `""`.
+Arguments containing whitespaces must be wrapped in single `''` or double quotes `""`.
 
 Here, we replace `aeiou` characters with space `' '`.
 

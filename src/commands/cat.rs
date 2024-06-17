@@ -30,7 +30,7 @@ const EXAMPLES: &[Example] = command_examples![
 struct Args {
     /// Process data as lines.
     ///
-    /// Will normalize newlines to LF as a side-effect.
+    /// Will normalize newlines to LF as a side effect.
     #[arg(short, long, conflicts_with_all = ["chars", "bytes"])]
     lines: bool,
 

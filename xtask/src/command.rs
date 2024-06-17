@@ -106,7 +106,7 @@ impl<'a> Adapter<'a> {
             })
     }
 
-    pub fn groupped_subcommands(
+    pub fn grouped_subcommands(
         &'a self,
     ) -> impl Iterator<Item = (Group, impl Iterator<Item = Adapter<'a>>)> {
         Group::values().into_iter().filter_map(|group| {

@@ -30,7 +30,7 @@ impl Context {
         self.items.push(item);
     }
 
-    pub fn apply_to_err<E: Into<anyhow::Error>>(&self, error: E) -> anyhow::Error {
+    pub fn apply_to_err<E: Into<Error>>(&self, error: E) -> Error {
         let mut error = error.into();
         for item in &self.items {
             error = error.context(format!("{}: {YELLOW}{}{RESET}", item.name, item.value));

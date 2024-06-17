@@ -46,7 +46,7 @@ struct Args {
     ///
     /// Both `FROM` and `TO` are integers.
     ///
-    /// `TO` may be ommited to produce an infinite sequence.
+    /// `TO` may be omitted to produce an infinite sequence.
     #[arg(value_name = "FROM..[TO]", default_value_t = StartRange(1, None), allow_hyphen_values = true)]
     range: StartRange<i128>,
 
@@ -92,7 +92,7 @@ fn run(context: &Context, args: &Args) -> Result<()> {
                 if let Some(new_value) = value.checked_add(step) {
                     value = new_value;
                 } else {
-                    return Err(format_err!("number sequence reached interger limit"));
+                    return Err(format_err!("number sequence reached integer limit"));
                 }
             }
         }

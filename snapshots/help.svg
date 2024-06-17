@@ -71,7 +71,7 @@
           
           Both <span class="bold">FROM</span> and <span class="bold">TO</span> are integers.
           
-          <span class="bold">TO</span> may be ommited to produce an infinite sequence.
+          <span class="bold">TO</span> may be omitted to produce an infinite sequence.
           
           [default: 1..]
 
@@ -117,7 +117,7 @@
           [env: REW_BUF_SIZE=]
           [default: 32768]
 
-Visit <span class="bold">https://jpikl.github.io/rew/reference/rew-seq.html.html</span> for a complete ref<b class="hard-br"><br/></b>erence and examples.</pre></div>
+Visit <span class="bold">https://jpikl.github.io/rew/reference/rew-seq.html</span> for a complete referenc<b class="hard-br"><br/></b>e and examples.</pre></div>
           </div>
         </foreignObject>
       </svg>

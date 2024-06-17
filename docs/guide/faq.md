@@ -8,7 +8,7 @@
 
 `/ˌriː/` (like _"rewrite"_ but without the _"-write"_)
 
-Hovewer, I personally do not care and often just pronounce it simply _"rev"_.
+However, I personally do not care and often just pronounce it simply _"rev"_.
 
 ## Why not have a separate binary for each command?
 

@@ -45,7 +45,7 @@ fn run(context: &Context, args: &Args) -> Result<()> {
 
     let output_separator = args.separator.as_bytes();
     let input_separator = context.separator().as_byte();
-    let trim_input_sparator = context.separator().trim_fn();
+    let trim_input_separator = context.separator().trim_fn();
 
     let mut start_next_item_separated = false;
 
@@ -57,7 +57,7 @@ fn run(context: &Context, args: &Args) -> Result<()> {
                 writer.write(output_separator)?;
             }
 
-            writer.write(trim_input_sparator(&remainder[..=pos]))?;
+            writer.write(trim_input_separator(&remainder[..=pos]))?;
             remainder = &remainder[(pos + 1)..];
 
             // Write the trimmed separator once we know there is more data

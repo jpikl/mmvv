@@ -103,7 +103,7 @@ Multiple commands can be joined into a pipeline.
          <span class="fg2">"</span>third<span class="fg2">"</span>             <span class="fg2">"</span>Hello THRD<span class="fg2">"</span>
 
 Multiple expressions are run in parallel and their output is combined. The 
-excution runs until one of the expressions no longer produces any output. 
+execution runs until one of the expressions no longer produces any output. 
 
  <span class="fg2">╭────────────────────────────────────────╮</span>
  <span class="fg2">│$ </span>rew x <span class="fg3">'{seq}. {tr -d aeiou | upper}'</span>  <span class="fg2">│</span>
@@ -112,7 +112,7 @@ excution runs until one of the expressions no longer produces any output.
          <span class="fg2">"</span>second<span class="fg2">"</span>            <span class="fg2">"</span>2. SCND<span class="fg2">"</span>
          <span class="fg2">"</span>third<span class="fg2">"</span>             <span class="fg2">"</span>3. THRD<span class="fg2">"</span>
 
-Arguments containing whitepaces must be wrapped in single <span class="fg3">''</span> or double quotes 
+Arguments containing whitespaces must be wrapped in single <span class="fg3">''</span> or double quotes 
 <span class="fg3">""</span>. 
  
 Here, we replace <span class="fg3">aeiou</span> characters with space <span class="fg3">' '</span>. 

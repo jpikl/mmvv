@@ -7,7 +7,7 @@ fn examples() {
     for meta in rew::commands::METAS {
         for example in meta.examples {
             // Such examples require coreutils with NUL separator support
-            // which are not available on MacOS by default.
+            // which are not available on macOS by default.
             if cfg!(target_os = "macos") && example.has_null_arg() {
                 continue;
             }

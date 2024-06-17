@@ -4,7 +4,7 @@ set -eu
 
 . ./benches/command.sh
 
-# Runs bechmark for the specified shell commands.
+# Runs benchmark for the specified shell commands.
 #
 # Stdout: Benchmark results in markdown format.
 # Stderr: Benchmarking progress.
@@ -84,7 +84,7 @@ echo "# rew $COMMAND"
 echo
 echo "This page contains benchmarks for [rew $COMMAND](../reference/rew-$COMMAND.md) command."
 echo
-echo "See [benchmark setup](./setup.md) for information about testing environemt and input data files."
+echo "See [benchmark setup](./setup.md) for information about testing environment and input data files."
 
 # shellcheck disable=SC1090
 . "./benches/commands/$COMMAND.sh"

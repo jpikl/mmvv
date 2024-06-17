@@ -40,5 +40,5 @@ fn get_after_help(cmd: Option<&str>) -> String {
     } else {
         format!("{app}.html")
     };
-    format!("Visit {BOLD}{REFERENCE_URL}/{file}.html{RESET} for a complete reference and examples.")
+    format!("Visit {BOLD}{REFERENCE_URL}/{file}{RESET} for a complete reference and examples.")
 }

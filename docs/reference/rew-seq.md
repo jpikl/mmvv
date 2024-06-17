@@ -18,7 +18,7 @@ Sequence range.
 
 Both `FROM` and `TO` are integers.
 
-`TO` may be ommited to produce an infinite sequence.
+`TO` may be omitted to produce an infinite sequence.
 
 Default value: `1..`
 </dd>

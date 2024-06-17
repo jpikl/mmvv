@@ -26,7 +26,7 @@ impl Pager {
             // F = Exit immediately if the text fits the entire screen.
             // I = Ignore case when searching.
             // r = Causes "raw" control characters to be displayed.
-            // X = Disables sending the termcap (de)itialization.
+            // X = Disables sending the termcap (de)initialization.
             command.arg("-FIrX");
             return Some(Pager(command));
         }

@@ -107,7 +107,7 @@ fn write_reference(writer: &mut impl Write, command: &Adapter<'_>) -> Result<()>
     writeln!(writer)?;
     writeln!(writer, "```")?;
 
-    for (group, subcommands) in command.groupped_subcommands() {
+    for (group, subcommands) in command.grouped_subcommands() {
         writeln!(writer)?;
         writeln!(writer, "## {group}")?;
 

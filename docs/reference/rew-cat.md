@@ -19,7 +19,7 @@ rew cat [OPTIONS]
 
 Process data as lines.
 
-Will normalize newlines to LF as a side-effect.
+Will normalize newlines to LF as a side effect.
 </dd>
 
 <dt><code>-c, --chars</code></dt>

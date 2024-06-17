@@ -50,7 +50,7 @@ fn run(context: &Context, args: &Args) -> Result<()> {
             continue;
         }
 
-        // Copying chars to a side buffer is faster then directly writing them to buffered writer
+        // Copying chars to a side buffer is faster than directly writing them to buffered writer
         if args.delete {
             chunk
                 .chars()

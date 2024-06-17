@@ -88,9 +88,9 @@ impl Shell {
     pub fn build_command(&self, shell_command: &str) -> Command {
         let mut command = Command::new(self.bin());
         // SHELL env is needed for two reasons:
-        // 1. To propagate `SHELL` to `rew x` which could get potentionally spawned inside the shell.
+        // 1. To propagate `SHELL` to `rew x` which could get potentially spawned inside the shell.
         // 2. To fix this weird Rust issue https://github.com/rust-lang/rust/issues/122660 which causes
-        //    that a potentionally wrong shell is spawned, ignoring precendence in `PATH` env var.
+        //    that a potentially wrong shell is spawned, ignoring precedence in `PATH` env var.
         command.env("SHELL", self.bin());
         command.arg(self.kind().command_option_name());
         command.arg(shell_command);

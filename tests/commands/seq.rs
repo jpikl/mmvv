@@ -18,5 +18,5 @@ command_test!("seq", {
     inf_from: [ sh "%cmd% 10.. | head -n10" assert "" => "10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n" ],
     inf_pos_step: [ sh "%cmd% 10.. 2 | head -n10" assert "" => "10\n12\n14\n16\n18\n20\n22\n24\n26\n28\n" ],
     inf_neg_step: [ sh "%cmd% 10.. -3 | head -n10" assert "" => "10\n7\n4\n1\n-2\n-5\n-8\n-11\n-14\n-17\n" ],
-    overflow: [ cmd "170141183460469231731687303715884105727.." assert "" => err "number sequence reached interger limit\n" ],
+    overflow: [ cmd "170141183460469231731687303715884105727.." assert "" => err "number sequence reached integer limit\n" ],
 });
