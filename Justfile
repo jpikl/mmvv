@@ -107,4 +107,4 @@ setup:
     else \
         cargo binstall cargo-binstall; \
     fi
-    cargo binstall cargo-fuzz cargo-llvm-cov cargo-nextest cargo-watch llvm-cov-pretty mdbook
+    cargo binstall cargo-fuzz cargo-llvm-cov cargo-nextest cargo-watch llvm-cov-pretty mdbook coreutils
