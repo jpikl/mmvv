@@ -362,7 +362,7 @@ fn wait_children(mut children: Vec<Spawned<Child>>) -> Result<()> {
     }
 
     // Give the remaining child processes some extra time to finish.
-    // Needed especially in case program exists with error on Windows.
+    // Needed especially in case program exits with error on Windows.
     thread::sleep(Duration::from_millis(100));
 
     // Just kill the ones which did not terminate on their own.
