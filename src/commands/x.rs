@@ -52,7 +52,7 @@ const EXAMPLES: &[Example] = command_examples! [
         output: &["Hello FIRST", "Hello SECOND", "Hello THIRD"],
     },
     "Expressions can also call any external command.\n\n\
-     Let's remove all `aeiou` characters from text using `tr`.": {
+     Here, we remove all `aeiou` characters from text using `tr`.": {
         args: &["Hello {tr -d aeiou}"],
         input: &["first", "second", "third"],
         output: &["Hello frst", "Hello scnd", "Hello thrd"],
@@ -68,21 +68,21 @@ const EXAMPLES: &[Example] = command_examples! [
         input: &["first", "second", "third"],
         output: &["1. FRST", "2. SCND", "3. THRD"],
     },
-    "Arguments containing whitespaces must be wrapped in single `''` or double quotes `\"\"`.\n\n\
-     Here, we replace `aeiou` characters with space `' '`.": {
+    "Arguments containing whitespaces must be wrapped in single quotes `''` or double quotes `\"\"`.\n\n\
+     Here, we replace `aeiou` characters with single space `' '`.": {
         args: &["Hello {tr aeiou ' ' | upper}"],
         input: &["first", "second", "third"],
         output: &["Hello F RST", "Hello S C ND", "Hello TH RD"],
     },
     "The `!` marker denotes an external command.\n\n\
-     Let's call the standard `seq` command instead of the built-in `rew seq`.": {
+     Here, we call the system `seq` command instead of the built-in `rew seq`.": {
        args: &["{!seq 1 3}. {}"],
        input: &["first", "second", "third"],
        output: &["1. first", "2. second", "3. third"],
    },
    "The `#` marker denotes \"raw shell expression\". \
-    Everything after it will be interpreted by the current shell.\n\n\
-    For example, the following expression is equivalent to `{sh -c 'printf \"%s\\n\" a b c'}`": {
+    Everything after it is interpreted by the current shell.\n\n\
+    `{# ...}` is basically a shortcut for `{sh -c '...'}`.": {
         args: &["{# printf '%s\\n' a b c}. {}"],
         input: &["first", "second", "third"],
         output: &["a. first", "b. second", "c. third"],
@@ -92,15 +92,15 @@ const EXAMPLES: &[Example] = command_examples! [
         input: &["first", "second", "third"],
         output: &["0. first", "1. second", "2. third"],
     },
-   "The `:` marker is a hint that an expression does not consume stdin. \
+   "The `:` marker is a hint that the expression does not consume stdin. \
     Without it, the overall execution might get stuck forever due to blocked IO calls.\n\n\
     Only external commands need `:` to be explicitly specified. \
     For built-in commands, `:` is detected automatically.": {
-        args: &["{seq 1..3} {: !seq 1 3} {:# echo 1; echo 2; echo 3}"],
+        args: &["{seq 1..3} {: !seq 1 3} {:# printf '1\\n2\\n3\\n'}"],
         input: &[],
         output: &["1 1 1", "2 2 2", "3 3 3"],
     },
-    "Backslash `\\` can be used to escape special characters": {
+    "Backslash `\\` can be used to escape special characters.": {
         args: &["\\{ \"{}\": {seq} \\}"],
         input: &["first", "second", "third"],
         output: &["{ \"first\": 1 }", "{ \"second\": 2 }", "{ \"third\": 3 }"],
@@ -110,7 +110,7 @@ const EXAMPLES: &[Example] = command_examples! [
         input: &["first", "second", "third"],
         output: &["{ \"first\": 1 }", "{ \"second\": 2 }", "{ \"third\": 3 }"],
     },
-    "Certain special characters like `|` must be escaped only within a specific context.": {
+    "Certain special characters like `|` have to be escaped only within a specific context.": {
         args: &["| {echo \"|\"} {echo \\|}"],
         input: &[],
         output: &["| | |"],
@@ -120,7 +120,7 @@ const EXAMPLES: &[Example] = command_examples! [
         input: &["first", "second", "third"],
         output: &["1:", "\tfirst", "2:", "\tsecond", "3:", "\tthird"],
     },
-    "You can enable automatic expression quoting using `-q, --quote` flag.": {
+    "You can enable automatic expression quoting using the `-q, --quote` flag.": {
         args: &["-q", "mv {} {lower | tr ' ' '_'}"],
         input: &["IMG 1.jpg", "IMG 2.jpg"],
         output: &["mv 'IMG 1.jpg' 'img_1.jpg'", "mv 'IMG 2.jpg' 'img_2.jpg'"],
@@ -131,7 +131,7 @@ const EXAMPLES: &[Example] = command_examples! [
         output: &["mv \"IMG 1.jpg\" \"img_1.jpg\"", "mv \"IMG 2.jpg\" \"img_2.jpg\""],
     },
     "All global options `-0, --null`, `--buf-size` and `--buf-mode` are propagated to rew subcommands. \
-     Do not forget configure NUL separator manually for any external commands.": {
+     Do not forget configure NUL separator manually for any external command.": {
         args: &["--null", "{upper | sed --null-data 's/^.//g'}"],
         input: &["aa", "bb", "cc"],
         output: &["A", "B", "C"],

@@ -125,7 +125,7 @@ rew x 'Hello {upper}'
 
 Expressions can also call any external command.
 
-Let's remove all `aeiou` characters from text using `tr`.
+Here, we remove all `aeiou` characters from text using `tr`.
 
 ```sh
 rew x 'Hello {tr -d aeiou}'
@@ -200,9 +200,9 @@ rew x '{seq}. {tr -d aeiou | upper}'
 </div>
 </div>
 
-Arguments containing whitespaces must be wrapped in single `''` or double quotes `""`.
+Arguments containing whitespaces must be wrapped in single quotes `''` or double quotes `""`.
 
-Here, we replace `aeiou` characters with space `' '`.
+Here, we replace `aeiou` characters with single space `' '`.
 
 ```sh
 rew x 'Hello {tr aeiou " " | upper}'
@@ -229,7 +229,7 @@ rew x 'Hello {tr aeiou " " | upper}'
 
 The `!` marker denotes an external command.
 
-Let's call the standard `seq` command instead of the built-in `rew seq`.
+Here, we call the system `seq` command instead of the built-in `rew seq`.
 
 ```sh
 rew x '{!seq 1 3}. {}'
@@ -254,9 +254,9 @@ rew x '{!seq 1 3}. {}'
 </div>
 </div>
 
-The `#` marker denotes "raw shell expression". Everything after it will be interpreted by the current shell.
+The `#` marker denotes "raw shell expression". Everything after it is interpreted by the current shell.
 
-For example, the following expression is equivalent to `{sh -c 'printf "%s\n" a b c'}`
+`{# ...}` is basically a shortcut for `{sh -c '...'}`.
 
 ```sh
 rew x '{# printf "%s\n" a b c}. {}'
@@ -306,12 +306,12 @@ rew x -s bash '{# for((i=0;i<3;i++)); do echo $i; done}. {}'
 </div>
 </div>
 
-The `:` marker is a hint that an expression does not consume stdin. Without it, the overall execution might get stuck forever due to blocked IO calls.
+The `:` marker is a hint that the expression does not consume stdin. Without it, the overall execution might get stuck forever due to blocked IO calls.
 
 Only external commands need `:` to be explicitly specified. For built-in commands, `:` is detected automatically.
 
 ```sh
-rew x '{seq 1..3} {: !seq 1 3} {:# echo 1; echo 2; echo 3}'
+rew x '{seq 1..3} {: !seq 1 3} {:# printf "1\n2\n3\n"}'
 ```
 
 <div class="example-io">
@@ -325,7 +325,7 @@ rew x '{seq 1..3} {: !seq 1 3} {:# echo 1; echo 2; echo 3}'
 </div>
 </div>
 
-Backslash `\` can be used to escape special characters
+Backslash `\` can be used to escape special characters.
 
 ```sh
 rew x '\{ "{}": {seq} \}'
@@ -375,7 +375,7 @@ rew x -e% '%{ "{}": {seq} %}'
 </div>
 </div>
 
-Certain special characters like `|` must be escaped only within a specific context.
+Certain special characters like `|` have to be escaped only within a specific context.
 
 ```sh
 rew x '| {echo "|"} {echo \|}'
@@ -418,7 +418,7 @@ rew x '{seq}:\n\t{}'
 </div>
 </div>
 
-You can enable automatic expression quoting using `-q, --quote` flag.
+You can enable automatic expression quoting using the `-q, --quote` flag.
 
 ```sh
 rew x -q 'mv {} {lower | tr " " "_"}'
@@ -464,7 +464,7 @@ rew x -qq 'mv {} {lower | tr " " "_"}'
 </div>
 </div>
 
-All global options `-0, --null`, `--buf-size` and `--buf-mode` are propagated to rew subcommands. Do not forget configure NUL separator manually for any external commands.
+All global options `-0, --null`, `--buf-size` and `--buf-mode` are propagated to rew subcommands. Do not forget configure NUL separator manually for any external command.
 
 ```sh
 rew x --null '{upper | sed --null-data "s/^.//g"}'

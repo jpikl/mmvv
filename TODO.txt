@@ -1,5 +1,4 @@
 0.4
-- Better shell specific examples for `rew x` + cleanup and reorder all `rew x` examples.
 - Add missing unit test to increase code coverage.
 - Prepare changelog for 0.4.0
 - Finish user guide (performance, caveats, global opts propagation in `rew x`, forward compatibility, versioning).
