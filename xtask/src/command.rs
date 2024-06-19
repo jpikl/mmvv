@@ -360,6 +360,7 @@ pub trait NonEmpty {
 }
 
 impl<I: Iterator> NonEmpty for I {
+    #[allow(refining_impl_trait)]
     fn non_empty(self) -> Option<Peekable<I>> {
         let mut iter = self.peekable();
         if iter.peek().is_some() {
