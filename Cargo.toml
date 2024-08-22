@@ -2,8 +2,8 @@
 members = [".", "fuzz", "xtask"]
 
 [workspace.dependencies]
-anyhow = "1.0.79"
-clap = { version = "4.4.16" }
+anyhow = "1.0.86"
+clap = "4.5.16"
 
 [package]
 name = "rew"
@@ -19,9 +19,9 @@ license = "MIT"
 edition = "2021"
 
 [dependencies]
-anstream = "0.6.7"
+anstream = "0.6.15"
 anyhow = { workspace = true }
-bstr = "1.9.0"
+bstr = "1.10.0"
 clap = { workspace = true, features = [
     "cargo",
     "derive",
@@ -29,20 +29,20 @@ clap = { workspace = true, features = [
     "string",
     "wrap_help",
 ] }
-derive_more = { version = "1.0.0-beta.6", features = [
+derive_more = { version = "1.0.0", features = [
     "display",
     "error",
     "is_variant",
 ] }
-deunicode = "1.4.2"
+deunicode = "1.6.0"
 itoap = "1.0.1"
-memchr = "2.7.1"
+memchr = "2.7.4"
 terminal_size = "0.3.0"
-unicode-width = "0.1.11"
-which = "6.0.0"
+unicode-width = "0.1.13"
+which = "6.0.3"
 
 [dev-dependencies]
-assert_cmd = "2.0.13"
+assert_cmd = "2.0.16"
 claims = "0.7.1"
 rstest = "0.18.2"
 term-transcript = "0.3.0"

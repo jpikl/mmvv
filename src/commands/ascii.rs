@@ -17,7 +17,7 @@ pub const META: Meta = command_meta! {
     examples: EXAMPLES,
 };
 
-const EXAMPLES: &[Example] = command_examples! [
+const EXAMPLES: &[Example] = command_examples![
     "Convert input to ASCII.":  {
         args: &[],
         input: &["Æneid", "étude", "🦀rocks!"],
@@ -51,16 +51,12 @@ fn run(context: &Context, args: &Args) -> Result<()> {
         }
 
         // Copying chars to a side buffer is faster than directly writing them to buffered writer
-        if args.delete {
-            chunk
-                .chars()
-                .filter(char::is_ascii)
-                .for_each(|char| buffer.push(char as u8));
-        } else {
-            chunk
-                .chars()
-                .map(deunicode_char)
-                .for_each(|str| buffer.push_str(str.unwrap_or("?")));
+        for char in chunk.chars() {
+            if char.is_ascii() {
+                buffer.push(char as u8);
+            } else if !args.delete {
+                buffer.push_str(deunicode_char(char).unwrap_or("?"));
+            }
         }
 
         writer.write(&buffer)?;
